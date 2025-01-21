@@ -2,10 +2,10 @@
 
 ## Roles
 
-- XXX is our team lead, and is responsible for coordinating the project.
-- XXX is our technical lead, and is responsible for ensuring technical aspects are completed correctly.
-- XXX are responsible for the front-end design and features.
-- XXX are responsible for the database and backend design.
+- Sajeen is our team lead, and is responsible for coordinating the project.
+- Leo is our technical lead, and is responsible for ensuring technical aspects are completed correctly.
+- Ashvin and Aryan are responsible for the front-end design and features.
+- Alex and Jerry are responsible for the database and backend design.
 
 ## Communication and Meetings
 
