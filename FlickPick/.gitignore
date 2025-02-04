@@ -1,15 +1,29 @@
-*.iml
-.gradle
+# Gradle files
+.gradle/
+**/build/
+!gradle/wrapper/gradle-wrapper.jar
+!gradle/wrapper/gradle-wrapper.properties
+
+# Local configuration
 /local.properties
-/.idea/caches
-/.idea/libraries
-/.idea/modules.xml
-/.idea/workspace.xml
-/.idea/navEditor.xml
-/.idea/assetWizardSettings.xml
+/.idea/
+*.iml
+
+# Dependency directories
+/.cxx/
+/.externalNativeBuild/
+/captures/
+
+# Android Studio / IntelliJ
+/.idea/
+/*.iml
+/.cache/
+/out/
+/*.log
+
+# Miscellaneous
+*.log
+*.swp
 .DS_Store
-/build
-/captures
-.externalNativeBuild
-.cxx
-local.properties
+*.keystore
+*.jks
