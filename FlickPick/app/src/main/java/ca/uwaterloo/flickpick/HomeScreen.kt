@@ -16,7 +16,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import ca.uwaterloo.flickpick.ui.theme.FlickPickTheme
 import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -36,7 +38,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
-
 
 class HomeScreen : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -113,7 +114,26 @@ fun ReusableMovieCard(movie: String, imageUrl: String) {
 fun HomeScreenRecentlyWatched() {
     Column(modifier = Modifier.padding(16.dp)) {
         Text(text = "Recently Watched", style = MaterialTheme.typography.headlineLarge)
-        
+        Text(text = "Rewatch some of your favourite movies", style = MaterialTheme.typography.bodyLarge)
+
+        // Horizontal Carousel of Movies - TODO: Convert hardcoded movies to a list of movies from API
+        val movies = listOf("The Shawshank Redemption", "The Godfather", "The Dark Knight", "Pulp Fiction", "Forrest Gump")
+        LazyRow(
+            modifier = Modifier.padding(top = 16.dp)
+        ) {
+            items(movies) { movie ->
+                ReusableMovieCard(movie = movie, imageUrl = "")
+            }
+        }
+    }
+}
+
+@Composable
+fun HomeScreenTrending() {
+    Column(modifier = Modifier.padding(16.dp)) {
+        Text(text = "Trending in Groups", style = MaterialTheme.typography.headlineLarge)
+        Text(text = "Your friends have been binge watching these", style = MaterialTheme.typography.bodyLarge)
+
         // Horizontal Carousel of Movies - TODO: Convert hardcoded movies to a list of movies from API
         val movies = listOf("The Shawshank Redemption", "The Godfather", "The Dark Knight", "Pulp Fiction", "Forrest Gump")
         LazyRow(
@@ -132,16 +152,48 @@ fun HomeScreenTitle () {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(100.dp)
-                .clip(RoundedCornerShape(bottomStart = 50.dp, bottomEnd = 50.dp))
-                .background(Color(0xFF0080FF))
+                .padding(10.dp)
+                .clip(RoundedCornerShape(bottomStart = 25.dp, bottomEnd = 25.dp))
+        ) {
+            
+            Row(
+    verticalAlignment = Alignment.CenterVertically,
+    horizontalArrangement = Arrangement.Center,
+    modifier = Modifier.fillMaxWidth().padding(16.dp)
+) {
+    Box(
+        modifier = Modifier
+            .width(50.dp)
+            .height(50.dp)
+    ) {
+        Image(
+            painter = painterResource(id = R.drawable.jumanjiimage),
+            contentDescription = "Logo",
+            modifier = Modifier.fillMaxSize(),
+            contentScale = ContentScale.Crop
+        )
+    }
+    Text(
+        text = "FlickPick",
+        style = MaterialTheme.typography.headlineMedium,
+        modifier = Modifier.padding(start = 16.dp)
+    )
+}}
+    }
+    Box(modifier = Modifier.fillMaxSize()) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(20.dp)
+                .clip(RoundedCornerShape(bottomStart = 50.dp, bottomEnd = 50.dp, topStart = 50.dp, topEnd = 50.dp))
+                .background(Color(0xFFFFFFF))
                 .align(Alignment.TopCenter)
         ) {
-            Text(
-                text = "FlickPick",
-                style = MaterialTheme.typography.headlineLarge,
-                modifier = Modifier.padding(16.dp)
-                .align(Alignment.Center)
+            Image(
+                painter = painterResource(id = R.drawable.jumanjiimage),
+                contentDescription = null,
+                modifier = Modifier.fillMaxSize(),
+                contentScale = ContentScale.Crop
             )
         }
     }
@@ -160,7 +212,7 @@ fun HomeScreenContent() {
             HomeScreenRecentlyWatched()
         }
         item {
-            HomeScreenRecentlyWatched()
+            HomeScreenTrending()
         }
     }
 }
