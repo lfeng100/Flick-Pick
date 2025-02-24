@@ -6,6 +6,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -37,10 +38,15 @@ import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import ca.uwaterloo.flickpick.ui.theme.Purple40
-
+import androidx.navigation.compose.rememberNavController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import ca.uwaterloo.flickpick.Signup
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -51,7 +57,11 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    Login()
+                    val navController = rememberNavController()
+                    NavHost(navController = navController, startDestination = "login") {
+                        composable("login") { Login(navController) }
+                        composable("signup") { Signup(navController) }
+                    }
                 }
             }
         }
@@ -60,7 +70,7 @@ class MainActivity : ComponentActivity() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Login() {
+fun Login(navController: NavController) {
     var email = remember { mutableStateOf("") }
     var password = remember { mutableStateOf("") }
 
@@ -141,6 +151,7 @@ fun Login() {
                         singleLine = true,
                         shape = RoundedCornerShape(50.dp),
                         colors = OutlinedTextFieldDefaults.colors(
+
                             focusedBorderColor = Color.Gray,
                             unfocusedBorderColor = Color.Gray,
                         )
@@ -211,7 +222,9 @@ fun Login() {
                         text = "Signup",
                         fontSize = 14.sp,
                         color = Purple40,
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable { navController.navigate("signup") },
                         textAlign = TextAlign.Center
                     )
                 }
@@ -224,6 +237,5 @@ fun Login() {
 @Composable
 fun LoginPreview() {
     FlickPickTheme {
-        Login()
     }
 }

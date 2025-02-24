@@ -50,8 +50,9 @@ android {
 }
 
 dependencies {
-
+    val nav_version = "2.8.7"
     implementation(libs.androidx.core.ktx)
+    implementation("androidx.navigation:navigation-compose:$nav_version")
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
     implementation(platform(libs.androidx.compose.bom))
@@ -66,4 +67,5 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+
 }
