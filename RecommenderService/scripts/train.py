@@ -1,8 +1,9 @@
 from surprise import KNNBaseline, Dataset, Reader
 from surprise import dump
 import pandas as pd
+from pathlib import Path
 
-df = pd.read_csv('./data/ratings.csv')
+df = pd.read_csv('./data/processed/ratings.csv')
 reader = Reader(rating_scale=(0.5, 5))
 dataset = Dataset.load_from_df(df[['user_id', 'movie_id', 'rating']], reader)
 
@@ -17,4 +18,5 @@ sim_options = {
 model = KNNBaseline(sim_options=sim_options)
 model.fit(dataset.build_full_trainset())
 
-dump.dump("./model", algo=model)
+Path('./model/').mkdir(exist_ok=True)
+dump.dump("./model/model", algo=model)
