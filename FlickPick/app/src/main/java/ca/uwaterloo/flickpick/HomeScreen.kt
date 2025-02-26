@@ -62,12 +62,12 @@ fun HomeScreenCarousel () {
         Text(text = "Check out some of these movie recommendations", style = MaterialTheme.typography.bodyLarge)
         
         // Horizontal Carousel of Movies - TODO: Convert hardcoded movies to a list of movies from API
-        val movies = listOf("The Shawshank Redemption", "The Godfather", "The Dark Knight", "Pulp Fiction", "Forrest Gump")
+        val movies = listOf("Jumanji", "The Godfather", "The Dark Knight", "Fast and Furious", "Avengers")
         LazyRow(
             modifier = Modifier.padding(top = 16.dp)
         ) {
             items(movies) { movie ->
-                ReusableMovieCard(movie = movie, imageUrl = "")     
+                ReusableMovieCard(movie = movie, imageUrl = "avengers")     
             }
         }
     }
@@ -84,7 +84,7 @@ fun ReusableMovieCard(movie: String, imageUrl: String) {
     ) {
         Box() {
             Image(
-                painter = painterResource(id = R.drawable.jumanjiimage),
+                painter = painterResource(id = R.drawable.avengers),
                 contentDescription = null,
                 modifier = Modifier.fillMaxSize(),
                 contentScale = ContentScale.Crop
@@ -117,7 +117,7 @@ fun HomeScreenRecentlyWatched() {
         Text(text = "Rewatch some of your favourite movies", style = MaterialTheme.typography.bodyLarge)
 
         // Horizontal Carousel of Movies - TODO: Convert hardcoded movies to a list of movies from API
-        val movies = listOf("The Shawshank Redemption", "The Godfather", "The Dark Knight", "Pulp Fiction", "Forrest Gump")
+        val movies = listOf("Jumanji", "The Godfather", "The Dark Knight", "Fast and Furious", "Avengers")
         LazyRow(
             modifier = Modifier.padding(top = 16.dp)
         ) {
@@ -135,7 +135,7 @@ fun HomeScreenTrending() {
         Text(text = "Your friends have been binge watching these", style = MaterialTheme.typography.bodyLarge)
 
         // Horizontal Carousel of Movies - TODO: Convert hardcoded movies to a list of movies from API
-        val movies = listOf("The Shawshank Redemption", "The Godfather", "The Dark Knight", "Pulp Fiction", "Forrest Gump")
+        val movies = listOf("Jumanji", "The Godfather", "The Dark Knight", "Fast and Furious", "Avengers")
         LazyRow(
             modifier = Modifier.padding(top = 16.dp)
         ) {
