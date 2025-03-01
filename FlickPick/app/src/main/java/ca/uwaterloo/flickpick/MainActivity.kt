@@ -61,6 +61,8 @@ class MainActivity : ComponentActivity() {
                     NavHost(navController = navController, startDestination = "login") {
                         composable("login") { Login(navController) }
                         composable("signup") { Signup(navController) }
+                        composable("home") { HomeScreenContent (navController) }
+                        composable("library") { MovieLibrary(navController) }
                     }
                 }
             }
@@ -178,7 +180,7 @@ fun Login(navController: NavController) {
                             fontSize = 20.sp,
                             //fontWeight = FontWeight.Bold,
                             color = Color.White,
-                            modifier = Modifier.fillMaxWidth(),
+                            modifier = Modifier.fillMaxWidth().clickable { navController.navigate("home") },
                             textAlign = TextAlign.Center
                         )
                     }
