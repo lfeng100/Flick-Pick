@@ -9,8 +9,15 @@ def create_user(db: Session, user: schemas.UserCreate):
     db.refresh(db_user)
     return db_user
 
-def get_users(db: Session):
-    return db.query(models.User).all()
+def get_users(db: Session, limit: int = 10, offset: int = 0):
+    total = db.query(models.User).count()
+    users = db.query(models.User).offset(offset).limit(limit).all()
+    return {
+        "items": users,
+        "total": total,
+        "page": (offset // limit) + 1,
+        "pages": (total + limit - 1) // limit
+    }
 
 def get_user(db: Session, user_id: str):
     return db.query(models.User).filter(models.User.userID == user_id).first()
@@ -53,12 +60,15 @@ def create_movie(db: Session, movie: schemas.MovieCreate):
     db.refresh(db_movie)
     return db_movie
 
-def get_movies(db: Session):
-    movies = db.query(models.Movie).all()
-    # Convert genres from JSON string back to Python list
-    for movie in movies:
-        movie.genres = json.loads(movie.genres)
-    return movies
+def get_movies(db: Session, limit: int = 10, offset: int = 0):
+    total = db.query(models.Movie).count() 
+    movies = db.query(models.Movie).offset(offset).limit(limit).all()
+    return {
+        "items": movies,
+        "total": total,
+        "page": (offset // limit) + 1,
+        "pages": (total + limit - 1) // limit
+    }
 
 def get_movie(db: Session, movie_id: str):
     movie = db.query(models.Movie).filter(models.Movie.movieID == movie_id).first()
@@ -99,8 +109,15 @@ def create_group(db: Session, group: schemas.GroupCreate):
     db.refresh(db_group)
     return db_group
 
-def get_groups(db: Session):
-    return db.query(models.Group).all()
+def get_groups(db: Session, limit: int = 10, offset: int = 0):
+    total = db.query(models.Group).count()  # Total groups count
+    groups = db.query(models.Group).offset(offset).limit(limit).all()
+    return {
+        "items": groups,
+        "total": total,
+        "page": (offset // limit) + 1,
+        "pages": (total + limit - 1) // limit
+    }
 
 def search_groups(db: Session, query: str):
     return db.query(models.Group).filter(models.Group.groupName.ilike(f"%{query}%")).all()
@@ -129,8 +146,18 @@ def remove_user_from_group(db: Session, group_id: str, user_id: str):
         db.commit()
     return db_group_user
 
-def get_users_in_group(db: Session, group_id: str):
-    return db.query(models.User).join(models.GroupUser).filter(models.GroupUser.groupID == group_id).all()
+def get_users_in_group(db: Session, group_id: str, limit: int = 10, offset: int = 0):
+    query = db.query(models.User).join(models.GroupUser).filter(models.GroupUser.groupID == group_id)
+
+    total = query.count()
+    users = query.offset(offset).limit(limit).all()
+
+    return {
+        "items": users,
+        "total": total,
+        "page": (offset // limit) + 1,
+        "pages": (total + limit - 1) // limit
+    }
 
 # --- TAGS CRUD ---
 def create_tag(db: Session, tag: schemas.TagCreate):
@@ -199,11 +226,31 @@ def delete_review(db: Session, review_id: str):
         db.commit()
     return review
 
-def get_reviews_by_user(db: Session, user_id: str):
-    return db.query(models.Review).filter(models.Review.userID == user_id).all()
+def get_reviews_by_user(db: Session, user_id: str, limit: int = 10, offset: int = 0):
+    query = db.query(models.Review).filter(models.Review.userID == user_id)
+    
+    total = query.count()
+    reviews = query.offset(offset).limit(limit).all()
 
-def get_reviews_by_movie(db: Session, movie_id: str):
-    return db.query(models.Review).filter(models.Review.movieID == movie_id).all()
+    return {
+        "items": reviews,
+        "total": total,
+        "page": (offset // limit) + 1,
+        "pages": (total + limit - 1) // limit
+    }
+
+def get_reviews_by_movie(db: Session, movie_id: str, limit: int = 10, offset: int = 0):
+    query = db.query(models.Review).filter(models.Review.movieID == movie_id)
+
+    total = query.count()
+    reviews = query.offset(offset).limit(limit).all()
+
+    return {
+        "items": reviews,
+        "total": total,
+        "page": (offset // limit) + 1,
+        "pages": (total + limit - 1) // limit
+    }
 
 # --- USER WATCHED CRUD ---
 def add_user_watched(db: Session, watched: schemas.UserWatchedCreate):
@@ -238,16 +285,21 @@ def delete_user_watchlist(db: Session, user_id: str, movie_id: str):
         db.commit()
     return watchlist
 
-def search_movies(db: Session, title_query: str, tag_ids: list):
+def search_movies(db: Session, title_query: str = None, tag_ids: list = None, limit: int = 10, offset: int = 0):
     query = db.query(models.Movie)
 
-    # Apply title filter if provided
     if title_query:
         query = query.filter(models.Movie.title.ilike(f"%{title_query}%"))
 
-    # Apply tag filter if provided
     if tag_ids:
         query = query.join(models.MovieTag).filter(models.MovieTag.tagID.in_(tag_ids))
 
-    # Ensure unique results
-    return query.distinct().all()
+    total = query.count()  # Count total results before applying limit/offset
+    movies = query.distinct().offset(offset).limit(limit).all()
+
+    return {
+        "items": movies,
+        "total": total,
+        "page": (offset // limit) + 1,
+        "pages": (total + limit - 1) // limit
+    }

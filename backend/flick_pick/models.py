@@ -14,7 +14,7 @@ class Movie(Base):
     movieID = Column(String(255), primary_key=True)
     title = Column(String(255), nullable=False)
     releaseYear = Column(Integer, nullable=False)
-    genres = Column(JSON, nullable=False)  # JSON array
+    genres = Column(JSON, nullable=False)
     original_language = Column(String(10))
     rating = Column(Float)
     description = Column(Text)
