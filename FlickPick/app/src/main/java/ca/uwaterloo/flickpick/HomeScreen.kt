@@ -5,6 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
@@ -47,25 +48,25 @@ import com.google.firebase.auth.auth
 
 
 @Composable
-fun HomeScreenCarousel () {
+fun HomeScreenCarousel (navController: NavController) {
     Column(modifier = Modifier.padding(16.dp)) {
         Text(text = "Discover Movies", style = MaterialTheme.typography.headlineLarge)
         Text(text = "Check out some of these movie recommendations", style = MaterialTheme.typography.bodyLarge)
         
         // Horizontal Carousel of Movies - TODO: Convert hardcoded movies to a list of movies from API
-        val movies = listOf("The Shawshank Redemption", "The Godfather", "The Dark Knight", "Pulp Fiction", "Forrest Gump")
+        val movies = listOf("Jumanji", "The Godfather", "The Dark Knight", "Fast and Furious", "Avengers")
         LazyRow(
             modifier = Modifier.padding(top = 16.dp)
         ) {
             items(movies) { movie ->
-                ReusableMovieCard(movie = movie, imageUrl = "")     
+                ReusableMovieCard(movie = movie, imageUrl = "avengers", navController = navController)
             }
         }
     }
 }
 
 @Composable
-fun ReusableMovieCard(movie: String, imageUrl: String) {
+fun ReusableMovieCard(movie: String, imageUrl: String, navController: NavController) {
     Card(
         modifier = Modifier
             .padding(8.dp)
@@ -75,9 +76,9 @@ fun ReusableMovieCard(movie: String, imageUrl: String) {
     ) {
         Box() {
             Image(
-                painter = painterResource(id = R.drawable.jumanjiimage),
+                painter = painterResource(id = R.drawable.avengers),
                 contentDescription = null,
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier.fillMaxSize().clickable { navController.navigate("library") },
                 contentScale = ContentScale.Crop
             )
             Box(
@@ -102,36 +103,36 @@ fun ReusableMovieCard(movie: String, imageUrl: String) {
 }
 
 @Composable
-fun HomeScreenRecentlyWatched() {
+fun HomeScreenRecentlyWatched(navController: NavController) {
     Column(modifier = Modifier.padding(16.dp)) {
         Text(text = "Recently Watched", style = MaterialTheme.typography.headlineLarge)
         Text(text = "Rewatch some of your favourite movies", style = MaterialTheme.typography.bodyLarge)
 
         // Horizontal Carousel of Movies - TODO: Convert hardcoded movies to a list of movies from API
-        val movies = listOf("The Shawshank Redemption", "The Godfather", "The Dark Knight", "Pulp Fiction", "Forrest Gump")
+        val movies = listOf("Jumanji", "The Godfather", "The Dark Knight", "Fast and Furious", "Avengers")
         LazyRow(
             modifier = Modifier.padding(top = 16.dp)
         ) {
             items(movies) { movie ->
-                ReusableMovieCard(movie = movie, imageUrl = "")
+                ReusableMovieCard(movie = movie, imageUrl = "", navController = navController)
             }
         }
     }
 }
 
 @Composable
-fun HomeScreenTrending() {
+fun HomeScreenTrending(navController: NavController) {
     Column(modifier = Modifier.padding(16.dp)) {
         Text(text = "Trending in Groups", style = MaterialTheme.typography.headlineLarge)
         Text(text = "Your friends have been binge watching these", style = MaterialTheme.typography.bodyLarge)
 
         // Horizontal Carousel of Movies - TODO: Convert hardcoded movies to a list of movies from API
-        val movies = listOf("The Shawshank Redemption", "The Godfather", "The Dark Knight", "Pulp Fiction", "Forrest Gump")
+        val movies = listOf("Jumanji", "The Godfather", "The Dark Knight", "Fast and Furious", "Avengers")
         LazyRow(
             modifier = Modifier.padding(top = 16.dp)
         ) {
             items(movies) { movie ->
-                ReusableMovieCard(movie = movie, imageUrl = "")
+                ReusableMovieCard(movie = movie, imageUrl = "", navController = navController)
             }
         }
     }
@@ -208,20 +209,15 @@ fun HomeScreenContent(navController: NavController) {
             HomeScreenTitle(navController)
         }
         item {
-            HomeScreenCarousel()
+            HomeScreenCarousel(navController = navController)
         }
         item {
-            HomeScreenRecentlyWatched()
+            HomeScreenRecentlyWatched(navController = navController)
         }
         item {
-            HomeScreenTrending()
+            HomeScreenTrending(navController = navController)
         }
     }
+
 }
 
-@Preview(showBackground = true)
-@Composable
-fun HomeScreenPreview() {
-    FlickPickTheme {
-    }
-}
