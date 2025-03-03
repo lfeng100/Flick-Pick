@@ -32,6 +32,10 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
@@ -151,7 +155,7 @@ fun HomeScreenTrending(navController: NavController) {
 }
 
 @Composable
-fun HomeScreenTitle () {
+fun HomeScreenTitle (navController: NavController) {
     Box(modifier = Modifier.fillMaxSize()) {
         Box(
             modifier = Modifier
@@ -182,14 +186,38 @@ fun HomeScreenTitle () {
         style = MaterialTheme.typography.headlineMedium,
         modifier = Modifier.padding(start = 16.dp)
     )
-}}
+                Box(Modifier.fillMaxWidth())
+                {
+                    IconButton(
+                        onClick = { navController.navigate("profile") },
+                        modifier = Modifier
+                            .align(Alignment.TopEnd)
+                            .padding(16.dp)
+                            .background(Color.White, shape = RoundedCornerShape(50))
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Person,
+                            contentDescription = "Profile",
+                            tint = Color.Black
+                        )
+                    }
+                }
+}
+        }
     }
     Box(modifier = Modifier.fillMaxSize()) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(20.dp)
-                .clip(RoundedCornerShape(bottomStart = 50.dp, bottomEnd = 50.dp, topStart = 50.dp, topEnd = 50.dp))
+                .clip(
+                    RoundedCornerShape(
+                        bottomStart = 50.dp,
+                        bottomEnd = 50.dp,
+                        topStart = 50.dp,
+                        topEnd = 50.dp
+                    )
+                )
                 .background(Color(0xFFFFFFF))
                 .align(Alignment.TopCenter)
         ) {
@@ -207,7 +235,7 @@ fun HomeScreenTitle () {
 fun HomeScreenContent(navController: NavController) {
     LazyColumn {
         item {
-            HomeScreenTitle()
+            HomeScreenTitle(navController = navController)
         }
         item {
             HomeScreenCarousel(navController = navController)
