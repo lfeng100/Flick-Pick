@@ -42,7 +42,7 @@ class GroupUser(Base):
 
 class MovieTag(Base):
     __tablename__ = "MovieTags"
-    movieID = Column(String(36), ForeignKey("Movies.movieID", ondelete="CASCADE"), primary_key=True)
+    movieID = Column(String(255), ForeignKey("Movies.movieID", ondelete="CASCADE"), primary_key=True)
     tagID = Column(String(36), ForeignKey("Tags.tagID", ondelete="CASCADE"), primary_key=True)
 
 class Preference(Base):
@@ -57,14 +57,14 @@ class Review(Base):
     message = Column(String(255))
     timestamp = Column(TIMESTAMP, server_default="CURRENT_TIMESTAMP")
     userID = Column(String(36), ForeignKey("Users.userID", ondelete="CASCADE"))
-    movieID = Column(String(36), ForeignKey("Movies.movieID", ondelete="CASCADE"))
+    movieID = Column(String(255), ForeignKey("Movies.movieID", ondelete="CASCADE"))
 
 class UserWatched(Base):
     __tablename__ = "UserWatched"
     userID = Column(String(36), ForeignKey("Users.userID", ondelete="CASCADE"), primary_key=True)
-    movieID = Column(String(36), ForeignKey("Movies.movieID", ondelete="CASCADE"), primary_key=True)
+    movieID = Column(String(255), ForeignKey("Movies.movieID", ondelete="CASCADE"), primary_key=True)
 
 class UserWatchlist(Base):
     __tablename__ = "UserWatchlist"
     userID = Column(String(36), ForeignKey("Users.userID", ondelete="CASCADE"), primary_key=True)
-    movieID = Column(String(36), ForeignKey("Movies.movieID", ondelete="CASCADE"), primary_key=True)
+    movieID = Column(String(255), ForeignKey("Movies.movieID", ondelete="CASCADE"), primary_key=True)

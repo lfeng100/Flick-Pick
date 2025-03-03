@@ -288,14 +288,20 @@ def delete_user_watchlist(db: Session, user_id: str, movie_id: str):
 def search_movies(db: Session, title_query: str = None, tag_ids: list = None, limit: int = 10, offset: int = 0):
     query = db.query(models.Movie)
 
+    # Filter by title if provided
     if title_query:
         query = query.filter(models.Movie.title.ilike(f"%{title_query}%"))
 
-    if tag_ids:
-        query = query.join(models.MovieTag).filter(models.MovieTag.tagID.in_(tag_ids))
+    # Filter by tags if provided
+    if tag_ids and isinstance(tag_ids, list) and len(tag_ids) > 0:
+        query = (
+            query.join(models.MovieTag)
+            .filter(models.MovieTag.tagID.in_(tag_ids))
+            .distinct()
+        )
 
     total = query.count()  # Count total results before applying limit/offset
-    movies = query.distinct().offset(offset).limit(limit).all()
+    movies = query.offset(offset).limit(limit).all()
 
     return {
         "items": movies,
