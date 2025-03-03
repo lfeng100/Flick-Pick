@@ -50,7 +50,7 @@ CREATE TABLE IF NOT EXISTS Tags (
 
 -- Create MovieTags Table
 CREATE TABLE IF NOT EXISTS MovieTags (
-    movieID VARCHAR(36),
+    movieID VARCHAR(255),
     tagID VARCHAR(36),
     PRIMARY KEY (movieID, tagID),
     FOREIGN KEY (movieID) REFERENCES Movies(movieID) ON DELETE CASCADE,
@@ -73,7 +73,7 @@ CREATE TABLE IF NOT EXISTS Reviews (
     message VARCHAR(255),
     timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     userID VARCHAR(36),
-    movieID VARCHAR(36),
+    movieID VARCHAR(255),
     FOREIGN KEY (userID) REFERENCES Users(userID) ON DELETE CASCADE,
     FOREIGN KEY (movieID) REFERENCES Movies(movieID) ON DELETE CASCADE
 );
@@ -81,7 +81,7 @@ CREATE TABLE IF NOT EXISTS Reviews (
 -- Create UserWatched Table
 CREATE TABLE IF NOT EXISTS UserWatched (
     userID VARCHAR(36),
-    movieID VARCHAR(36),
+    movieID VARCHAR(255),
     PRIMARY KEY (userID, movieID),
     FOREIGN KEY (userID) REFERENCES Users(userID) ON DELETE CASCADE,
     FOREIGN KEY (movieID) REFERENCES Movies(movieID) ON DELETE CASCADE
@@ -90,7 +90,7 @@ CREATE TABLE IF NOT EXISTS UserWatched (
 -- Create UserWatchlist Table
 CREATE TABLE IF NOT EXISTS UserWatchlist (
     userID VARCHAR(36),
-    movieID VARCHAR(36),
+    movieID VARCHAR(255),
     PRIMARY KEY (userID, movieID),
     FOREIGN KEY (userID) REFERENCES Users(userID) ON DELETE CASCADE,
     FOREIGN KEY (movieID) REFERENCES Movies(movieID) ON DELETE CASCADE

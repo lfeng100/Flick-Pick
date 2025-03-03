@@ -25,7 +25,7 @@ def delete_movie(movie_id: str, db: Session = Depends(database.get_db)):
 def search_movies(
     db: Session = Depends(database.get_db),
     title_query: Optional[str] = None,
-    tag_ids: Optional[List[str]] = Query(None),
+    tag_ids: Optional[List[str]] = Query(None),  # Ensure tag_ids is treated as a list
     limit: int = Query(10, ge=1, le=100),
     offset: int = Query(0, ge=0)
 ):
