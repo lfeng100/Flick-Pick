@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "627081764459",
+    "project_id": "flickpick-1fd34",
+    "storage_bucket": "flickpick-1fd34.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:627081764459:android:ceb8f0d8e8837136cd1b2e",
+        "android_client_info": {
+          "package_name": "ca.uwaterloo.flickpick"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDD0zSNLqKpUX-iIL2Rv6L4Lvb7bSgjIS4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
