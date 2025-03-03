@@ -36,6 +36,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
@@ -45,23 +47,9 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.google.firebase.Firebase
+import com.google.firebase.auth.auth
 
-class HomeScreen : ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContent {
-            FlickPickTheme {
-                val navController = rememberNavController()
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
-                    HomeScreenContent(navController)
-                }
-            }
-        }
-    }
-}
 
 @Composable
 fun HomeScreenCarousel (navController: NavController) {
@@ -156,6 +144,18 @@ fun HomeScreenTrending(navController: NavController) {
 
 @Composable
 fun HomeScreenTitle (navController: NavController) {
+    val firebaseAuthentication = FirebaseAuthentication()
+    Button(
+        onClick = {
+            firebaseAuthentication.signOut(navController)
+        },
+        colors = ButtonDefaults.buttonColors(
+            containerColor = Color.Red
+        )
+    ) {
+        Text("Temp Logout", color = Color.White)
+    }
+
     Box(modifier = Modifier.fillMaxSize()) {
         Box(
             modifier = Modifier
@@ -163,7 +163,6 @@ fun HomeScreenTitle (navController: NavController) {
                 .padding(10.dp)
                 .clip(RoundedCornerShape(bottomStart = 25.dp, bottomEnd = 25.dp))
         ) {
-            
             Row(
     verticalAlignment = Alignment.CenterVertically,
     horizontalArrangement = Arrangement.Center,
@@ -247,4 +246,6 @@ fun HomeScreenContent(navController: NavController) {
             HomeScreenTrending(navController = navController)
         }
     }
+
 }
+
