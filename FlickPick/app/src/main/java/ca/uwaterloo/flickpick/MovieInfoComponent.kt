@@ -24,9 +24,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import ca.uwaterloo.flickpick.ui.theme.FlickPickTheme
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.graphics.Brush
@@ -63,12 +67,26 @@ fun MovieInfoScreen(navController: NavController) {
                 .padding(10.dp)
                 .padding(bottom = 50.dp)
         ) {
+            // TODO: Replace with actual movie data (this is dummy hardcoded data for now)
             MovieInfoCard(
                 movieName = "Avengers",
                 movieGenre = "Action, Adventure, Sci-Fi",
                 movieYear = "2012",
                 movieDescription = "Earth's mightiest heroes must come together and learn to fight as a team if they are to stop the mischievous Loki and his alien army from enslaving humanity.",
                 movieRating = "8.0"
+            )
+        }
+        IconButton(
+            onClick = { navController.popBackStack() },
+            modifier = Modifier
+                .align(Alignment.TopStart)
+                .padding(16.dp)
+                .background(Color.White, shape = RoundedCornerShape(50))
+        ) {
+            Icon(
+                imageVector = Icons.Default.ArrowBack,
+                contentDescription = "Back",
+                tint = Color.Black
             )
         }
     }
