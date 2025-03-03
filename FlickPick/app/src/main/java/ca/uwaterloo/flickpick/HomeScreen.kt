@@ -31,6 +31,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
@@ -38,22 +40,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
+import com.google.firebase.Firebase
+import com.google.firebase.auth.auth
 
-class HomeScreen : ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContent {
-            FlickPickTheme {
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
-                    HomeScreenContent()
-                }
-            }
-        }
-    }
-}
 
 @Composable
 fun HomeScreenCarousel () {
@@ -147,7 +138,19 @@ fun HomeScreenTrending() {
 }
 
 @Composable
-fun HomeScreenTitle () {
+fun HomeScreenTitle (navController: NavController) {
+    val firebaseAuthentication = FirebaseAuthentication()
+    Button(
+        onClick = {
+            firebaseAuthentication.signOut(navController)
+        },
+        colors = ButtonDefaults.buttonColors(
+            containerColor = Color.Red
+        )
+    ) {
+        Text("Temp Logout", color = Color.White)
+    }
+
     Box(modifier = Modifier.fillMaxSize()) {
         Box(
             modifier = Modifier
@@ -155,7 +158,6 @@ fun HomeScreenTitle () {
                 .padding(10.dp)
                 .clip(RoundedCornerShape(bottomStart = 25.dp, bottomEnd = 25.dp))
         ) {
-            
             Row(
     verticalAlignment = Alignment.CenterVertically,
     horizontalArrangement = Arrangement.Center,
@@ -178,7 +180,7 @@ fun HomeScreenTitle () {
         style = MaterialTheme.typography.headlineMedium,
         modifier = Modifier.padding(start = 16.dp)
     )
-}}
+} }
     }
     Box(modifier = Modifier.fillMaxSize()) {
         Box(
@@ -200,10 +202,10 @@ fun HomeScreenTitle () {
 }
 
 @Composable
-fun HomeScreenContent() {
+fun HomeScreenContent(navController: NavController) {
     LazyColumn {
         item {
-            HomeScreenTitle()
+            HomeScreenTitle(navController)
         }
         item {
             HomeScreenCarousel()
@@ -221,6 +223,5 @@ fun HomeScreenContent() {
 @Composable
 fun HomeScreenPreview() {
     FlickPickTheme {
-        HomeScreenContent()
     }
 }
