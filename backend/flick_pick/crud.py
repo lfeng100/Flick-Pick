@@ -1,0 +1,253 @@
+from sqlalchemy.orm import Session
+import models, schemas
+
+# --- USERS CRUD ---
+def create_user(db: Session, user: schemas.UserCreate):
+    db_user = models.User(**user.dict())
+    db.add(db_user)
+    db.commit()
+    db.refresh(db_user)
+    return db_user
+
+def get_users(db: Session):
+    return db.query(models.User).all()
+
+def get_user(db: Session, user_id: str):
+    return db.query(models.User).filter(models.User.userID == user_id).first()
+
+def delete_user(db: Session, user_id: str):
+    user = db.query(models.User).filter(models.User.userID == user_id).first()
+    if user:
+        db.delete(user)
+        db.commit()
+    return user
+
+def update_user(db: Session, user_id: str, user_update: schemas.UserCreate):
+    db_user = db.query(models.User).filter(models.User.userID == user_id).first()
+    if not db_user:
+        return None
+    db_user.email = user_update.email
+    db_user.username = user_update.username
+    db.commit()
+    db.refresh(db_user)
+    return db_user
+
+def update_review(db: Session, review_id: str, review_update: schemas.ReviewCreate):
+    db_review = db.query(models.Review).filter(models.Review.reviewID == review_id).first()
+    if not db_review:
+        return None
+    db_review.rating = review_update.rating
+    db_review.message = review_update.message
+    db.commit()
+    db.refresh(db_review)
+    return db_review
+
+# --- MOVIES CRUD ---
+def create_movie(db: Session, movie: schemas.MovieCreate):
+    # Ensure genres is stored as JSON format
+    movie_dict = movie.dict()
+    movie_dict["genres"] = json.dumps(movie.genres)  # Convert list to JSON string
+    db_movie = models.Movie(**movie_dict)
+    db.add(db_movie)
+    db.commit()
+    db.refresh(db_movie)
+    return db_movie
+
+def get_movies(db: Session):
+    movies = db.query(models.Movie).all()
+    # Convert genres from JSON string back to Python list
+    for movie in movies:
+        movie.genres = json.loads(movie.genres)
+    return movies
+
+def get_movie(db: Session, movie_id: str):
+    movie = db.query(models.Movie).filter(models.Movie.movieID == movie_id).first()
+    if movie:
+        movie.genres = json.loads(movie.genres)
+    return movie
+
+def update_movie(db: Session, movie_id: str, movie_update: schemas.MovieCreate):
+    db_movie = db.query(models.Movie).filter(models.Movie.movieID == movie_id).first()
+    if not db_movie:
+        return None
+
+    db_movie.title = movie_update.title
+    db_movie.releaseYear = movie_update.releaseYear
+    db_movie.genres = json.dumps(movie_update.genres)  # Convert genres to JSON
+    db_movie.rating = movie_update.rating
+    db_movie.description = movie_update.description
+    db_movie.tmdb_id = movie_update.tmdb_id
+    db_movie.runtime = movie_update.runtime
+    db_movie.poster_path = movie_update.poster_path
+
+    db.commit()
+    db.refresh(db_movie)
+    return db_movie
+
+def delete_movie(db: Session, movie_id: str):
+    movie = db.query(models.Movie).filter(models.Movie.movieID == movie_id).first()
+    if movie:
+        db.delete(movie)
+        db.commit()
+    return movie
+
+# --- GROUPS CRUD ---
+def create_group(db: Session, group: schemas.GroupCreate):
+    db_group = models.Group(**group.dict())
+    db.add(db_group)
+    db.commit()
+    db.refresh(db_group)
+    return db_group
+
+def get_groups(db: Session):
+    return db.query(models.Group).all()
+
+def search_groups(db: Session, query: str):
+    return db.query(models.Group).filter(models.Group.groupName.ilike(f"%{query}%")).all()
+
+def delete_group(db: Session, group_id: str):
+    group = db.query(models.Group).filter(models.Group.groupID == group_id).first()
+    if group:
+        db.delete(group)
+        db.commit()
+    return group
+
+# --- GROUP USERS CRUD ---
+def add_user_to_group(db: Session, group_user: schemas.GroupUserCreate):
+    db_group_user = models.GroupUser(**group_user.dict())
+    db.add(db_group_user)
+    db.commit()
+    return db_group_user
+
+def remove_user_from_group(db: Session, group_id: str, user_id: str):
+    db_group_user = db.query(models.GroupUser).filter(
+        models.GroupUser.groupID == group_id,
+        models.GroupUser.userID == user_id
+    ).first()
+    if db_group_user:
+        db.delete(db_group_user)
+        db.commit()
+    return db_group_user
+
+def get_users_in_group(db: Session, group_id: str):
+    return db.query(models.User).join(models.GroupUser).filter(models.GroupUser.groupID == group_id).all()
+
+# --- TAGS CRUD ---
+def create_tag(db: Session, tag: schemas.TagCreate):
+    db_tag = models.Tag(**tag.dict())
+    db.add(db_tag)
+    db.commit()
+    return db_tag
+
+def get_tags(db: Session):
+    return db.query(models.Tag).all()
+
+# --- MOVIE TAGS CRUD ---
+def add_movie_tag(db: Session, movie_tag: schemas.MovieTagCreate):
+    db_movie_tag = models.MovieTag(**movie_tag.dict())
+    db.add(db_movie_tag)
+    db.commit()
+    return db_movie_tag
+
+def remove_movie_tag(db: Session, movie_id: str, tag_id: str):
+    db_movie_tag = db.query(models.MovieTag).filter(
+        models.MovieTag.movieID == movie_id,
+        models.MovieTag.tagID == tag_id
+    ).first()
+    if db_movie_tag:
+        db.delete(db_movie_tag)
+        db.commit()
+    return db_movie_tag
+
+def get_tags_for_movie(db: Session, movie_id: str):
+    return db.query(models.Tag).join(models.MovieTag).filter(models.MovieTag.movieID == movie_id).all()
+
+# --- PREFERENCES CRUD ---
+def add_user_preference(db: Session, preference: schemas.PreferenceCreate):
+    db_preference = models.Preference(**preference.dict())
+    db.add(db_preference)
+    db.commit()
+    return db_preference
+
+def remove_user_preference(db: Session, user_id: str, tag_id: str):
+    db_preference = db.query(models.Preference).filter(
+        models.Preference.userID == user_id,
+        models.Preference.tagID == tag_id
+    ).first()
+    if db_preference:
+        db.delete(db_preference)
+        db.commit()
+    return db_preference
+
+def get_tags_for_user(db: Session, user_id: str):
+    return db.query(models.Tag).join(models.Preference).filter(models.Preference.userID == user_id).all()
+
+# --- REVIEWS CRUD ---
+def create_review(db: Session, review: schemas.ReviewCreate):
+    db_review = models.Review(**review.dict())
+    db.add(db_review)
+    db.commit()
+    return db_review
+
+def get_reviews(db: Session):
+    return db.query(models.Review).all()
+
+def delete_review(db: Session, review_id: str):
+    review = db.query(models.Review).filter(models.Review.reviewID == review_id).first()
+    if review:
+        db.delete(review)
+        db.commit()
+    return review
+
+def get_reviews_by_user(db: Session, user_id: str):
+    return db.query(models.Review).filter(models.Review.userID == user_id).all()
+
+def get_reviews_by_movie(db: Session, movie_id: str):
+    return db.query(models.Review).filter(models.Review.movieID == movie_id).all()
+
+# --- USER WATCHED CRUD ---
+def add_user_watched(db: Session, watched: schemas.UserWatchedCreate):
+    db_watched = models.UserWatched(**watched.dict())
+    db.add(db_watched)
+    db.commit()
+    return db_watched
+
+def delete_user_watched(db: Session, user_id: str, movie_id: str):
+    watched = db.query(models.UserWatched).filter(
+        models.UserWatched.userID == user_id, models.UserWatched.movieID == movie_id
+    ).first()
+    if watched:
+        db.delete(watched)
+        db.commit()
+    return watched
+
+# --- USER WATCHLIST CRUD ---
+def add_user_watchlist(db: Session, watchlist: schemas.UserWatchlistCreate):
+    db_watchlist = models.UserWatchlist(**watchlist.dict())
+    db.add(db_watchlist)
+    db.commit()
+    return db_watchlist
+
+
+def delete_user_watchlist(db: Session, user_id: str, movie_id: str):
+    watchlist = db.query(models.UserWatchlist).filter(
+        models.UserWatchlist.userID == user_id, models.UserWatchlist.movieID == movie_id
+    ).first()
+    if watchlist:
+        db.delete(watchlist)
+        db.commit()
+    return watchlist
+
+def search_movies(db: Session, title_query: str, tag_ids: list):
+    query = db.query(models.Movie)
+
+    # Apply title filter if provided
+    if title_query:
+        query = query.filter(models.Movie.title.ilike(f"%{title_query}%"))
+
+    # Apply tag filter if provided
+    if tag_ids:
+        query = query.join(models.MovieTag).filter(models.MovieTag.tagID.in_(tag_ids))
+
+    # Ensure unique results
+    return query.distinct().all()

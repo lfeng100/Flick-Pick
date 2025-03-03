@@ -11,11 +11,16 @@ CREATE TABLE IF NOT EXISTS Users (
 
 -- Create Movies Table
 CREATE TABLE IF NOT EXISTS Movies (
-    movieID VARCHAR(36) PRIMARY KEY,
+    movieID VARCHAR(255) PRIMARY KEY,
     title VARCHAR(255) NOT NULL,
     releaseYear INT NOT NULL,
-    genre VARCHAR(255),
-    rating FLOAT
+    genres JSON NOT NULL, -- JSON array
+    original_language VARCHAR(10),
+    rating FLOAT,
+    description TEXT,
+    tmdb_id VARCHAR(36),
+    runtime INT,
+    poster_path TEXT
 );
 
 -- Create Groups Table
@@ -39,7 +44,8 @@ CREATE TABLE IF NOT EXISTS GroupUsers (
 -- Create Tags Table
 CREATE TABLE IF NOT EXISTS Tags (
     tagID VARCHAR(36) PRIMARY KEY,
-    tagName VARCHAR(255) UNIQUE NOT NULL
+    tagName VARCHAR(255) UNIQUE NOT NULL,
+    tagType ENUM('genre', 'language', 'year') NOT NULL
 );
 
 -- Create MovieTags Table
