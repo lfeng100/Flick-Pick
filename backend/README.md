@@ -13,9 +13,9 @@ If you encounter a security error in Powershell, run before activating the envir
 ```Set-ExecutionPolicy Unrestricted -Scope Process```
 
 Start the app with uvicorn:
-```uvicorn main:app --reload```
+```uvicorn main:app --reload --port 9000```
 
-Visit ```http://127.0.0.1:8000/docs``` to get started with APIs.
+Visit ```http://127.0.0.1:9000/docs``` to get started with APIs.
 
 ## Database
 To set up the database for the first time, ensure MySQL server (with default port 3306) is installed and started locally.
