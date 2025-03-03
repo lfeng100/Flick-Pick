@@ -113,7 +113,7 @@ fun ReusableMovieCard(movie: String, navController: NavController) {
             Image(
                 painter = painterResource(id = R.drawable.avengers),
                 contentDescription = null,
-                modifier = Modifier.fillMaxSize().clickable { navController.navigate("signup") },
+                modifier = Modifier.fillMaxSize().clickable { navController.navigate("MovieInfo") },
                 contentScale = ContentScale.Crop
 
             )
