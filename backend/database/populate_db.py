@@ -11,7 +11,7 @@ from models import Movie, Tag, MovieTag
 from database import Base, get_db
 
 # Database connection settings
-DATABASE_URL = "mysql+pymysql://root:password@localhost/flick_pick"
+DATABASE_URL = "mysql+pymysql://root:@localhost/flick_pick"
 
 # Create database engine
 engine = create_engine(DATABASE_URL)

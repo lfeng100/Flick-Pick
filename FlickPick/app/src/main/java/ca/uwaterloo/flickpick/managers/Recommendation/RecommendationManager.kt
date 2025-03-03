@@ -1,12 +1,7 @@
 package ca.uwaterloo.flickpick.managers.Recommendation
 
-import ca.uwaterloo.flickpick.dataObjects.Movie
-import ca.uwaterloo.flickpick.dataObjects.Group
-import ca.uwaterloo.flickpick.dataObjects.Rating
-import ca.uwaterloo.flickpick.dataObjects.Filters
-import ca.uwaterloo.flickpick.dataObjects.Responses.RecommendationResponse
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
+import ca.uwaterloo.flickpick.dataObjects.Database.Group
+
 class RecommendationManager(private var selectedGroup: Group?) {
 //    suspend fun getPersonalReco(): Movie {
 //        return withContext(Dispatchers.IO) {
