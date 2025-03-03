@@ -26,6 +26,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.graphics.Brush
@@ -38,6 +40,7 @@ import androidx.navigation.compose.rememberNavController
 class Library : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         setContent {
             FlickPickTheme {
                 val navController = rememberNavController()
@@ -52,34 +55,17 @@ class Library : ComponentActivity() {
     }
 }
 
-data class MovieData(val title: String, val imageUrl: String)
 
 @Composable
 fun MovieLibrary(navController: NavController) {
+    val movies by MovieCatalog.movies.collectAsState()
+
     Column(modifier = Modifier.padding(16.dp)) {
         Spacer(modifier = Modifier.height(10.dp))
         Text(text = "Movie Library", style = MaterialTheme.typography.headlineLarge, color = Color.White)
         Text(text = "Explore the collection of movies", style = MaterialTheme.typography.bodyLarge)
         Spacer(modifier = Modifier.height(20.dp))
 
-        val movies = listOf(
-            MovieData("Jumanji", "jumanji"),
-            MovieData("The Godfather", "godfather"),
-            MovieData("The Dark Knight", "dark_knight"),
-            MovieData("Fast and Furious", "fast_furious"),
-            MovieData("Avengers", "avengers"),
-            MovieData("Inception", "inception"),
-            MovieData("Titanic", "titanic"),
-            MovieData("Avatar", "avatar"),
-            MovieData("Interstellar", "interstellar"),
-            MovieData("Gladiator", "gladiator"),
-            MovieData("Jurassic Park", "jurassic_park"),
-            MovieData("The Matrix", "matrix"),
-            MovieData("Interstellar", "interstellar"),
-            MovieData("Gladiator", "gladiator"),
-            MovieData("Jurassic Park", "jurassic_park"),
-            MovieData("The Matrix", "matrix")
-        )
 
         val rows = movies.chunked(3)
 
@@ -92,7 +78,7 @@ fun MovieLibrary(navController: NavController) {
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     row.forEach { movie ->
-                        ReusableMovieCard(movie = movie.title.toString(), navController = navController)
+                        ReusableMovieCard(movie = movie.title, navController = navController)
                     }
                 }
             }

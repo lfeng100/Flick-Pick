@@ -4,9 +4,7 @@ import ca.uwaterloo.flickpick.dataObjects.Movie
 import ca.uwaterloo.flickpick.dataObjects.Group
 import ca.uwaterloo.flickpick.dataObjects.Rating
 import ca.uwaterloo.flickpick.dataObjects.Filters
-import ca.uwaterloo.flickpick.dataObjects.Query
 import ca.uwaterloo.flickpick.dataObjects.Responses.RecommendationResponse
-import ca.uwaterloo.flickpick.managers.Client
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 class RecommendationManager(private var selectedGroup: Group?) {

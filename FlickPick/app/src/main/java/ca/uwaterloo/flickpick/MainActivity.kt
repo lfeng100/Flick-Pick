@@ -62,6 +62,9 @@ import com.google.firebase.auth.FirebaseAuth
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // Fetch movies once library starts
+        MovieCatalog.fetchMovies()
         setContent {
             FlickPickTheme {
                 Surface(
