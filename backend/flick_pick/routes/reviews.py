@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Query
 from sqlalchemy.orm import Session
 import schemas, database, crud
 
@@ -27,9 +27,19 @@ def delete_review(review_id: str, db: Session = Depends(database.get_db)):
     return deleted_review
 
 @router.get("/reviews/user/{user_id}")
-def get_reviews_by_user(user_id: str, db: Session = Depends(database.get_db)):
-    return crud.get_reviews_by_user(db, user_id)
+def get_reviews_by_user(
+    user_id: str,
+    db: Session = Depends(database.get_db),
+    limit: int = Query(10, ge=1, le=100),
+    offset: int = Query(0, ge=0)
+):
+    return crud.get_reviews_by_user(db, user_id, limit=limit, offset=offset)
 
 @router.get("/reviews/movie/{movie_id}")
-def get_reviews_by_movie(movie_id: str, db: Session = Depends(database.get_db)):
-    return crud.get_reviews_by_movie(db, movie_id)
+def get_reviews_by_movie(
+    movie_id: str,
+    db: Session = Depends(database.get_db),
+    limit: int = Query(10, ge=1, le=100),
+    offset: int = Query(0, ge=0)
+):
+    return crud.get_reviews_by_movie(db, movie_id, limit=limit, offset=offset)

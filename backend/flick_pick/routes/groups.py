@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Query
 from sqlalchemy.orm import Session
 import schemas, database, crud
 
@@ -9,8 +9,12 @@ def create_group(group: schemas.GroupCreate, db: Session = Depends(database.get_
     return crud.create_group(db, group)
 
 @router.get("/groups/")
-def read_groups(db: Session = Depends(database.get_db)):
-    return crud.get_groups(db)
+def read_groups(
+    db: Session = Depends(database.get_db),
+    limit: int = Query(10, alias="limit", ge=1, le=100),
+    offset: int = Query(0, alias="offset", ge=0)
+):
+    return crud.get_groups(db, limit=limit, offset=offset)
 
 @router.get("/groups/search/")
 def search_groups(query: str, db: Session = Depends(database.get_db)):

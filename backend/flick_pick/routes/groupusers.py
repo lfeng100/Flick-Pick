@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 import schemas, database, crud
 
@@ -16,5 +16,10 @@ def remove_user_from_group(group_id: str, user_id: str, db: Session = Depends(da
     return deleted_group_user
 
 @router.get("/groupusers/{group_id}")
-def get_users_in_group(group_id: str, db: Session = Depends(database.get_db)):
-    return crud.get_users_in_group(db, group_id)
+def get_users_in_group(
+    group_id: str,
+    db: Session = Depends(database.get_db),
+    limit: int = Query(10, ge=1, le=100),
+    offset: int = Query(0, ge=0)
+):
+    return crud.get_users_in_group(db, group_id, limit=limit, offset=offset)

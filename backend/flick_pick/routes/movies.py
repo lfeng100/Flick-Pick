@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Query
 from sqlalchemy.orm import Session
 import schemas, database, crud
 from typing import Optional, List
@@ -10,8 +10,12 @@ def create_movie(movie: schemas.MovieCreate, db: Session = Depends(database.get_
     return crud.create_movie(db, movie)
 
 @router.get("/movies/")
-def read_movies(db: Session = Depends(database.get_db)):
-    return crud.get_movies(db)
+def read_movies(
+    db: Session = Depends(database.get_db),
+    limit: int = Query(10, alias="limit", ge=1, le=100),
+    offset: int = Query(0, alias="offset", ge=0)
+):
+    return crud.get_movies(db, limit=limit, offset=offset)
 
 @router.delete("/movies/{movie_id}")
 def delete_movie(movie_id: str, db: Session = Depends(database.get_db)):
@@ -19,6 +23,10 @@ def delete_movie(movie_id: str, db: Session = Depends(database.get_db)):
 
 @router.get("/movies/search/")
 def search_movies(
-    title_query: Optional[str] = None, tag_ids: Optional[List[str]] = None, db: Session = Depends(database.get_db)
+    db: Session = Depends(database.get_db),
+    title_query: Optional[str] = None,
+    tag_ids: Optional[List[str]] = Query(None),
+    limit: int = Query(10, ge=1, le=100),
+    offset: int = Query(0, ge=0)
 ):
-    return crud.search_movies(db, title_query, tag_ids)
+    return crud.search_movies(db, title_query, tag_ids, limit=limit, offset=offset)
