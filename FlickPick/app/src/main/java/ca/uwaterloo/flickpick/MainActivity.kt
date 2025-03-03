@@ -82,6 +82,7 @@ class MainActivity : ComponentActivity() {
                         composable("home") { HomeScreenContent (navController) }
                         composable("library") { MovieLibrary(navController) }
                         composable("MovieInfo") { MovieInfoScreen(navController) }
+                        composable("Profile") { Profile(navController) }
                     }
                 }
             }
