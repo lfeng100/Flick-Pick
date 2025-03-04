@@ -3,22 +3,40 @@ package ca.uwaterloo.flickpick
 import android.content.Context
 import android.widget.Toast
 import androidx.navigation.NavController
+import ca.uwaterloo.flickpick.dataObjects.Database.DatabaseClient
+import ca.uwaterloo.flickpick.dataObjects.Database.Models.User
 import com.google.firebase.auth.FirebaseAuth
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class FirebaseAuthentication {
     private val auth = FirebaseAuth.getInstance()
 
-    fun createAccount(email: String, password: String, context: Context, navController: NavController) {
+    fun createAccount(email: String, username: String, password: String, context: Context, navController: NavController) {
         auth.createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
+                    val firebaseUser = task.result?.user
+                    val userID = firebaseUser?.uid ?: ""
+                    createUserBackend(email, username, userID, context, navController)
                     Toast.makeText(context, "Registration Successful!", Toast.LENGTH_SHORT).show()
-                    navController.navigate("home")
                 } else {
                     val errorMessage = task.exception?.message ?: "Registration Failed"
                     Toast.makeText(context, "Failed: $errorMessage", Toast.LENGTH_LONG).show()
                 }
             }
+    }
+
+    fun createUserBackend(email: String, username: String, userID: String, context: Context, navController: NavController) {
+        val user = User(email = email, username = username, userID = userID)
+        CoroutineScope(Dispatchers.IO).launch {
+            DatabaseClient.apiService.createUser(user)
+            withContext(Dispatchers.Main){
+                navController.navigate("home")
+            }
+        }
     }
 
     fun signIn(email: String, password: String, context: Context, navController: NavController) {
