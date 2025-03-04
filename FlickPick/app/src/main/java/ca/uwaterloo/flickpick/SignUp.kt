@@ -34,6 +34,7 @@ import androidx.navigation.NavController
 import ca.uwaterloo.flickpick.ui.theme.Purple40
 import android.widget.Toast
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material3.Icon
@@ -50,10 +51,9 @@ import androidx.compose.material3.IconButton
 @Composable
 fun Signup(navController: NavController) {
     var email = remember { mutableStateOf("") }
+    var username = remember { mutableStateOf("") }
     var password = remember { mutableStateOf("") }
     var passwordVisible = remember { mutableStateOf(false) }
-    var confirmPassword = remember { mutableStateOf("") }
-    var confirmPasswordVisible = remember { mutableStateOf(false) }
     val firebaseAuthentication = FirebaseAuthentication()
     val context = LocalContext.current
 
@@ -125,6 +125,32 @@ fun Signup(navController: NavController) {
                     )
                     Spacer(modifier = Modifier.height(12.dp))
                     Text(
+                        text = "Username",
+                        fontSize = 17.sp,
+                        color = Color.Gray,
+                    )
+                    Spacer(modifier = Modifier.height(10.dp))
+                    OutlinedTextField(
+                        value = username.value,
+                        onValueChange = { username.value = it },
+                        modifier = Modifier
+                            .height(46.dp)
+                            .fillMaxWidth(),
+                        textStyle = TextStyle(color = Color.White),
+                        leadingIcon = { Icon(imageVector = Icons.Default.AccountCircle , contentDescription = "", tint = Color.Gray) },
+                        singleLine = true,
+                        maxLines = 1,
+                        minLines = 1,
+                        shape = RoundedCornerShape(50.dp),
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedTextColor = Color.White,
+                            unfocusedTextColor = Color.Gray,
+                            focusedBorderColor = Color.Gray,
+                            unfocusedBorderColor = Color.DarkGray,
+                        )
+                    )
+                    Spacer(modifier = Modifier.height(12.dp))
+                    Text(
                         text = "Password",
                         fontSize = 17.sp,
                         color = Color.Gray,
@@ -171,64 +197,16 @@ fun Signup(navController: NavController) {
                             unfocusedBorderColor = Color.DarkGray,
                         )
                     )
-                    Spacer(modifier = Modifier.height(12.dp))
-                    Text(
-                        text = "Confirm Password",
-                        fontSize = 17.sp,
-                        color = Color.Gray,
-                    )
-                    Spacer(modifier = Modifier.height(10.dp))
-                    OutlinedTextField(
-                        value = confirmPassword.value,
-                        onValueChange = { confirmPassword.value = it },
-                        visualTransformation =
-                        if (confirmPasswordVisible.value) {
-                            VisualTransformation.None
-                        } else {
-                            PasswordVisualTransformation()
-                        },
-                        modifier = Modifier
-                            .height(46.dp)
-                            .fillMaxWidth(),
-                        textStyle = TextStyle(color = Color.White),
-                        leadingIcon = { Icon(imageVector = Icons.Default.Lock, contentDescription = "", tint = Color.Gray) },
-                        trailingIcon = {
-                            val iconImage =
-                                if (confirmPasswordVisible.value) {
-                                    Icons.Filled.Visibility
-                                } else {
-                                    Icons.Filled.VisibilityOff
-                                }
-                            val description = ""
-                            IconButton(
-                                onClick = {
-                                    confirmPasswordVisible.value = !confirmPasswordVisible.value
-                                }
-                            ) {
-                                Icon(iconImage, contentDescription = description, tint = Color.Gray)
-                            }
-                        },
-                        singleLine = true,
-                        maxLines = 1,
-                        minLines = 1,
-                        shape = RoundedCornerShape(50.dp),
-                        colors = OutlinedTextFieldDefaults.colors(
-                            focusedTextColor = Color.White,
-                            unfocusedTextColor = Color.Gray,
-                            focusedBorderColor = Color.Gray,
-                            unfocusedBorderColor = Color.DarkGray,
-                        )
-                    )
                     Spacer(modifier = Modifier.height(30.dp))
                     Button(
                         onClick = {
-                            if ((password.value == confirmPassword.value) &&
-                                    email.value.isNotBlank() &&
-                                    password.value.isNotBlank() &&
-                                    confirmPassword.value.isNotBlank()) {
-                                firebaseAuthentication.createAccount(email.value, password.value, context, navController)
+                            if (email.value.isNotBlank() &&
+                                username.value.isNotBlank() &&
+                                password.value.isNotBlank()
+                                ) {
+                                firebaseAuthentication.createAccount(email.value, username.value, password.value, context, navController)
                             } else {
-                                Toast.makeText(context, "Passwords do not match", Toast.LENGTH_SHORT).show()
+                                Toast.makeText(context, "Please enter all fields", Toast.LENGTH_SHORT).show()
                             }
                         },
                         modifier = Modifier
