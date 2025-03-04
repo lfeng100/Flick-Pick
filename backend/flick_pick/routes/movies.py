@@ -9,6 +9,13 @@ router = APIRouter()
 def create_movie(movie: schemas.MovieCreate, db: Session = Depends(database.get_db)):
     return crud.create_movie(db, movie)
 
+@router.get("/movie/{movie_id}")
+def read_movie(movie_id: str, db: Session = Depends(database.get_db)):
+    movie = crud.get_movie(db, movie_id)
+    if not movie:
+        raise HTTPException(status_code=404, detail="Movie not found")
+    return movie
+
 @router.get("/movies/")
 def read_movies(
     db: Session = Depends(database.get_db),

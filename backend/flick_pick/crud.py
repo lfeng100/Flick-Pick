@@ -1,5 +1,6 @@
 from sqlalchemy.orm import Session
 import models, schemas
+import json
 
 # --- USERS CRUD ---
 def create_user(db: Session, user: schemas.UserCreate):
@@ -73,7 +74,9 @@ def get_movies(db: Session, limit: int = 10, offset: int = 0):
 def get_movie(db: Session, movie_id: str):
     movie = db.query(models.Movie).filter(models.Movie.movieID == movie_id).first()
     if movie:
-        movie.genres = json.loads(movie.genres)
+        if isinstance(movie.genres, str):  
+            movie.genres = json.loads(movie.genres)  
+
     return movie
 
 def update_movie(db: Session, movie_id: str, movie_update: schemas.MovieCreate):
