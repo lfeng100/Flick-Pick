@@ -1,4 +1,4 @@
-package ca.uwaterloo.flickpick.dataObjects.Database
+package ca.uwaterloo.flickpick.dataObjects.Database.Models
 
 data class GroupUser(
     val groupID: String,

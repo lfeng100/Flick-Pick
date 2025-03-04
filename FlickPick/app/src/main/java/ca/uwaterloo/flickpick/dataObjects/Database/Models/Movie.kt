@@ -1,4 +1,4 @@
-package ca.uwaterloo.flickpick.dataObjects.Database
+package ca.uwaterloo.flickpick.dataObjects.Database.Models
 
 import com.squareup.moshi.Json
 

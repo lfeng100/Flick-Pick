@@ -1,7 +1,7 @@
 package ca.uwaterloo.flickpick.dataObjects.Recommender.Querys
 
-import ca.uwaterloo.flickpick.dataObjects.Recommender.Filters
-import ca.uwaterloo.flickpick.dataObjects.Recommender.Rating
+import ca.uwaterloo.flickpick.dataObjects.Recommender.Models.Filters
+import ca.uwaterloo.flickpick.dataObjects.Recommender.Models.Rating
 
 data class RecommendationQuery(
     val ratings: List<Rating>,

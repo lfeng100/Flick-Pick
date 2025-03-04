@@ -1,4 +1,4 @@
-package ca.uwaterloo.flickpick.dataObjects.Recommender
+package ca.uwaterloo.flickpick.dataObjects.Recommender.Models
 
 data class Filters(
     val included_genres: List<String>? = null,

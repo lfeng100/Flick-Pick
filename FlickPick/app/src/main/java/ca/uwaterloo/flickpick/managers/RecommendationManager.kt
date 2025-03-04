@@ -1,14 +1,15 @@
 package ca.uwaterloo.flickpick.managers
 
 import android.util.Log
-import ca.uwaterloo.flickpick.dataObjects.Database.Group
-import ca.uwaterloo.flickpick.dataObjects.Database.Movie
-import ca.uwaterloo.flickpick.dataObjects.Recommender.Rating
+import ca.uwaterloo.flickpick.dataObjects.Database.DatabaseClient
+import ca.uwaterloo.flickpick.dataObjects.Database.Models.Group
+import ca.uwaterloo.flickpick.dataObjects.Database.Models.Movie
+import ca.uwaterloo.flickpick.dataObjects.Recommender.Models.Rating
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import ca.uwaterloo.flickpick.dataObjects.Recommender.Filters
+import ca.uwaterloo.flickpick.dataObjects.Recommender.Models.Filters
 import ca.uwaterloo.flickpick.dataObjects.Recommender.Querys.RecommendationQuery
-import ca.uwaterloo.flickpick.dataObjects.Recommender.Reponses.RecommendationResponse
+import ca.uwaterloo.flickpick.dataObjects.Recommender.RecommenderClient
 
 class RecommendationManager(private var selectedGroup: Group?) {
     suspend fun getPersonalReco(): Movie? {

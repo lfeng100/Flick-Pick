@@ -1,5 +1,5 @@
-import ca.uwaterloo.flickpick.dataObjects.Database.Movie
-import ca.uwaterloo.flickpick.managers.DatabaseClient
+import ca.uwaterloo.flickpick.dataObjects.Database.Models.Movie
+import ca.uwaterloo.flickpick.dataObjects.Database.DatabaseClient
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.CoroutineScope

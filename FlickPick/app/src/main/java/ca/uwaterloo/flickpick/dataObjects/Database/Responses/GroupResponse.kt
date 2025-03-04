@@ -1,6 +1,6 @@
 package ca.uwaterloo.flickpick.dataObjects.Database.Responses
 
-import ca.uwaterloo.flickpick.dataObjects.Database.Group
+import ca.uwaterloo.flickpick.dataObjects.Database.Models.Group
 
 data class GroupResponse(
     val items: List<Group>,
