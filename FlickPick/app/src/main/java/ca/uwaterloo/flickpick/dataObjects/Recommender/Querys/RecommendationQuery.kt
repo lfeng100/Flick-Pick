@@ -1,4 +1,4 @@
-package ca.uwaterloo.flickpick.dataObjects.Querys
+package ca.uwaterloo.flickpick.dataObjects.Recommender.Querys
 
 import ca.uwaterloo.flickpick.dataObjects.Recommender.Filters
 import ca.uwaterloo.flickpick.dataObjects.Recommender.Rating

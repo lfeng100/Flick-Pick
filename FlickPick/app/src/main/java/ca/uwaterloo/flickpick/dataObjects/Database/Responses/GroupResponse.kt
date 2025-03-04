@@ -1,4 +1,4 @@
-package ca.uwaterloo.flickpick.dataObjects.Responses
+package ca.uwaterloo.flickpick.dataObjects.Database.Responses
 
 import ca.uwaterloo.flickpick.dataObjects.Database.Group
 
