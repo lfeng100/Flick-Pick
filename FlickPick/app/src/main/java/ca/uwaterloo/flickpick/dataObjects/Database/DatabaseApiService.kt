@@ -5,11 +5,16 @@ import retrofit2.http.*
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import ca.uwaterloo.flickpick.dataObjects.Database.Models.Movie
+import ca.uwaterloo.flickpick.dataObjects.Database.Models.User
 import ca.uwaterloo.flickpick.dataObjects.Database.Responses.MovieResponse
 import retrofit2.http.Query
 
 
 interface DatabaseApiService {
+
+    // Users
+    @POST("users/")
+    suspend fun createUser(@Body newUser: User)
 
     // Movies
     @GET("movies/")
