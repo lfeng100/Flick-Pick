@@ -1,7 +1,7 @@
 package ca.uwaterloo.flickpick
 
 
-import MovieCatalog
+import MovieCatalogRepository
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
@@ -20,7 +20,10 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import ca.uwaterloo.flickpick.managers.RecommendationManager
 import ca.uwaterloo.flickpick.ui.components.BottomNavBar
+import ca.uwaterloo.flickpick.ui.components.HomeScreenContent
 import ca.uwaterloo.flickpick.ui.components.MovieBrowser
+import ca.uwaterloo.flickpick.ui.components.MovieInfoScreen
+import ca.uwaterloo.flickpick.ui.components.Profile
 import ca.uwaterloo.flickpick.ui.components.RecommendationBrowser
 import ca.uwaterloo.flickpick.ui.theme.FlickPickTheme
 import com.google.firebase.auth.FirebaseAuth
@@ -29,6 +32,11 @@ import com.google.firebase.auth.FirebaseAuth
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // TODO: Figure out where to put this logic
+        RecommendationManager.fetchPersonalRecommendations()
+        MovieCatalogRepository.fetchMoreMovies()
+
         setContent {
             App()
         }
@@ -42,9 +50,6 @@ fun App() {
             modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colorScheme.background
         ) {
-            MovieCatalog.fetchMovies()
-            RecommendationManager.fetchPersonalRecommendations()
-
             val loginFlowNavController = rememberNavController()
             val startDestination =
                 if (FirebaseAuth.getInstance().currentUser != null) {

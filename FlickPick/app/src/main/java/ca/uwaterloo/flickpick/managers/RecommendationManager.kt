@@ -1,5 +1,6 @@
 package ca.uwaterloo.flickpick.managers
 
+import MovieCatalogRepository
 import android.util.Log
 import ca.uwaterloo.flickpick.dataObjects.Database.DatabaseClient
 import ca.uwaterloo.flickpick.dataObjects.Database.Models.Group
@@ -20,10 +21,9 @@ object RecommendationManager {
     val recommendations = _recommendations.asStateFlow()
 
     fun fetchPersonalRecommendations() {
+        _recommendations.value = emptyList<Movie>()
         CoroutineScope(Dispatchers.IO).launch {
-            val userRatings = listOf(
-                Rating("avengers-endgame", 4.5f)
-            )
+            val userRatings = PrimaryUserManager.getAllRatings()
 
             val filters = Filters(
                 included_genres = listOf("Action"),
@@ -36,14 +36,14 @@ object RecommendationManager {
             val recommendations = response.recommendations
             if (recommendations.isNotEmpty()) {
                 try {
-                    val recList = mutableListOf<Movie>()
                     for (movieId in recommendations) {
-                        val movieResponse = DatabaseClient.apiService.getMovieById(movieId)
-                        println(movieResponse.movieID)
-                        println(movieResponse.genres)
-                        recList.add(movieResponse)
+                        val movieResponse = MovieCatalogRepository.getMovieForId(movieId)
+                        if (movieResponse != null) {
+                            println(movieResponse.movieID)
+                            println(movieResponse.genres)
+                            _recommendations.value += movieResponse
+                        }
                     }
-                    _recommendations.value = recList;
                 } catch (e: Exception) {
                     Log.e("API_ERROR", "Error fetching movies: ${e.message}")
                 }

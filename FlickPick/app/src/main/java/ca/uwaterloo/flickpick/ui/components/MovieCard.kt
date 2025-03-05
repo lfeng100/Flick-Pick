@@ -14,6 +14,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import ca.uwaterloo.flickpick.dataObjects.Database.Models.Movie
+import ca.uwaterloo.flickpick.managers.MovieInfoPopupManager
 import coil.compose.AsyncImage
 
 @Composable
@@ -32,7 +33,11 @@ fun MovieCard(movie: Movie, navController: NavController) {
                     contentDescription = null,
                     modifier = Modifier
                         .fillMaxSize()
-                        .clickable { navController.navigate("movie") },
+                        .clickable
+                        {
+                            MovieInfoPopupManager.selectMovie(movie)
+                            navController.navigate("movie")
+                        },
                     contentScale = ContentScale.Crop
                 )
             }

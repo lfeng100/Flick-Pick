@@ -73,7 +73,7 @@ class Query(BaseModel):
 @app.post('/recommend')
 async def recommend(query: Query):
     query_dict = query.model_dump()
-    recommendations = recommender.get_k_recommendations(query_dict['ratings'], query_dict['filters'], 10)
+    recommendations = recommender.get_k_recommendations(query_dict['ratings'], query_dict['filters'], 13)
     result = [reccomendation[0] for reccomendation in recommendations]
     return {"recommendations": result}
 

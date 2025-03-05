@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -29,12 +30,12 @@ import ca.uwaterloo.flickpick.dataObjects.Database.Models.Movie
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-fun MovieDetails(movie: Movie) {
-    Column(Modifier.fillMaxSize()) {
-        val releaseYearStr = movie.releaseYear.toString()
-        val runtimeStr = movie.runtime?.toString()
-        val secondLineStr = if (runtimeStr == null) releaseYearStr else "$releaseYearStr • $runtimeStr min"
-        Text(text = movie.title, style = MaterialTheme.typography.headlineLarge)
+fun MovieDetails(movie: Movie?) {
+    Column(Modifier.fillMaxWidth()) {
+        val releaseYearStr = movie?.releaseYear.toString()
+        val runtimeStr = movie?.runtime?.toString()
+        var secondLineStr = "$releaseYearStr • $runtimeStr min"
+        Text(text = movie?.title ?: "Unknown", style = MaterialTheme.typography.headlineLarge)
         Spacer(Modifier.height(8.dp))
         Text(text = secondLineStr, style = MaterialTheme.typography.bodyLarge)
         Spacer(Modifier.height(8.dp))
@@ -42,7 +43,7 @@ fun MovieDetails(movie: Movie) {
             horizontalArrangement = Arrangement.spacedBy(4.dp),
             verticalArrangement = Arrangement.spacedBy(4.dp)
         ) {
-            movie.genres.forEach { genre ->
+            movie?.genres?.forEach { genre ->
                 Box(
                     modifier = Modifier
                         .border(BorderStroke(2.dp, MaterialTheme.colorScheme.inverseSurface),

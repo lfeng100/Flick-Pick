@@ -5,20 +5,25 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
 object PrimaryUserManager {
-    private val _ratings = MutableStateFlow(emptyMap<String, Float>())
-    val ratings = _ratings.asStateFlow();
+    val ratings = mutableMapOf<String, Float>()
+
+    fun containsRatingForMovie(movieId: String): Boolean {
+        return ratings.containsKey(movieId)
+    }
 
     fun addRating(movieId: String, score: Float) {
-        _ratings.value += (movieId to score)
+        ratings[movieId] = score
+        // TODO: This logic kind of sucks, need to find a better way to manage the recommendations flow
+        RecommendationManager.fetchPersonalRecommendations()
     }
 
     fun getRating(movieId: String) : Float? {
-        return _ratings.value.get(movieId)
+        return ratings.get(movieId)
     }
 
     fun getAllRatings(): List<Rating> {
         val ratingsList = mutableListOf<Rating>()
-        for((key, value) in _ratings.value) {
+        for((key, value) in ratings) {
             ratingsList.add(Rating(key, value))
         }
         return ratingsList
