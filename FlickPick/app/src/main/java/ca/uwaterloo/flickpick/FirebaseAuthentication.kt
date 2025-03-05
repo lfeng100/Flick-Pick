@@ -34,7 +34,7 @@ class FirebaseAuthentication {
         CoroutineScope(Dispatchers.IO).launch {
             DatabaseClient.apiService.createUser(user)
             withContext(Dispatchers.Main){
-                navController.navigate("home")
+                navController.navigate("authenticated")
             }
         }
     }
@@ -44,7 +44,7 @@ class FirebaseAuthentication {
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     Toast.makeText(context, "Sign In Successful!", Toast.LENGTH_SHORT).show()
-                    navController.navigate("home")
+                    navController.navigate("authenticated")
                 } else {
                     val errorMessage = task.exception?.message ?: "Sign In Failed"
                     Toast.makeText(context, "Failed: $errorMessage", Toast.LENGTH_LONG).show()
@@ -55,7 +55,7 @@ class FirebaseAuthentication {
     fun signOut(navController: NavController) {
         auth.signOut()
         navController.navigate("login") {
-            popUpTo("home") { inclusive = true }
+            popUpTo("authenticated") { inclusive = true }
         }
     }
 
@@ -64,7 +64,7 @@ class FirebaseAuthentication {
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     Toast.makeText(context, "Password Reset Link Sent!", Toast.LENGTH_SHORT).show()
-                    navController.navigate("home")
+                    navController.navigate("authenticated")
                 } else {
                     val errorMessage = task.exception?.message ?: "Password Reset Failed"
                     Toast.makeText(context, "Failed: $errorMessage", Toast.LENGTH_LONG).show()
