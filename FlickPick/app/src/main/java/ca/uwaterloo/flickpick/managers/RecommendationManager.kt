@@ -10,11 +10,17 @@ import kotlinx.coroutines.withContext
 import ca.uwaterloo.flickpick.dataObjects.Recommender.Models.Filters
 import ca.uwaterloo.flickpick.dataObjects.Recommender.Querys.RecommendationQuery
 import ca.uwaterloo.flickpick.dataObjects.Recommender.RecommenderClient
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 
-class RecommendationManager(private var selectedGroup: Group?) {
-    suspend fun getPersonalReco(): Movie? {
-        return withContext(Dispatchers.IO) {
-            //TODO: replace with actual filters and userratings
+object RecommendationManager {
+    private val _recommendations = MutableStateFlow(emptyList<Movie>())
+    val recommendations = _recommendations.asStateFlow()
+
+    fun fetchPersonalRecommendations() {
+        CoroutineScope(Dispatchers.IO).launch {
             val userRatings = listOf(
                 Rating("avengers-endgame", 4.5f)
             )
@@ -26,24 +32,23 @@ class RecommendationManager(private var selectedGroup: Group?) {
 
             val query = RecommendationQuery(userRatings, filters)
 
-            try {
-                val response = RecommenderClient.apiService.getRecommendations(query)
-                val recommendations = response.recommendations
-                if (recommendations.isNotEmpty()) {
-                    return@withContext try {
-                        val movieResponse = DatabaseClient.apiService.getMovieById(recommendations[0])
+            val response = RecommenderClient.apiService.getRecommendations(query)
+            val recommendations = response.recommendations
+            if (recommendations.isNotEmpty()) {
+                try {
+                    val recList = mutableListOf<Movie>()
+                    for (movieId in recommendations) {
+                        val movieResponse = DatabaseClient.apiService.getMovieById(movieId)
                         println(movieResponse.movieID)
                         println(movieResponse.genres)
-                        movieResponse
-                    } catch (e: Exception) {
-                        Log.e("API_ERROR", "Error fetching movies: ${e.message}")
-                        null
+                        recList.add(movieResponse)
                     }
+                    _recommendations.value = recList;
+                } catch (e: Exception) {
+                    Log.e("API_ERROR", "Error fetching movies: ${e.message}")
                 }
-            } catch (e: Exception) {
-                Log.e("API_ERROR", "Error fetching movies: ${e.message}")
             }
-            return@withContext null
+
         }
     }
 

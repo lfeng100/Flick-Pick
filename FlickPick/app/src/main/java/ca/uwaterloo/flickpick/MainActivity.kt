@@ -1,7 +1,7 @@
 package ca.uwaterloo.flickpick
 
 
-import android.os.Build
+import MovieCatalog
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
@@ -15,11 +15,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import ca.uwaterloo.flickpick.managers.RecommendationManager
 import ca.uwaterloo.flickpick.ui.components.BottomNavBar
+import ca.uwaterloo.flickpick.ui.components.MovieBrowser
+import ca.uwaterloo.flickpick.ui.components.RecommendationBrowser
 import ca.uwaterloo.flickpick.ui.theme.FlickPickTheme
 import com.google.firebase.auth.FirebaseAuth
 
@@ -40,6 +42,9 @@ fun App() {
             modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colorScheme.background
         ) {
+            MovieCatalog.fetchMovies()
+            RecommendationManager.fetchPersonalRecommendations()
+
             val loginFlowNavController = rememberNavController()
             val startDestination =
                 if (FirebaseAuth.getInstance().currentUser != null) {
@@ -69,12 +74,13 @@ fun MainScreen() {
     }
     Scaffold(
         bottomBar = { BottomNavBar(mainNavController) }
-    ){ paddingValues ->
-        NavHost(mainNavController, startDestination = "home", modifier = Modifier.padding(paddingValues)) {
-            composable("home") { HomeScreenContent(mainNavController) }
-            composable("library") { MovieLibrary(mainNavController) }
-            composable("movie") { MovieInfoScreen(mainNavController) }
+    ){ padding ->
+        NavHost(mainNavController, startDestination = "library", modifier = Modifier.padding(padding)) {
+            composable("library") { HomeScreenContent(mainNavController) }
+            composable("browse") { MovieBrowser(mainNavController) }
+            composable("recommend") { RecommendationBrowser(mainNavController) }
             composable("profile") { Profile(mainNavController) }
+            composable("movie") { MovieInfoScreen(mainNavController) }
         }
     }
 }

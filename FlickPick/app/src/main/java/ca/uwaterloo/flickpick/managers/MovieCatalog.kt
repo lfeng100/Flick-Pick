@@ -5,6 +5,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 object MovieCatalog {
     private val _movies = MutableStateFlow<List<Movie>>(emptyList())

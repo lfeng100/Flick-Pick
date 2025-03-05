@@ -1,3 +1,5 @@
+Tested on Python 3.10
+
 Datasets used for training are found here:
 
 https://www.kaggle.com/datasets/samlearner/letterboxd-movie-ratings-data
