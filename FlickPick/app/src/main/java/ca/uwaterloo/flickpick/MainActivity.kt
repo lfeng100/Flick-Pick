@@ -2,7 +2,9 @@ package ca.uwaterloo.flickpick
 
 
 import android.R
+import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -18,7 +20,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material.icons.filled.Movie
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
@@ -39,11 +44,18 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.Scaffold
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
@@ -56,7 +68,9 @@ import ca.uwaterloo.flickpick.ui.theme.Purple40
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import com.google.firebase.auth.FirebaseAuth
+import kotlinx.coroutines.delay
 
 
 class MainActivity : ComponentActivity() {
@@ -67,30 +81,64 @@ class MainActivity : ComponentActivity() {
         MovieCatalog.fetchMovies()
         setContent {
             FlickPickTheme {
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
-                    val navController = rememberNavController()
-
-                    val startDestination =
-                        if (FirebaseAuth.getInstance().currentUser != null) {
-                            "home"
-                        } else {
-                            "login"
+                val navController = rememberNavController()
+                Scaffold (
+                    bottomBar = { NavBar(navController)}
+                ) { innerPadding ->
+                    Surface(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(innerPadding),
+                        color = MaterialTheme.colorScheme.background
+                    ) {
+                        val startDestination =
+                            if (FirebaseAuth.getInstance().currentUser != null) {
+                                "home"
+                            } else {
+                                "login"
+                            }
+                        NavHost(navController = navController, startDestination = startDestination) {
+                            composable("login") { Login(navController) }
+                            composable("signup") { Signup(navController) }
+                            composable("home") { HomeScreenContent (navController) }
+                            composable("library") { MovieLibrary(navController) }
+                            composable("MovieInfo") { MovieInfoScreen(navController) }
+                            composable("Profile") { Profile(navController) }
                         }
-                    NavHost(navController = navController, startDestination = startDestination) {
-                        composable("login") { Login(navController) }
-                        composable("signup") { Signup(navController) }
-                        composable("home") { HomeScreenContent (navController) }
-                        composable("library") { MovieLibrary(navController) }
-                        composable("MovieInfo") { MovieInfoScreen(navController) }
-                        composable("Profile") { Profile(navController) }
                     }
                 }
             }
         }
-   }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun NavBar(navController: NavController) {
+    val currentTab = navController.currentBackStackEntryAsState().value?.destination?.route
+
+    if (currentTab in listOf("home", "library", "Profile")) {
+        NavigationBar {
+            NavigationBarItem(
+                selected = currentTab == "home",
+                onClick = {navController.navigate("home")},
+                icon = { Icon(Icons.Filled.Home, contentDescription = null) },
+                label = { Text("Home")}
+            )
+            NavigationBarItem(
+                selected = currentTab == "library",
+                onClick = {navController.navigate("library")},
+                icon = { Icon(Icons.Filled.Movie, contentDescription = null) },
+                label = { Text("Library")}
+            )
+            NavigationBarItem(
+                selected = currentTab == "profile",
+                onClick = {navController.navigate("profile")},
+                icon = { Icon(Icons.Filled.Person, contentDescription = null) },
+                label = { Text("Profile")}
+            )
+        }
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -245,7 +293,7 @@ fun Login(navController: NavController) {
                             fontSize = 20.sp,
                             //fontWeight = FontWeight.Bold,
                             color = Color.White,
-                            modifier = Modifier.fillMaxWidth().clickable { navController.navigate("home") },
+                            modifier = Modifier.fillMaxWidth(),
                             textAlign = TextAlign.Center
                         )
                     }
