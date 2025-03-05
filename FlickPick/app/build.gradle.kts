@@ -57,8 +57,10 @@ dependencies {
     val nav_version = "2.8.7"
     implementation(libs.androidx.core.ktx)
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("io.coil-kt:coil-compose:2.2.2")
     implementation("com.squareup.retrofit2:converter-moshi:2.9.0")
     implementation("androidx.navigation:navigation-compose:$nav_version")
+    implementation("com.squareup.moshi:moshi-kotlin:1.15.0")
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
     implementation(platform(libs.androidx.compose.bom))

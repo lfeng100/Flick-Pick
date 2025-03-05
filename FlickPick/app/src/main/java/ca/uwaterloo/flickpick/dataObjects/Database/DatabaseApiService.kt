@@ -7,6 +7,7 @@ import retrofit2.converter.moshi.MoshiConverterFactory
 import ca.uwaterloo.flickpick.dataObjects.Database.Models.Movie
 import ca.uwaterloo.flickpick.dataObjects.Database.Models.User
 import ca.uwaterloo.flickpick.dataObjects.Database.Responses.MovieResponse
+import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import retrofit2.http.Query
 
 
@@ -32,7 +33,7 @@ interface DatabaseApiService {
 object DatabaseClient {
     private const val BASE_URL = "http://10.0.2.2:9000"
 
-    private val moshi = Moshi.Builder().build()
+    private val moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
 
     val apiService: DatabaseApiService by lazy {
         Retrofit.Builder()
