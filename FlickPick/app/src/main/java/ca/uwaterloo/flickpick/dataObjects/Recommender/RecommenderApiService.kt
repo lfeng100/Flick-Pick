@@ -8,6 +8,7 @@ import retrofit2.converter.moshi.MoshiConverterFactory
 import ca.uwaterloo.flickpick.dataObjects.Recommender.Reponses.GenreResponse
 import ca.uwaterloo.flickpick.dataObjects.Recommender.Reponses.LanguageResponse
 import ca.uwaterloo.flickpick.dataObjects.Recommender.Reponses.RecommendationResponse
+import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 
 
 interface RecommenderApiService {
@@ -24,7 +25,7 @@ interface RecommenderApiService {
 object RecommenderClient {
     private const val BASE_URL = "http://10.0.2.2:8000"
 
-    private val moshi = Moshi.Builder().build()
+    private val moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
 
     val apiService: RecommenderApiService by lazy {
         Retrofit.Builder()

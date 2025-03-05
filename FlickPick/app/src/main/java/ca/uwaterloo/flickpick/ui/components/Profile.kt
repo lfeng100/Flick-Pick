@@ -1,4 +1,4 @@
-package ca.uwaterloo.flickpick
+package ca.uwaterloo.flickpick.ui.components
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity

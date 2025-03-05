@@ -1,5 +1,8 @@
 package ca.uwaterloo.flickpick.dataObjects.Recommender.Models
 
+import com.squareup.moshi.JsonClass
+
+@JsonClass(generateAdapter = true)
 data class Filters(
     val included_genres: List<String>? = null,
     val excluded_genres: List<String>? = null,
