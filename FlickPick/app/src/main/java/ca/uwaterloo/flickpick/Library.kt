@@ -20,6 +20,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.height
@@ -36,6 +37,8 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import ca.uwaterloo.flickpick.dataObjects.Database.Models.Movie
+import coil.compose.AsyncImage
 
 class Library : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -78,7 +81,7 @@ fun MovieLibrary(navController: NavController) {
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     row.forEach { movie ->
-                        ReusableMovieCard(movie = movie.title, navController = navController)
+                        ReusableMovieCard(movie = movie, navController = navController)
                     }
                 }
             }
@@ -87,7 +90,7 @@ fun MovieLibrary(navController: NavController) {
 }
 
 @Composable
-fun ReusableMovieCard(movie: String, navController: NavController) {
+fun ReusableMovieCard(movie: Movie, navController: NavController) {
     Card(
         modifier = Modifier
             .padding(8.dp)
@@ -96,13 +99,16 @@ fun ReusableMovieCard(movie: String, navController: NavController) {
         shape = RoundedCornerShape(16.dp)
     ) {
         Box() {
-            Image(
-                painter = painterResource(id = R.drawable.avengers),
-                contentDescription = null,
-                modifier = Modifier.fillMaxSize().clickable { navController.navigate("MovieInfo") },
-                contentScale = ContentScale.Crop
-
-            )
+            movie.getPosterUrl()?.let { posterUrl ->
+                AsyncImage(
+                    model = posterUrl,
+                    contentDescription = null,
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .clickable { navController.navigate("MovieInfo") },
+                    contentScale = ContentScale.Crop
+                )
+            }
             Box(
                 modifier = Modifier
                     .fillMaxSize()
@@ -118,7 +124,7 @@ fun ReusableMovieCard(movie: String, navController: NavController) {
                     .align(Alignment.BottomStart)
                     .padding(16.dp)
             ) {
-                Text(text = movie, style = MaterialTheme.typography.bodyLarge, color = Color.White)
+                Text(text = movie.title, style = MaterialTheme.typography.bodyLarge, color = Color.White)
             }
         }
     }
