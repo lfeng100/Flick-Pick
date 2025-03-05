@@ -42,6 +42,8 @@ object RecommendationManager {
                             println(movieResponse.movieID)
                             println(movieResponse.genres)
                             _recommendations.value += movieResponse
+                        } else {
+                            Log.e("API_ERROR", "Error fetching movie with id $movieId")
                         }
                     }
                 } catch (e: Exception) {

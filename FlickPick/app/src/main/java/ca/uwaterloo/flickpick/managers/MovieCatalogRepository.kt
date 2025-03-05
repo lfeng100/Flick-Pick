@@ -10,8 +10,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 object MovieCatalogRepository {
-    private val movieCache = mutableMapOf<String, Movie>()
-
     private val _movies = MutableStateFlow<List<Movie>>(emptyList())
     val movies = _movies.asStateFlow()
 
@@ -30,13 +28,10 @@ object MovieCatalogRepository {
     }
 
     suspend fun getMovieForId(movieId: String): Movie? {
-        if (movieCache.containsKey(movieId)) {
-            return movieCache.get(movieId)
-        }
         return withContext(Dispatchers.IO) { // Switch to IO thread
             try {
                 val movie = DatabaseClient.apiService.getMovieById(movieId)
-                movieCache.put(movie.movieID, movie)
+                movie
             } catch (e: Exception) {
                 Log.e("API_ERROR", "Error fetching movies: ${e.message}")
                 null

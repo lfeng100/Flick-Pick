@@ -8,3 +8,4 @@ date,Leo,Sajeen,Aryan,Ashvin,Alex,Jerry,task
 2025-02-10,0,0,0,0,0,4.5,Improve recommender model
 2025-02-10,0,0,0,0,0,4.5,Combine movie datasets to further improve recommender model
 2025-02-10,0,0,0,0,0,6,Scrape information for movie database from tmdb, create http api for recommender
+2025-02-10,0,0,0,0,0,12,Set up recommender UI and rework some UI elements

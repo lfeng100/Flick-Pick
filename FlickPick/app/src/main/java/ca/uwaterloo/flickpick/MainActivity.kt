@@ -34,7 +34,6 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         // TODO: Figure out where to put this logic
-        RecommendationManager.fetchPersonalRecommendations()
         MovieCatalogRepository.fetchMoreMovies()
 
         setContent {
