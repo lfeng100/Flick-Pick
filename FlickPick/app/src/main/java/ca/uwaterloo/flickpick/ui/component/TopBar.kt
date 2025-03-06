@@ -18,7 +18,7 @@ fun TopBar(title: String, buttons: List<TopBarButtonData>? = null) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(20.dp, 25.dp, 20.dp, 10.dp),
+            .padding(20.dp, 20.dp, 20.dp, 10.dp),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Text(

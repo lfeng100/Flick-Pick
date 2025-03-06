@@ -30,10 +30,6 @@ import com.google.firebase.auth.FirebaseAuth
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        // TODO: Figure out where to put this logic
-        MovieRepository.fetchMoreMovies()
-
         setContent {
             App()
         }
