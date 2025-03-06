@@ -1,49 +1,41 @@
-package ca.uwaterloo.flickpick.ui.components
+package ca.uwaterloo.flickpick.ui.component
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import ca.uwaterloo.flickpick.dataObjects.Database.Models.Movie
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-fun MovieDetails(movie: Movie?) {
+fun MovieDetails(movie: Movie) {
     Column(Modifier.fillMaxWidth()) {
-        val releaseYearStr = movie?.releaseYear.toString()
-        val runtimeStr = movie?.runtime?.toString()
-        var secondLineStr = "$releaseYearStr • $runtimeStr min"
-        Text(text = movie?.title ?: "Unknown", style = MaterialTheme.typography.headlineLarge)
+        val releaseYearStr = movie.releaseYear.toString()
+        val runtimeStr = if (movie.runtime == null) "" else "${movie.runtime} min"
+
+        Text(text = movie.title, style = MaterialTheme.typography.headlineLarge)
         Spacer(Modifier.height(8.dp))
-        Text(text = secondLineStr, style = MaterialTheme.typography.bodyLarge)
+        Text(text = "$releaseYearStr • $runtimeStr", style = MaterialTheme.typography.bodyLarge)
         Spacer(Modifier.height(8.dp))
         FlowRow (
             horizontalArrangement = Arrangement.spacedBy(4.dp),
             verticalArrangement = Arrangement.spacedBy(4.dp)
         ) {
-            movie?.genres?.forEach { genre ->
+            movie.genres.forEach { genre ->
                 Box(
                     modifier = Modifier
                         .border(BorderStroke(2.dp, MaterialTheme.colorScheme.inverseSurface),
@@ -55,22 +47,4 @@ fun MovieDetails(movie: Movie?) {
             }
         }
     }
-}
-
-@Preview
-@Composable
-fun MovieDetailsPreview() {
-    MovieDetails(
-        Movie(
-            "example",
-            "example",
-            2012,
-            listOf("Action", "Adventure", "Science Fiction"),
-            null,
-            null,
-            null,
-            120,
-            null
-        )
-    )
 }

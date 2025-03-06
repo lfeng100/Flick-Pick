@@ -1,4 +1,4 @@
-package ca.uwaterloo.flickpick.ui.components
+package ca.uwaterloo.flickpick.ui.component
 
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -17,12 +17,7 @@ import androidx.navigation.compose.rememberNavController
 
 @Composable
 fun BottomNavBar(navController : NavController) {
-    val backStackEntry by navController.currentBackStackEntryAsState()
-    val currentRoute = remember { mutableStateOf(navController.currentDestination?.route ?: "") }
-
-    LaunchedEffect(backStackEntry?.destination?.route) {
-        currentRoute.value = backStackEntry?.destination?.route ?: ""
-    }
+    val selected = remember { mutableIntStateOf(0) }
 
     data class NavItem(
         val label: String,
@@ -42,12 +37,16 @@ fun BottomNavBar(navController : NavController) {
         containerColor = MaterialTheme.colorScheme.background,
         tonalElevation = 5.dp
     ) {
-        items.forEach { item ->
+        items.forEachIndexed { index, item ->
             NavigationBarItem(
                 icon = { Icon(imageVector = item.icon, contentDescription = item.label) },
                 label = { Text(item.label) },
-                selected = currentRoute.value == item.route,
-                onClick = { navController.navigate(item.route) },
+                selected = selected.intValue == index,
+                onClick =
+                {
+                    navController.navigate(item.route)
+                    selected.intValue = index
+                },
                 alwaysShowLabel = true
             )
         }

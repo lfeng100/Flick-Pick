@@ -1,4 +1,4 @@
-package ca.uwaterloo.flickpick.ui.components
+package ca.uwaterloo.flickpick.ui.screen
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -29,7 +29,6 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -46,6 +45,7 @@ import ca.uwaterloo.flickpick.R
 import ca.uwaterloo.flickpick.dataObjects.Database.Models.Movie
 import ca.uwaterloo.flickpick.managers.MovieInfoPopupManager
 import ca.uwaterloo.flickpick.managers.PrimaryUserManager
+import ca.uwaterloo.flickpick.ui.component.MovieDetails
 
 @Composable
 fun MovieInfoScreen(navController: NavController) {
@@ -58,8 +58,9 @@ fun MovieInfoScreen(navController: NavController) {
                 .padding(10.dp)
                 .padding(bottom = 50.dp)
         ) {
-            // TODO: Replace with actual movie data (this is dummy hardcoded data for now)
-            MovieInfoCard(movie)
+            if (movie != null) {
+                MovieInfoCard(movie!!)
+            }
         }
         IconButton(
             onClick = { navController.popBackStack() },
@@ -101,7 +102,7 @@ fun HeroImage() {
 }
 
 @Composable
-fun MovieInfoCard(movie: Movie?) {
+fun MovieInfoCard(movie: Movie) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -112,7 +113,7 @@ fun MovieInfoCard(movie: Movie?) {
         Column(modifier = Modifier.padding(35.dp)) {
             MovieDetails(movie)
             Spacer(modifier = Modifier.height(30.dp))
-            Text(text = movie?.description ?: "", style = MaterialTheme.typography.bodyLarge)
+            Text(text = movie.description ?: "", style = MaterialTheme.typography.bodyLarge)
             Spacer(modifier = Modifier.height(20.dp))
             Row(
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -136,10 +137,8 @@ fun MovieInfoCard(movie: Movie?) {
                 var isRated by remember { mutableStateOf(PrimaryUserManager.containsRatingForMovie(movie?.movieID ?: "")) }
                 Button(onClick =
                 {
-                    if (movie != null) {
-                        PrimaryUserManager.addRating(movie.movieID, 5.0f)
-                        isRated = true
-                    }
+                    PrimaryUserManager.addRating(movie.movieID, 5.0f)
+                    isRated = true
                 },
                     modifier = Modifier
                         .height(42.dp),

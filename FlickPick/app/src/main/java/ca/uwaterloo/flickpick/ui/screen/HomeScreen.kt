@@ -1,4 +1,4 @@
-package ca.uwaterloo.flickpick.ui.components
+package ca.uwaterloo.flickpick.ui.screen
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background

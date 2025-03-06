@@ -1,8 +1,5 @@
-package ca.uwaterloo.flickpick.ui.components
+package ca.uwaterloo.flickpick.ui.screen
 
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
@@ -28,7 +25,6 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
@@ -42,8 +38,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
-import ca.uwaterloo.flickpick.ui.theme.FlickPickTheme
 import ca.uwaterloo.flickpick.ui.theme.Purple40
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.rememberScrollState
@@ -51,25 +45,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 
-class Profile : ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContent {
-            FlickPickTheme {
-                val navController = rememberNavController()
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
-                    Profile(navController)
-                }
-            }
-        }
-    }
-}
-
 @Composable
-fun Profile(navController: NavController) {
+fun ProfileScreen(navController: NavController) {
     var firstName = remember { mutableStateOf("Paul") }
     var lastName = remember { mutableStateOf("Smith") }
     var username = remember { mutableStateOf("paulthegoat") }
@@ -304,3 +281,20 @@ fun UserInfoCard(
     }
     Spacer(modifier = Modifier.height(12.dp))
 }
+
+//class Profile : ComponentActivity() {
+//    override fun onCreate(savedInstanceState: Bundle?) {
+//        super.onCreate(savedInstanceState)
+//        setContent {
+//            FlickPickTheme {
+//                val navController = rememberNavController()
+//                Surface(
+//                    modifier = Modifier.fillMaxSize(),
+//                    color = MaterialTheme.colorScheme.background
+//                ) {
+//                    Profile(navController)
+//                }
+//            }
+//        }
+//    }
+//}

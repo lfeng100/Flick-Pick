@@ -1,4 +1,4 @@
-package ca.uwaterloo.flickpick.ui.components
+package ca.uwaterloo.flickpick.ui.component
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -19,7 +19,7 @@ fun TopBar(title: String, buttons: List<TopBarButtonData>? = null) {
         modifier = Modifier
             .fillMaxWidth()
             .padding(20.dp, 25.dp, 20.dp, 10.dp),
-        horizontalArrangement = Arrangement.SpaceBetween // Pushes elements to opposite ends
+        horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Text(
             text = title,
@@ -29,7 +29,7 @@ fun TopBar(title: String, buttons: List<TopBarButtonData>? = null) {
         Row(
             horizontalArrangement = Arrangement.Start
         ) {
-            buttons?.forEach({ button ->
+            buttons?.forEach { button ->
                 IconButton(
                     onClick = button.onClick
                 ) {
@@ -38,7 +38,7 @@ fun TopBar(title: String, buttons: List<TopBarButtonData>? = null) {
                         contentDescription = button.contentDesc
                     )
                 }
-            })
+            }
         }
     }
 }
