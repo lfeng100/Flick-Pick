@@ -6,6 +6,7 @@ date,Leo,Sajeen,Aryan,Ashvin,Alex,Jerry,task
 2025-02-04,0,0,0,0,1.5,0,Setup Environment
 2025-02-06,0,0,0,0,0,4.5,Research and prototype recommendations
 2025-02-10,0,0,0,0,0,4.5,Improve recommender model
-2025-02-10,0,0,0,0,0,4.5,Combine movie datasets to further improve recommender model
-2025-02-10,0,0,0,0,0,6,Scrape information for movie database from tmdb, create http api for recommender
-2025-02-10,0,0,0,0,0,12,Set up recommender UI and rework some UI elements
+2025-02-20,0,0,0,0,0,4.5,Combine movie datasets to further improve recommender model
+2025-02-25,0,0,0,0,0,6,Scrape information for movie database from tmdb, create http api for recommender
+2025-03-04,0,0,0,0,0,12,Set up recommender UI, navigation bar, and rework/refactor some UI elements
+2025-03-06,0,0,0,0,0,1.5,Add infinite scrolling to browse screen
