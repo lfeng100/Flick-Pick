@@ -19,6 +19,11 @@ data class Movie(
  {
     fun getPosterUrl(): String? {
         Log.d("MovieItem", "Poster Path: ${posterPath}")
-        return posterPath?.let { "https://image.tmdb.org/t/p/w200$it" }
+        return posterPath?.let { "https://image.tmdb.org/t/p/w200$it.jpg" }
     }
+
+     fun getHighResPosterUrl(): String? {
+         Log.d("MovieItem", "Poster Path: ${posterPath}")
+         return posterPath?.let { "https://image.tmdb.org/t/p/w780$it.jpg" }
+     }
 }

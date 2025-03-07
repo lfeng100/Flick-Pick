@@ -52,7 +52,13 @@ fun RecommendationScreen(navController: NavController) {
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
                             row.forEach { movie ->
-                                MovieCard(movie = movie, navController = navController)
+                                MovieCard(
+                                    movie = movie,
+                                    width = 122.dp,
+                                    onClick = {
+                                        navController.navigate("movie/${movie.movieID}")
+                                    }
+                                )
                             }
                         }
                     }

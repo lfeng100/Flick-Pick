@@ -37,9 +37,11 @@ fun InfiniteMovieGrid(movies: List<Movie>,
                 }
             }
     }
-    val movieCardWidth = 126.dp
+    val movieCardWidth = 122.dp
     val itemsPerRow =
-        if (width > 0) with(LocalDensity.current) { width.toDp() } / movieCardWidth else 1
+        if (width > 0) {
+            with(LocalDensity.current) { width.toDp() } / (movieCardWidth + 4.dp)
+        } else 1
     val rows = movies.chunked(itemsPerRow.toInt())
     LazyColumn(
         state = listState,
@@ -53,7 +55,13 @@ fun InfiniteMovieGrid(movies: List<Movie>,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 row.forEach { movie ->
-                    MovieCard(movie = movie, navController = navController)
+                    MovieCard(
+                        movie = movie,
+                        width = movieCardWidth,
+                        onClick = {
+                            navController.navigate("movie/${movie.movieID}")
+                        }
+                    )
                 }
             }
         }

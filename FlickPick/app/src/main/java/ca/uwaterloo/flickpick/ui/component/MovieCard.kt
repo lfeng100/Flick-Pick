@@ -18,19 +18,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import ca.uwaterloo.flickpick.dataObjects.Database.Models.Movie
-import ca.uwaterloo.flickpick.managers.MovieInfoPopupManager
 import coil.compose.AsyncImage
 
 @Composable
-fun MovieCard(movie: Movie, navController: NavController) {
+fun MovieCard(movie: Movie, width: Dp, onClick: (() -> Unit)? = null) {
     Card(
         modifier = Modifier
             .padding(2.dp)
-            .width(122.dp)
-            .height(192.dp),
+            .width(width)
+            .height(width * 1.5f),
         shape = RoundedCornerShape(4.dp)
     ) {
         Box() {
@@ -38,18 +38,13 @@ fun MovieCard(movie: Movie, navController: NavController) {
             posterUrl?.let { url ->
                 AsyncImage(
                     model = url,
-                    contentDescription = null,
+                    contentDescription = "Movie Poster",
                     modifier = Modifier
                         .fillMaxSize()
-                        .clickable
-                        {
-                            MovieInfoPopupManager.selectMovie(movie)
-                            navController.navigate("movie")
-                        },
+                        .clickable { onClick?.invoke() },
                     contentScale = ContentScale.Crop
                 )
-            }
-            if (posterUrl == null) {
+            } ?: run {
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
