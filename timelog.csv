@@ -10,3 +10,4 @@ date,Leo,Sajeen,Aryan,Ashvin,Alex,Jerry,task
 2025-02-25,0,0,0,0,0,6,Scrape information for movie database from tmdb, create http api for recommender
 2025-03-04,0,0,0,0,0,12,Set up recommender UI, navigation bar, and rework/refactor some UI elements
 2025-03-06,0,0,0,0,0,1.5,Add infinite scrolling to browse screen
+2025-03-06,0,0,0,0,0,10,Revamp movie info screen and add flow for creating reviews

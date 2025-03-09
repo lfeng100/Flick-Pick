@@ -69,12 +69,5 @@ fun RecommendationScreen(navController: NavController) {
                 }
             }
         }
-//        Box(
-//            modifier = Modifier
-//                .fillMaxSize()
-//                .padding(padding)
-//        ) {
-//            MovieDetails()
-//        }
     }
 }

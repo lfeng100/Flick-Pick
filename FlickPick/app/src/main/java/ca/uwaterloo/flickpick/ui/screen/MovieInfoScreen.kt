@@ -52,7 +52,7 @@ fun MovieInfoScreen(navController: NavController, movieId: String) {
                 HeroImage(posterUrl)
             }
             Box(Modifier.padding(padding)) {
-                MovieInfoLayout(movie)
+                MovieInfoLayout(navController, movie)
             }
         }
     }
@@ -83,7 +83,7 @@ fun HeroImage(posterUrl: String) {
 }
 
 @Composable
-fun MovieInfoLayout(movie: Movie) {
+fun MovieInfoLayout(navController: NavController, movie: Movie) {
     LazyColumn(modifier = Modifier.padding(start = 16.dp, end = 16.dp)) {
         items(1) {
             Row (verticalAlignment = Alignment.CenterVertically) {
@@ -95,7 +95,7 @@ fun MovieInfoLayout(movie: Movie) {
                 Spacer(modifier = Modifier.width(16.dp))
                 MovieDetails(movie)
             }
-            MovieInteractionButtonRow(movie)
+            MovieInteractionButtonRow(navController, movie)
             Text(text = movie.description ?: "", style = MaterialTheme.typography.bodyLarge)
             Spacer(modifier = Modifier.height(20.dp))
             MovieGenres(movie)

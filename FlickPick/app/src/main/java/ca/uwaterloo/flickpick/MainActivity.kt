@@ -26,6 +26,7 @@ import ca.uwaterloo.flickpick.ui.screen.BrowseScreen
 import ca.uwaterloo.flickpick.ui.screen.MovieInfoScreen
 import ca.uwaterloo.flickpick.ui.screen.ProfileScreen
 import ca.uwaterloo.flickpick.ui.screen.RecommendationScreen
+import ca.uwaterloo.flickpick.ui.screen.ReviewScreen
 import ca.uwaterloo.flickpick.ui.theme.FlickPickTheme
 import com.google.firebase.auth.FirebaseAuth
 
@@ -83,6 +84,12 @@ fun MainScreen() {
                 val movieId = navBackStackEntry.arguments?.getString("movieId")
                 if (movieId != null) {
                     MovieInfoScreen(mainNavController, movieId)
+                }
+            }
+            composable("review/{movieId}") { navBackStackEntry ->
+                val movieId = navBackStackEntry.arguments?.getString("movieId")
+                if (movieId != null) {
+                    ReviewScreen(mainNavController, movieId)
                 }
             }
         }
