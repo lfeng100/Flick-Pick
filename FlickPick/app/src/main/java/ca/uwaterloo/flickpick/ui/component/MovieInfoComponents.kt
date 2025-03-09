@@ -18,9 +18,11 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.RateReview
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.WatchLater
 import androidx.compose.material.icons.outlined.RateReview
+import androidx.compose.material.icons.outlined.StarBorder
 import androidx.compose.material.icons.outlined.Visibility
 import androidx.compose.material.icons.outlined.WatchLater
 import androidx.compose.material3.Icon
@@ -29,11 +31,9 @@ import androidx.compose.material3.IconToggleButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -41,7 +41,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import ca.uwaterloo.flickpick.R
 import ca.uwaterloo.flickpick.dataObjects.Database.Models.Movie
 import ca.uwaterloo.flickpick.managers.PrimaryUserManager
@@ -50,13 +54,31 @@ import ca.uwaterloo.flickpick.managers.PrimaryUserManager
 fun MovieDetails(movie: Movie) {
     Column(Modifier.fillMaxWidth()) {
         val releaseYearStr = movie.releaseYear.toString()
-        val ratingStr = if (movie.rating == null) "?" else "★ ${movie.rating}"
-        val runtimeStr = if (movie.runtime == null) "?" else "${movie.runtime} min"
+        val ratingStr = if (movie.rating == null) "?" else "${movie.rating}"
+        val runtimeStr = if (movie.runtime == null) "?" else "${movie.runtime}"
         Text(text = movie.title, style = MaterialTheme.typography.headlineMedium)
         Spacer(Modifier.height(8.dp))
         Text(
-            text = "$releaseYearStr • $runtimeStr • $ratingStr",
+            text = "$releaseYearStr • $runtimeStr min • ★ $ratingStr",
             style = MaterialTheme.typography.bodyLarge
+        )
+    }
+}
+
+@Composable
+fun MovieTitleText(movie: Movie) {
+    Column(Modifier.fillMaxWidth()) {
+        val releaseYearStr = movie.releaseYear.toString()
+        Text(
+            text = buildAnnotatedString {
+                withStyle(style = SpanStyle(fontSize = MaterialTheme.typography.headlineSmall.fontSize)) {
+                    append(movie.title)
+                    append(" ")
+                }
+                withStyle(style = SpanStyle(fontSize = MaterialTheme.typography.bodySmall.fontSize)) {
+                    append(releaseYearStr)
+                }
+            }
         )
     }
 }
@@ -64,18 +86,17 @@ fun MovieDetails(movie: Movie) {
 data class ToggleButtonItem(
     val checkedIcon: ImageVector,
     val uncheckedIcon: ImageVector,
-    var checkedTint: Color,
+    var checkedTint: Color = Color.White,
     var isChecked : State<Boolean>,
     var onChecked : () -> Unit,
     var onUnchecked : () -> Unit
 )
 
-
 @Composable
-fun MovieInteractionButtonRow(movie : Movie) {
+fun MovieInteractionButtonRow(navController: NavController, movie : Movie) {
     val isReviewChecked = remember {
         derivedStateOf {
-            val ratings by PrimaryUserManager.ratings
+            val ratings by PrimaryUserManager.reviews
             ratings[movie.movieID] != null
         }
     }
@@ -93,17 +114,17 @@ fun MovieInteractionButtonRow(movie : Movie) {
     }
     val items = listOf(
         ToggleButtonItem(
-            checkedIcon = Icons.Filled.RateReview,
-            uncheckedIcon = Icons.Outlined.RateReview,
-            checkedTint = Color(0xFFFFD93D),
+            checkedIcon = Icons.Filled.Star,
+            uncheckedIcon = Icons.Outlined.StarBorder,
             isChecked = isReviewChecked,
-            onChecked = { PrimaryUserManager.addRating(movie.movieID, 5.0f) },
-            onUnchecked = { PrimaryUserManager.removeRating(movie.movieID) }
+            onChecked = {
+                navController.navigate("review/${movie.movieID}")
+            },
+            onUnchecked = { PrimaryUserManager.removeReview(movie.movieID) }
         ),
         ToggleButtonItem(
             checkedIcon = Icons.Filled.Visibility,
             uncheckedIcon = Icons.Outlined.Visibility,
-            checkedTint = Color(0xFF6BCB77),
             isChecked = isWatchedChecked,
             onChecked = { PrimaryUserManager.addToWatched(movie.movieID) },
             onUnchecked = { PrimaryUserManager.removeFromWatched(movie.movieID) }
@@ -111,7 +132,6 @@ fun MovieInteractionButtonRow(movie : Movie) {
         ToggleButtonItem(
             checkedIcon = Icons.Filled.WatchLater,
             uncheckedIcon = Icons.Outlined.WatchLater,
-            checkedTint = Color(0xFF4D96FF),
             isChecked = isWatchlistChecked,
             onChecked = { PrimaryUserManager.addToWatchlist(movie.movieID) },
             onUnchecked = { PrimaryUserManager.removeFromWatchlist(movie.movieID) }
@@ -161,7 +181,7 @@ fun MovieInteractionButton(item: ToggleButtonItem) {
             contentDescription = "Toggle Button",
             modifier = Modifier.size(32.dp),
             tint = if (item.isChecked.value)
-                item.checkedTint else Color.White
+                item.checkedTint else Color.Gray
         )
     }
 }
@@ -184,7 +204,8 @@ fun TMDBLinkButton(tmdbId: String?) {
         Icon(
             painter = painterResource(id = R.drawable.tmdb_icon),
             contentDescription = "Open In TMDB Button",
-            modifier = Modifier.size(32.dp)
+            modifier = Modifier.size(32.dp),
+            tint = Color.Gray
         )
     }
 }

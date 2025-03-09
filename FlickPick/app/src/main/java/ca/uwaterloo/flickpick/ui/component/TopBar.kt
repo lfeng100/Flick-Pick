@@ -48,7 +48,9 @@ fun TopBar(title: String, buttons: List<TopBarButtonData>? = null) {
 }
 
 @Composable
-fun BackButtonTopBar(navController: NavController, buttons: List<TopBarButtonData>? = null) {
+fun BackButtonTopBar(navController: NavController,
+                     backButtonIcon: ImageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                     buttons: List<TopBarButtonData>? = null) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -60,7 +62,7 @@ fun BackButtonTopBar(navController: NavController, buttons: List<TopBarButtonDat
             modifier = Modifier
         ) {
             Icon(
-                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                imageVector = backButtonIcon,
                 contentDescription = "Back",
             )
         }

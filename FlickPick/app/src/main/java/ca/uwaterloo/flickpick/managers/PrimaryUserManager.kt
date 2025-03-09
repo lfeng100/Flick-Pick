@@ -7,12 +7,18 @@ import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import ca.uwaterloo.flickpick.dataObjects.Recommender.Models.Rating
 
+data class ReviewData(
+    val movieId: String,
+    val score: Float,
+    val message: String?
+)
+
 object PrimaryUserManager {
-    private val _ratings = mutableStateMapOf<String, Float>()
+    private val _reviews = mutableStateMapOf<String, ReviewData>()
     private val _watchlist = mutableStateListOf<String>()
     private val _watched = mutableStateListOf<String>()
 
-    val ratings: State<Map<String, Float>> = derivedStateOf { _ratings }
+    val reviews: State<Map<String, ReviewData>> = derivedStateOf { _reviews }
     val watchlist: State<List<String>> = derivedStateOf { _watchlist }
     val watched: State<List<String>> = derivedStateOf { _watched }
 
@@ -31,23 +37,23 @@ object PrimaryUserManager {
 
     fun removeFromWatched(movieId: String) {
         _watched.remove(movieId)
-        _ratings.remove(movieId)
+        _reviews.remove(movieId)
     }
 
-    fun removeRating(movieId: String) {
-        _ratings.remove(movieId)
+    fun removeReview(movieId: String) {
+        _reviews.remove(movieId)
     }
 
-    fun addRating(movieId: String, score: Float) {
-        _ratings[movieId] = score
+    fun addReview(movieId: String, score: Float, message: String?) {
+        _reviews[movieId] = ReviewData(movieId, score, message)
         _watched.insertSorted(movieId)
         _watchlist.remove(movieId)
     }
 
     fun getAllRatings(): List<Rating> {
         val ratingsList = mutableListOf<Rating>()
-        for((key, value) in _ratings) {
-            ratingsList.add(Rating(key, value))
+        for((key, value) in _reviews) {
+            ratingsList.add(Rating(key, value.score))
         }
         return ratingsList
     }
