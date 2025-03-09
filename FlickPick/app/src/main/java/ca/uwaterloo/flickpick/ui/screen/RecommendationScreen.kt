@@ -12,6 +12,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.FilterList
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -25,6 +26,9 @@ import ca.uwaterloo.flickpick.ui.component.TopBarButtonData
 @Composable
 fun RecommendationScreen(navController: NavController) {
     val recommendations by RecommendationRepository.recommendations.collectAsState()
+    LaunchedEffect(Unit) {
+        RecommendationRepository.fetchPersonalRecommendations()
+    }
     Scaffold(
         topBar = {
             TopBar("Your Picks",
@@ -52,7 +56,13 @@ fun RecommendationScreen(navController: NavController) {
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
                             row.forEach { movie ->
-                                MovieCard(movie = movie, navController = navController)
+                                MovieCard(
+                                    movie = movie,
+                                    width = 122.dp,
+                                    onClick = {
+                                        navController.navigate("movie/${movie.movieID}")
+                                    }
+                                )
                             }
                         }
                     }

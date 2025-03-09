@@ -12,7 +12,6 @@ import retrofit2.http.Query
 
 
 interface DatabaseApiService {
-
     // Users
     @POST("users/")
     suspend fun createUser(@Body newUser: User)
@@ -26,8 +25,6 @@ interface DatabaseApiService {
 
     @GET("movie/{id}")
     suspend fun getMovieById(@Path("id") movieId: String): Movie
-
-
 }
 
 object DatabaseClient {

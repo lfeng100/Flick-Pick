@@ -35,10 +35,10 @@ object MovieRepository {
                 for (movie in movieList) {
                     movieCache[movie.movieID] = movie
                 }
+                page += 1
             } catch (e: Exception) {
                 e.printStackTrace()
             }
-            page += 1
             _isFetching.value = false
         }
     }

@@ -3,6 +3,7 @@ package ca.uwaterloo.flickpick
 
 import MovieRepository
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
@@ -11,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -30,10 +32,6 @@ import com.google.firebase.auth.FirebaseAuth
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        // TODO: Figure out where to put this logic
-        MovieRepository.fetchMoreMovies()
-
         setContent {
             App()
         }
@@ -81,7 +79,12 @@ fun MainScreen() {
             composable("recommend") { RecommendationScreen(mainNavController) }
             composable("group") { ProfileScreen(mainNavController) }
             composable("profile") { ProfileScreen(mainNavController) }
-            composable("movie") { MovieInfoScreen(mainNavController) }
+            composable("movie/{movieId}") { navBackStackEntry ->
+                val movieId = navBackStackEntry.arguments?.getString("movieId")
+                if (movieId != null) {
+                    MovieInfoScreen(mainNavController, movieId)
+                }
+            }
         }
     }
 }
