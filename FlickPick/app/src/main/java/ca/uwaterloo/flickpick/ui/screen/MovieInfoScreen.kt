@@ -33,7 +33,7 @@ import ca.uwaterloo.flickpick.dataObjects.Database.Models.Movie
 import ca.uwaterloo.flickpick.ui.component.BackButtonTopBar
 import ca.uwaterloo.flickpick.ui.component.MovieCard
 import ca.uwaterloo.flickpick.ui.component.MovieGenres
-import ca.uwaterloo.flickpick.ui.component.MovieInteractButtons
+import ca.uwaterloo.flickpick.ui.component.MovieInteractionButtonRow
 import ca.uwaterloo.flickpick.ui.component.MovieDetails
 import coil.compose.AsyncImage
 
@@ -65,14 +65,15 @@ fun HeroImage(posterUrl: String) {
         contentDescription = "Hero Image",
         contentScale = ContentScale.Crop,
         modifier = Modifier
-            .height(300.dp)
+            .height(400.dp)
             .fillMaxWidth()
             .graphicsLayer { alpha = 0.40f }
             .drawWithContent {
                 drawContent()
                 drawRect(
                     brush = Brush.verticalGradient(
-                        colors = listOf(Color.Black, Color.Transparent)
+                        colors = listOf(Color.Black, Color.Transparent),
+                        startY = 0.5f
                     ),
                     blendMode = BlendMode.DstIn
                 )
@@ -94,7 +95,7 @@ fun MovieInfoLayout(movie: Movie) {
                 Spacer(modifier = Modifier.width(16.dp))
                 MovieDetails(movie)
             }
-            MovieInteractButtons(movie)
+            MovieInteractionButtonRow(movie)
             Text(text = movie.description ?: "", style = MaterialTheme.typography.bodyLarge)
             Spacer(modifier = Modifier.height(20.dp))
             MovieGenres(movie)
