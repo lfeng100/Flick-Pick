@@ -102,20 +102,3 @@ fun MovieInfoLayout(navController: NavController, movie: Movie) {
         }
     }
 }
-
-//class MovieInfoComponent : ComponentActivity() {
-//    override fun onCreate(savedInstanceState: Bundle?) {
-//        super.onCreate(savedInstanceState)
-//        setContent {
-//            FlickPickTheme {
-//                val navController = rememberNavController()
-//                Surface(
-//                    modifier = Modifier.fillMaxSize(),
-//                    color = MaterialTheme.colorScheme.background
-//                ) {
-//                    MovieInfoScreen(navController, "avengers-endgame")
-//                }
-//            }
-//        }
-//    }
-//}

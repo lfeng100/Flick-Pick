@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import ca.uwaterloo.flickpick.managers.RecommendationRepository
 import ca.uwaterloo.flickpick.ui.component.MovieCard
+import ca.uwaterloo.flickpick.ui.component.MovieGrid
 import ca.uwaterloo.flickpick.ui.component.TopBar
 import ca.uwaterloo.flickpick.ui.component.TopBarButtonData
 
@@ -45,29 +46,11 @@ fun RecommendationScreen(navController: NavController) {
                 .fillMaxSize()
                 .padding(padding)
         ) {
-            Column(modifier = Modifier.padding(start = 16.dp, end = 16.dp)) {
-                val rows = recommendations.chunked(3)
-                LazyColumn(
-                    modifier = Modifier.fillMaxSize()
-                ) {
-                    items(rows) { row ->
-                        Row(
-                            modifier = Modifier.fillParentMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ) {
-                            row.forEach { movie ->
-                                MovieCard(
-                                    movie = movie,
-                                    width = 122.dp,
-                                    onClick = {
-                                        navController.navigate("movie/${movie.movieID}")
-                                    }
-                                )
-                            }
-                        }
-                    }
-                }
-            }
+            MovieGrid(
+                movies = recommendations,
+                navController = navController,
+                hasTopMargin = false
+            )
         }
     }
 }
