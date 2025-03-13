@@ -1,25 +1,17 @@
-package ca.uwaterloo.flickpick.dataObjects.Recommender
+package ca.uwaterloo.flickpick.dataObjects.recommender
 
-import ca.uwaterloo.flickpick.dataObjects.Recommender.Querys.RecommendationQuery
+import ca.uwaterloo.flickpick.dataObjects.recommender.query.RecommendationQuery
 import com.squareup.moshi.Moshi
 import retrofit2.http.*
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
-import ca.uwaterloo.flickpick.dataObjects.Recommender.Reponses.GenreResponse
-import ca.uwaterloo.flickpick.dataObjects.Recommender.Reponses.LanguageResponse
-import ca.uwaterloo.flickpick.dataObjects.Recommender.Reponses.RecommendationResponse
+import ca.uwaterloo.flickpick.dataObjects.recommender.response.RecommendationResponse
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 
 
 interface RecommenderApiService {
     @POST("/recommend")
     suspend fun getRecommendations(@Body query: RecommendationQuery): RecommendationResponse
-
-    @GET("/genres")
-    suspend fun getGenres(): GenreResponse
-
-    @GET("/languages")
-    suspend fun getLanguages(): LanguageResponse
 }
 
 object RecommenderClient {

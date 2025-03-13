@@ -1,4 +1,4 @@
-package ca.uwaterloo.flickpick.dataObjects.Recommender.Reponses
+package ca.uwaterloo.flickpick.dataObjects.recommender.response
 
 import com.squareup.moshi.JsonClass
 

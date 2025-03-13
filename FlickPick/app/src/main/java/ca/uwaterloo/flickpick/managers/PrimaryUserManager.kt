@@ -5,7 +5,7 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.snapshots.SnapshotStateList
-import ca.uwaterloo.flickpick.dataObjects.Recommender.Models.Rating
+import ca.uwaterloo.flickpick.dataObjects.recommender.model.Rating
 
 data class ReviewData(
     val movieId: String,

@@ -1,6 +1,7 @@
 package ca.uwaterloo.flickpick
 
 
+import android.content.pm.ActivityInfo
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
@@ -11,6 +12,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.compose.NavHost
@@ -21,6 +23,7 @@ import ca.uwaterloo.flickpick.ui.screen.HomeScreen
 import ca.uwaterloo.flickpick.ui.screen.BrowseScreen
 import ca.uwaterloo.flickpick.ui.screen.MovieInfoScreen
 import ca.uwaterloo.flickpick.ui.screen.ProfileScreen
+import ca.uwaterloo.flickpick.ui.screen.RecommendationCarouselScreen
 import ca.uwaterloo.flickpick.ui.screen.RecommendationScreen
 import ca.uwaterloo.flickpick.ui.screen.ReviewScreen
 import ca.uwaterloo.flickpick.ui.theme.FlickPickTheme
@@ -29,6 +32,7 @@ import com.google.firebase.auth.FirebaseAuth
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         setContent {
             App()
         }
@@ -87,6 +91,9 @@ fun MainScreen() {
                 if (movieId != null) {
                     ReviewScreen(mainNavController, movieId)
                 }
+            }
+            composable("recommend/carousel") {
+                RecommendationCarouselScreen(mainNavController)
             }
         }
     }

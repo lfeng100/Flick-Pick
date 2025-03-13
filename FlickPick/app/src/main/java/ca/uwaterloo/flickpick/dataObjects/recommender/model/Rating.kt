@@ -1,9 +1,9 @@
-package ca.uwaterloo.flickpick.dataObjects.Recommender.Models
+package ca.uwaterloo.flickpick.dataObjects.recommender.model
 
 import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
 data class Rating(
-    val movie_id: String,
+    val movieID: String,
     val score: Float
 )

@@ -41,6 +41,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -64,8 +65,11 @@ fun MovieDetails(movie: Movie) {
 }
 
 @Composable
-fun MovieTitleText(movie: Movie) {
-    Column(Modifier.fillMaxWidth()) {
+fun MovieTitleText(movie: Movie, centered: Boolean = false) {
+    Column(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalAlignment = if (centered) Alignment.CenterHorizontally else Alignment.Start
+    ) {
         val releaseYearStr = movie.releaseYear.toString()
         Text(
             text = buildAnnotatedString {
@@ -76,7 +80,8 @@ fun MovieTitleText(movie: Movie) {
                 withStyle(style = SpanStyle(fontSize = MaterialTheme.typography.bodySmall.fontSize)) {
                     append(releaseYearStr)
                 }
-            }
+            },
+            textAlign = if (centered) TextAlign.Center else TextAlign.Start
         )
     }
 }
@@ -91,7 +96,7 @@ data class ToggleButtonItem(
 )
 
 @Composable
-fun MovieInteractionButtonRow(navController: NavController, movie : Movie) {
+fun MovieInteractionButtonRow(navController: NavController, movie: Movie, showTMDBLink: Boolean = true) {
     val isReviewChecked = remember {
         derivedStateOf {
             val ratings by PrimaryUserManager.reviews
@@ -148,13 +153,15 @@ fun MovieInteractionButtonRow(navController: NavController, movie : Movie) {
                 MovieInteractionButton(item)
             }
         }
-        Box(
-            modifier = Modifier
-                .weight(1f)
-                .fillMaxWidth(),
-            contentAlignment = Alignment.Center
-        ) {
-            TMDBLinkButton(movie.tmdbId)
+        if (showTMDBLink) {
+            Box(
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxWidth(),
+                contentAlignment = Alignment.Center
+            ) {
+                TMDBLinkButton(movie.tmdbId)
+            }
         }
     }
 }

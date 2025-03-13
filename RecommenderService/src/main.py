@@ -7,15 +7,15 @@ recommender = Recommender()
 app = FastAPI()
 
 class Rating(BaseModel):
-    movie_id: str
+    movieID: str
     score: float
 
-    @field_validator("movie_id")
+    @field_validator("movieID")
     @classmethod
-    def check_movie_id(cls, movie_id):
-        if not recommender.has_movie_id(movie_id):
-            raise ValueError("invalid movie_id")
-        return movie_id
+    def check_movieID(cls, movieID):
+        if not recommender.has_movie_id(movieID):
+            raise ValueError("invalid movieID")
+        return movieID
 
     @field_validator("score")
     @classmethod
@@ -29,15 +29,16 @@ class Rating(BaseModel):
         return score
 
 class Filters(BaseModel):
-    included_genres: Optional[List[str]] = None
-    excluded_genres: Optional[List[str]] = None
-    min_year: Optional[int] = None
-    max_year: Optional[int] = None
+    includedGenres: Optional[List[str]] = None
+    excludedGenres: Optional[List[str]] = None
+    minYear: Optional[int] = None
+    maxYear: Optional[int] = None
     languages: Optional[List[str]] = None
-    max_runtime: Optional[int] = None
-    min_score: Optional[float] = None
+    maxRuntime: Optional[int] = None
+    minScore: Optional[float] = None
+    excludedMovieIDs: Optional[List[str]] = None
 
-    @field_validator("included_genres", "excluded_genres")
+    @field_validator("includedGenres", "excludedGenres")
     @classmethod
     def check_genres(cls, genres):
         if genres == None:
@@ -57,7 +58,7 @@ class Filters(BaseModel):
                 raise ValueError('invalid language code')
         return languages
 
-    @field_validator("min_score")
+    @field_validator("minScore")
     @classmethod
     def check_score(cls, score):
         if score < 0:
@@ -65,6 +66,16 @@ class Filters(BaseModel):
         if score > 5.0:
             raise ValueError("minimum score must be <= 5.0")
         return score
+
+    @field_validator("excludedMovieIDs")
+    @classmethod
+    def check_movieIDs(cls, movieIDs):
+        if movieIDs == None:
+            return movieIDs
+        for movie_id in movieIDs:
+            if not recommender.has_movie_id(movie_id):
+                raise ValueError('invalid movie_id')
+        return movieIDs
 
 class Query(BaseModel):
     ratings: List[Rating]
@@ -74,13 +85,5 @@ class Query(BaseModel):
 async def recommend(query: Query):
     query_dict = query.model_dump()
     recommendations = recommender.get_k_recommendations(query_dict['ratings'], query_dict['filters'], 12)
-    result = [reccomendation[0] for reccomendation in recommendations]
+    result = [recomendation[0] for recomendation in recommendations]
     return {"recommendations": result}
-
-@app.get('/genres')
-async def genres():
-    return {"genres": list(recommender.genres)}
-
-@app.get('/languages')
-async def languages():
-    return {"languages": list(recommender.languages)}
