@@ -1,7 +1,7 @@
 package ca.uwaterloo.flickpick
 
 
-import MovieCatalogRepository
+import android.content.pm.ActivityInfo
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
@@ -12,30 +12,27 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import ca.uwaterloo.flickpick.managers.RecommendationManager
-import ca.uwaterloo.flickpick.ui.components.BottomNavBar
-import ca.uwaterloo.flickpick.ui.components.HomeScreenContent
-import ca.uwaterloo.flickpick.ui.components.MovieBrowser
-import ca.uwaterloo.flickpick.ui.components.MovieInfoScreen
-import ca.uwaterloo.flickpick.ui.components.Profile
-import ca.uwaterloo.flickpick.ui.components.RecommendationBrowser
+import ca.uwaterloo.flickpick.ui.component.BottomNavBar
+import ca.uwaterloo.flickpick.ui.screen.HomeScreen
+import ca.uwaterloo.flickpick.ui.screen.BrowseScreen
+import ca.uwaterloo.flickpick.ui.screen.MovieInfoScreen
+import ca.uwaterloo.flickpick.ui.screen.ProfileScreen
+import ca.uwaterloo.flickpick.ui.screen.RecommendationCarouselScreen
+import ca.uwaterloo.flickpick.ui.screen.RecommendationScreen
+import ca.uwaterloo.flickpick.ui.screen.ReviewScreen
 import ca.uwaterloo.flickpick.ui.theme.FlickPickTheme
 import com.google.firebase.auth.FirebaseAuth
-
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        // TODO: Figure out where to put this logic
-        MovieCatalogRepository.fetchMoreMovies()
-
+        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         setContent {
             App()
         }
@@ -70,27 +67,34 @@ fun MainScreen() {
     val mainNavController = rememberNavController()
     val context = LocalContext.current
     BackHandler {
-        if (mainNavController.previousBackStackEntry != null) {
-            mainNavController.popBackStack()
-        } else {
-            (context as? ComponentActivity)?.moveTaskToBack(true)
+        if (!mainNavController.popBackStack()) {
+            (context as? ComponentActivity)?.finish()
         }
     }
     Scaffold(
         bottomBar = { BottomNavBar(mainNavController) }
     ){ padding ->
         NavHost(mainNavController, startDestination = "library", modifier = Modifier.padding(padding)) {
-            composable("library") { HomeScreenContent(mainNavController) }
-            composable("browse") { MovieBrowser(mainNavController) }
-            composable("recommend") { RecommendationBrowser(mainNavController) }
-            composable("profile") { Profile(mainNavController) }
-            composable("movie") { MovieInfoScreen(mainNavController) }
+            composable("library") { HomeScreen(mainNavController) }
+            composable("browse") { BrowseScreen(mainNavController) }
+            composable("recommend") { RecommendationScreen(mainNavController) }
+            composable("group") { ProfileScreen(mainNavController) }
+            composable("profile") { ProfileScreen(mainNavController) }
+            composable("movie/{movieId}") { navBackStackEntry ->
+                val movieId = navBackStackEntry.arguments?.getString("movieId")
+                if (movieId != null) {
+                    MovieInfoScreen(mainNavController, movieId)
+                }
+            }
+            composable("review/{movieId}") { navBackStackEntry ->
+                val movieId = navBackStackEntry.arguments?.getString("movieId")
+                if (movieId != null) {
+                    ReviewScreen(mainNavController, movieId)
+                }
+            }
+            composable("recommend/carousel") {
+                RecommendationCarouselScreen(mainNavController)
+            }
         }
     }
-}
-
-@Preview
-@Composable
-fun AppPreview() {
-    App()
 }

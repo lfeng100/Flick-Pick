@@ -3,6 +3,8 @@ import pandas as pd
 import numpy as np
 import ast
 
+from src.filter import *
+
 class Recommender:
     def __init__(self):
         _, model = dump.load('./model/model')
@@ -34,7 +36,7 @@ class Recommender:
         return neighbors_movie_ids
 
     def get_k_recommendations(self, ratings: list, filters: dict, k: int):
-        rating_inner_ids = {self.to_inner_id(rating['movie_id']) for rating in ratings}
+        rating_inner_ids = {self.to_inner_id(rating['movieID']) for rating in ratings}
         scores = {}
         for inner_id in self.filter_inner_ids(filters):
             if inner_id in rating_inner_ids:
@@ -45,50 +47,38 @@ class Recommender:
         return [(self.to_raw_id(inner_id), score) for inner_id, score in sorted_scores[:k]]
 
     def filter_inner_ids(self, filters: dict):
-        if filters == None:
-            # If no filter, simply go through all inner_ids
-            for inner_id in range(len(self.model.sim)):
-                yield inner_id
-            return
+        filterList = []
+        if filters != None:
+            if filters['minYear'] != None:
+                filterList.append(MinYearFilter(filters['minYear']))
+            if filters['maxYear'] != None:
+                filterList.append(MaxYearFilter(filters['maxYear']))
+            if filters['languages'] != None:
+                filterList.append(LanguagesFilter(filters['languages']))
+            if filters['maxRuntime'] != None:
+                filterList.append(RuntimeFilter(filters['maxRuntime']))
+            if filters['minScore'] != None:
+                filterList.append(ScoreFilter(filters['minScore']))
+            if filters['excludedMovieIDs'] != None:
+                filterList.append(ExcludedMovieIdFilter(filters['excludedMovieIDs']))
+            if filters['includedGenres'] != None:
+                filterList.append(IncludedGenresFilter(filters['includedGenres']))
+            if filters['excludedGenres'] != None:
+                filterList.append(ExcludedGenresFilter(filters['excludedGenres']))
 
-        included_genres = filters['included_genres']
-        excluded_genres = filters['excluded_genres']
-        min_year = filters['min_year']
-        max_year = filters['max_year']
-        languages = filters['languages']
-        if languages != None:
-            languages = set(languages)
-        max_runtime = filters['max_runtime']
-        min_score = filters['min_score']
+        def allow_movie(movie_id: str, movie_info: dict) -> bool:
+            for filter in filterList:
+                if not filter.allow(movie_id, movie_info):
+                    return False
+            return True
 
         for inner_id in range(len(self.model.sim)):
             movie_id = self.to_raw_id(inner_id)
             movie_info = self.movie_info_map[movie_id]
-
-            genres = movie_info['genres']
-            year = movie_info['year']
-            original_language = movie_info['original_language']
-            runtime = movie_info['runtime']
-            vote_average = movie_info['vote_average']
-
-            if included_genres != None and genres.isdisjoint(included_genres):
-                continue
-            if excluded_genres != None and not genres.isdisjoint(excluded_genres):
-                continue
-            if min_year != None and min_year > year:
-                continue
-            if max_year != None and max_year < year:
-                continue
-            if languages != None and original_language not in languages:
-                continue
-            if max_runtime != None and max_runtime < runtime:
-                continue
-            if min_score != None and min_score > vote_average:
-                continue
-            yield inner_id
+            if allow_movie(movie_id, movie_info):
+                yield inner_id
 
     def weighted_similarity(self, rating: dict, inner_id: int):
         weight = rating['score'] / 5
-        similarity = self.model.sim[inner_id, self.to_inner_id(rating['movie_id'])]
+        similarity = self.model.sim[inner_id, self.to_inner_id(rating['movieID'])]
         return weight * similarity
-

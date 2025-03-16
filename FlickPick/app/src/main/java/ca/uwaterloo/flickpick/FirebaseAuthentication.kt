@@ -34,7 +34,7 @@ class FirebaseAuthentication {
         CoroutineScope(Dispatchers.IO).launch {
             DatabaseClient.apiService.createUser(user)
             withContext(Dispatchers.Main){
-                navController.navigate("authenticated")
+                navController.navigate("login")
             }
         }
     }
