@@ -56,16 +56,8 @@ fun MovieCoverFlowCarousel(
     val context = LocalContext.current
     LaunchedEffect(movies) {
         for (movie in movies) {
-            // Preload posters and hero images
             val posterUrl = movie.getPosterUrl()
             posterUrl?.let { url ->
-                val request = ImageRequest.Builder(context)
-                    .data(url)
-                    .build()
-                context.imageLoader.enqueue(request)
-            }
-            val highResPosterUrl = movie.getHighResPosterUrl()
-            highResPosterUrl?.let { url ->
                 val request = ImageRequest.Builder(context)
                     .data(url)
                     .build()

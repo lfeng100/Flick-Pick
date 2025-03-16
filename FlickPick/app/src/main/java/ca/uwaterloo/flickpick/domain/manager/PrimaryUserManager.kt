@@ -1,4 +1,4 @@
-package ca.uwaterloo.flickpick.managers
+package ca.uwaterloo.flickpick.domain.manager
 
 import androidx.compose.runtime.State
 import androidx.compose.runtime.derivedStateOf
@@ -60,7 +60,8 @@ object PrimaryUserManager {
 
     private fun SnapshotStateList<String>.insertSorted(movieId: String) {
         val idx = binarySearch(movieId)
-        val insertIdx = if (idx >= 0) idx else -idx - 1
+        if (idx >= 0) return;
+        val insertIdx = -idx - 1
         add(insertIdx, movieId)
     }
 }

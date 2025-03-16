@@ -19,15 +19,17 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import ca.uwaterloo.flickpick.dataObjects.Database.Models.Movie
-import ca.uwaterloo.flickpick.managers.RecommendationRepository
+import ca.uwaterloo.flickpick.domain.manager.RecommendationRepository
 import ca.uwaterloo.flickpick.ui.component.BackButtonTopBar
 import ca.uwaterloo.flickpick.ui.component.MovieCoverFlowCarousel
 import ca.uwaterloo.flickpick.ui.component.MovieInteractionButtonRow
 import ca.uwaterloo.flickpick.ui.component.MovieTitleText
-import coil.compose.AsyncImagePainter
+import coil.imageLoader
+import coil.request.ImageRequest
 
 @Composable
 fun RecommendationCarouselScreen(navController: NavController) {
@@ -35,6 +37,19 @@ fun RecommendationCarouselScreen(navController: NavController) {
     var targetMovie by remember { mutableStateOf<Movie?>(null) }
     LaunchedEffect(Unit) {
         RecommendationRepository.fetchPersonalRecommendations()
+    }
+    val context = LocalContext.current
+    LaunchedEffect(recommendations) {
+        // Preload hero images
+        for (movie in recommendations) {
+            val highResPosterUrl = movie.getHighResPosterUrl()
+            highResPosterUrl?.let { url ->
+                val request = ImageRequest.Builder(context)
+                    .data(url)
+                    .build()
+                context.imageLoader.enqueue(request)
+            }
+        }
     }
     Scaffold (
         topBar = { BackButtonTopBar(navController) }

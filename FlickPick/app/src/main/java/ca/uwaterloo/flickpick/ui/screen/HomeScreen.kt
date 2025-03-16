@@ -21,7 +21,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
 import ca.uwaterloo.flickpick.dataObjects.Database.Models.Movie
-import ca.uwaterloo.flickpick.managers.PrimaryUserManager
+import ca.uwaterloo.flickpick.domain.manager.PrimaryUserManager
 import ca.uwaterloo.flickpick.ui.component.LogoTopBar
 import ca.uwaterloo.flickpick.ui.component.MovieGrid
 import kotlinx.coroutines.launch
