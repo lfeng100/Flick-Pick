@@ -122,6 +122,10 @@ def get_groups(db: Session, limit: int = 10, offset: int = 0):
         "pages": (total + limit - 1) // limit
     }
 
+def get_group_by_id(db: Session, group_id: str):
+    """Retrieve a single group by its groupID."""
+    return db.query(models.Group).filter(models.Group.groupID == group_id).first()
+
 def search_groups(db: Session, query: str):
     return db.query(models.Group).filter(models.Group.groupName.ilike(f"%{query}%")).all()
 
