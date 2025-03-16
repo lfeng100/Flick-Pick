@@ -29,9 +29,11 @@ import ca.uwaterloo.flickpick.ui.component.TopBarButtonData
 fun BrowseScreen(navController: NavController) {
     var searchQuery by remember { mutableStateOf("") }
     var isFiltering by remember { mutableStateOf(false) }
+    var selectedTags by remember { mutableStateOf<List<String>>(emptyList()) }
 
     val movies by MovieRepository.movies.collectAsState()
     val isFetching by MovieRepository.isFetching.collectAsState()
+    val tags by MovieRepository.tags.collectAsState()
     Scaffold(
         topBar = {
             Column {
@@ -46,6 +48,7 @@ fun BrowseScreen(navController: NavController) {
                     query = searchQuery,
                     onQueryChanged = {
                         searchQuery = it
+                        MovieRepository.searchMovies(searchQuery, selectedTags)
                     }
                 )
             }

@@ -17,10 +17,16 @@ object MovieRepository {
     private val _isFetching = MutableStateFlow(false)
     val isFetching = _isFetching.asStateFlow()
 
+    private val _tags = MutableStateFlow(emptyList<String>())
+    val tags = _tags.asStateFlow()
+
     private val movieCache: MutableMap<String, Movie> = ConcurrentHashMap()
     private var job: Job? = null
     private var page = 0
 
+    init{
+        fetchTags()
+    }
     fun fetchMoreMovies() {
         Log.i("MovieCatalog", "Fetching page $page from backend")
         if (job?.isActive == true) {
@@ -42,6 +48,16 @@ object MovieRepository {
             _isFetching.value = false
         }
     }
+    fun fetchTags() {
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                val response = DatabaseClient.apiService.getTags()
+                _tags.value = response.items.map { it.tagID }
+            } catch (e: Exception) {
+                Log.e("MovieRepository", "Error fetching tags: ${e.message}")
+            }
+        }
+    }
 
     suspend fun getMovieForId(movieId: String): Movie? {
         if (movieCache[movieId] != null) {
@@ -60,4 +76,21 @@ object MovieRepository {
             }
         }
     }
+    fun searchMovies(titleQuery: String? = null, selectedTags: List<String>? = null) {
+        if (job?.isActive == true) {
+            Log.i("MovieCatalog", "Already searching, skipping")
+            return
+        }
+        job = CoroutineScope(Dispatchers.IO).launch {
+            _isFetching.value = true
+            try {
+                val response = DatabaseClient.apiService.searchMovies(titleQuery, selectedTags)
+                _movies.value = response.items
+            } catch (e: Exception) {
+                Log.e("MovieRepository", "Error searching movies: ${e.message}")
+            }
+            _isFetching.value = false
+        }
+    }
+
 }
