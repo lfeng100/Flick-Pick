@@ -11,18 +11,18 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import ca.uwaterloo.flickpick.dataObjects.Database.Models.Tag
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FilterBottomSheet(
-    tags: List<Tag>,
-    selectedTags: Map<String, String>,
     onFiltersChanged: (Map<String, String>) -> Unit,
     onDismiss: () -> Unit
 ) {
-    val sheetState = rememberModalBottomSheetState()
-    var selectedMap by remember { mutableStateOf(selectedTags.toMutableMap()) }
+    val tags by MovieRepository.tags.collectAsState()
+    val selectedTags by MovieRepository.selectedFilters.collectAsState()
 
-    var expandedCategory by remember { mutableStateOf<String?>(null) }
+    val sheetState = rememberModalBottomSheetState()
+
+    var expandedTagType by remember { mutableStateOf<String?>(null) }
 
     ModalBottomSheet(
         onDismissRequest = onDismiss,
@@ -38,15 +38,15 @@ fun FilterBottomSheet(
             Text("Select Filters", style = MaterialTheme.typography.headlineSmall)
             Spacer(modifier = Modifier.height(8.dp))
 
-            val categories = mapOf(
+            val tagTypes = mapOf(
                 "Genre" to tags.filter { it.tagType == "genre" },
                 "Language" to tags.filter { it.tagType == "language" },
                 "Year" to tags.filter { it.tagType == "year" }
             )
 
-            categories.forEach { (categoryName, categoryTags) ->
-                if (categoryTags.isNotEmpty()) {
-                    val selectedTag = categoryTags.find { it.tagID == selectedMap[categoryName] }
+            tagTypes.forEach { (tagType, tagsWithType) ->
+                if (tagsWithType.isNotEmpty()) {
+                    val selectedTag = tagsWithType.firstOrNull { it.tagID == selectedTags[tagType] }
 
                     Row(
                         modifier = Modifier
@@ -56,43 +56,70 @@ fun FilterBottomSheet(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text(
-                            text = "$categoryName: ${selectedTag?.tagName ?: "None"}",
+                            text = "$tagType: ${selectedTag?.tagName ?: "None"}",
                             fontWeight = FontWeight.Bold
                         )
 
-                        // 🔥 Toggle expand/collapse
-                        TextButton(onClick = {
-                            expandedCategory = if (expandedCategory == categoryName) null else categoryName
-                        }) {
-                            Text(if (expandedCategory == categoryName) "Done" else "Change")
-                        }
+                        ToggleChangeFilterButton(
+                            isExpanded = expandedTagType == tagType,
+                            onToggle = {
+                                expandedTagType = if (expandedTagType == tagType) null else tagType
+                            }
+                        )
                     }
 
-                    if (expandedCategory == categoryName) {
-                        FlowRow {
-                            categoryTags.forEach { tag ->
-                                val isSelected = selectedMap[categoryName] == tag.tagID
-                                FilterChip(
-                                    tag = tag,
-                                    isSelected = isSelected,
-                                    onSelected = { isSelectedNow ->
-                                        val newFilters = selectedMap.toMutableMap()
+                    if (expandedTagType == tagType) {
+                        TagSelectionRow(
+                            tags = tagsWithType,
+                            selectedTagId = selectedTags[tagType],
+                            tagType = tagType,
+                            onSelectionChanged = { newTagId ->
+                                val newFilters = selectedTags.toMutableMap()
+                                if (newTagId != null) {
+                                    //change for type
+                                    newFilters[tagType] = newTagId
+                                } else {
+                                    //otherwise, remove it
+                                    newFilters.remove(tagType)
+                                }
 
-                                        if (isSelectedNow) {
-                                            newFilters[categoryName] = tag.tagID
-                                        } else {
-                                            newFilters.remove(categoryName)
-                                        }
-
-                                        selectedMap = newFilters
-                                        onFiltersChanged(newFilters)
-                                    }
-                                )
+                                onFiltersChanged(newFilters)
                             }
-                        }
+                        )
                     }
                 }
             }
+        }
+    }
+}
+
+
+@Composable
+fun ToggleChangeFilterButton(isExpanded: Boolean, onToggle: () -> Unit) {
+    TextButton(onClick = onToggle) {
+        Text(if (isExpanded) "Done" else "Change")
+    }
+}
+
+
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+fun TagSelectionRow(
+    tags: List<Tag>,
+    selectedTagId: String?,
+    tagType: String,
+    onSelectionChanged: (String?) -> Unit
+) {
+    FlowRow {
+        tags.forEach { tag ->
+            val isSelected = selectedTagId == tag.tagID
+            FilterChip(
+                tag = tag,
+                isSelected = isSelected,
+                onSelected = { isSelectedNow ->
+                    onSelectionChanged(if (isSelectedNow) tag.tagID else null)
+                }
+            )
         }
     }
 }

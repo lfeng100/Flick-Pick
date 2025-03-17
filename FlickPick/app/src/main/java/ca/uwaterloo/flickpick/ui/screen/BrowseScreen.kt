@@ -28,8 +28,6 @@ fun BrowseScreen(navController: NavController) {
 
     val movies by MovieRepository.movies.collectAsState()
     val isFetching by MovieRepository.isFetching.collectAsState()
-    val tags by MovieRepository.tags.collectAsState()
-    val selectedTags by MovieRepository.selectedFilters.collectAsState()
     Scaffold(
         topBar = {
             Column {
@@ -45,7 +43,7 @@ fun BrowseScreen(navController: NavController) {
                     query = searchQuery,
                     onQueryChanged = {
                         searchQuery = it
-                        MovieRepository.searchMovies(searchQuery, selectedTags)
+                        MovieRepository.searchMovies(searchQuery)
                     }
                 )
             }
@@ -70,8 +68,6 @@ fun BrowseScreen(navController: NavController) {
             )
             if (isFiltering) {
                 FilterBottomSheet(
-                    tags = tags,
-                    selectedTags = selectedTags,
                     onFiltersChanged = { newTags ->
                         MovieRepository.applyFilters(newTags)
                     },

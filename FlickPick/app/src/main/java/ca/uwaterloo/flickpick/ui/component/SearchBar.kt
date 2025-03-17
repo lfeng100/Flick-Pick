@@ -20,8 +20,8 @@ fun SearchBar(query: String, onQueryChanged: (String) -> Unit) {
     TextField(
         value = query,
         onValueChange = onQueryChanged,
-        leadingIcon = { Icon(imageVector = Icons.Rounded.Search, contentDescription = "Search Icon") },
-        placeholder = { Text("Search movies...") },
+        leadingIcon = { Icon(imageVector = Icons.Rounded.Search, contentDescription = "") },
+        placeholder = { Text("Search") },
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp)

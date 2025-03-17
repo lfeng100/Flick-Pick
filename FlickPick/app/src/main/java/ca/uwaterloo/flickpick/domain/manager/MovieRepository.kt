@@ -64,7 +64,9 @@ object MovieRepository {
     }
 
     fun applyFilters(selectedTags: Map<String, String>) {
+        //update filter
         _selectedFilters.value = selectedTags
+        //search movies
         searchMovies()
     }
 
@@ -85,20 +87,19 @@ object MovieRepository {
             }
         }
     }
-    fun searchMovies(titleQuery: String? = null, selectedTags: Map<String, String>? = null) {
+    fun searchMovies(titleQuery: String? = null) {
         if (job?.isActive == true) {
-            Log.i("MovieCatalog", "Already searching, skipping")
             return
         }
         job = CoroutineScope(Dispatchers.IO).launch {
             _isFetching.value = true
             try {
-                val response = DatabaseClient.apiService.searchMovies(
+                val movies = DatabaseClient.apiService.searchMovies(
                     titleQuery,
-                    selectedTags?.values?.toList() ?: _selectedFilters.value.values.toList()
+                    _selectedFilters.value.values.toList()
                 )
-                _movies.value = response.items
-                Log.i("MovieRepository", "Movies updated with filters: ${_selectedFilters.value}")
+                _movies.value = movies.items
+                Log.i("MovieRepository", "Movies updated using filters: ${_selectedFilters.value}")
             } catch (e: Exception) {
                 Log.e("MovieRepository", "Error searching movies: ${e.message}")
             }
