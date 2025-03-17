@@ -5,8 +5,10 @@ import retrofit2.http.*
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import ca.uwaterloo.flickpick.dataObjects.Database.Models.Movie
+import ca.uwaterloo.flickpick.dataObjects.Database.Models.Tag
 import ca.uwaterloo.flickpick.dataObjects.Database.Models.User
 import ca.uwaterloo.flickpick.dataObjects.Database.Responses.MovieResponse
+import ca.uwaterloo.flickpick.dataObjects.Database.Responses.TagResponse
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import retrofit2.http.Query
 
@@ -25,6 +27,15 @@ interface DatabaseApiService {
 
     @GET("movie/{id}")
     suspend fun getMovieById(@Path("id") movieId: String): Movie
+    @GET("movies/search/")
+    suspend fun searchMovies(
+        @Query("title_query") titleQuery: String? = null,
+        @Query("tag_ids") selectedTags: List<String>? = null
+    ): MovieResponse
+
+    //tags
+    @GET("tags/")
+    suspend fun getTags(): List<Tag>
 }
 
 object DatabaseClient {
