@@ -113,7 +113,7 @@ fun TagSelectionRow(
     FlowRow {
         tags.forEach { tag ->
             val isSelected = selectedTagId == tag.tagID
-            FilterChip(
+            FilterPill(
                 tag = tag,
                 isSelected = isSelected,
                 onSelected = { isSelectedNow ->

@@ -13,7 +13,7 @@ import androidx.compose.ui.unit.dp
 import ca.uwaterloo.flickpick.dataObjects.Database.Models.Tag
 
 @Composable
-fun FilterChip(tag: Tag, isSelected: Boolean, onSelected: (Boolean) -> Unit) {
+fun FilterPill(tag: Tag, isSelected: Boolean, onSelected: (Boolean) -> Unit) {
     Surface(
         shape = RoundedCornerShape(16.dp),
         color = if (isSelected) MaterialTheme.colorScheme.primary else Color.LightGray,
