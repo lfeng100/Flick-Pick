@@ -4,7 +4,6 @@ import MovieRepository
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -15,10 +14,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.navigation.NavController
 import ca.uwaterloo.flickpick.ui.component.FilterBottomSheet
-import ca.uwaterloo.flickpick.ui.component.FilterDropDown
 import ca.uwaterloo.flickpick.ui.component.InfiniteMovieGrid
 import ca.uwaterloo.flickpick.ui.component.SearchBar
 import ca.uwaterloo.flickpick.ui.component.TopBar
@@ -64,6 +61,7 @@ fun BrowseScreen(navController: NavController) {
             InfiniteMovieGrid(
                 movies,
                 navController,
+                isFetching = isFetching,
                 onLoadMore = {
                     if (!isFetching) {
                         MovieRepository.fetchMoreMovies()

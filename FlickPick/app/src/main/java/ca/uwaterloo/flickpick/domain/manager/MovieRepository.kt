@@ -21,7 +21,7 @@ object MovieRepository {
     private val _tags = MutableStateFlow(emptyList<Tag>())
     val tags = _tags.asStateFlow()
 
-    private val _selectedFilters = MutableStateFlow(emptyList<String>())
+    private val _selectedFilters = MutableStateFlow(mapOf<String, String>())
     val selectedFilters = _selectedFilters.asStateFlow()
 
     private val movieCache: MutableMap<String, Movie> = ConcurrentHashMap()
@@ -63,11 +63,9 @@ object MovieRepository {
         }
     }
 
-    fun applyFilters(selectedTags: List<String>) {
-        if (_selectedFilters.value != selectedTags) {
-            _selectedFilters.value = selectedTags
-            searchMovies(selectedTags = _selectedFilters.value)
-        }
+    fun applyFilters(selectedTags: Map<String, String>) {
+        _selectedFilters.value = selectedTags
+        searchMovies()
     }
 
     suspend fun getMovieForId(movieId: String): Movie? {
@@ -87,7 +85,7 @@ object MovieRepository {
             }
         }
     }
-    fun searchMovies(titleQuery: String? = null, selectedTags: List<String>? = null) {
+    fun searchMovies(titleQuery: String? = null, selectedTags: Map<String, String>? = null) {
         if (job?.isActive == true) {
             Log.i("MovieCatalog", "Already searching, skipping")
             return
@@ -97,7 +95,7 @@ object MovieRepository {
             try {
                 val response = DatabaseClient.apiService.searchMovies(
                     titleQuery,
-                    selectedTags ?: _selectedFilters.value
+                    selectedTags?.values?.toList() ?: _selectedFilters.value.values.toList()
                 )
                 _movies.value = response.items
                 Log.i("MovieRepository", "Movies updated with filters: ${_selectedFilters.value}")
@@ -107,6 +105,4 @@ object MovieRepository {
             _isFetching.value = false
         }
     }
-
-
 }
