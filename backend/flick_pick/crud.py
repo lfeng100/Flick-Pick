@@ -1,4 +1,5 @@
 from sqlalchemy.orm import Session
+from sqlalchemy.sql import func
 import models, schemas
 import json
 
@@ -301,11 +302,15 @@ def search_movies(db: Session, title_query: str = None, tag_ids: list = None, li
 
     # Filter by tags if provided
     if tag_ids and isinstance(tag_ids, list) and len(tag_ids) > 0:
-        query = (
-            query.join(models.MovieTag)
+        # Count number of matching tags per movie
+        subquery = (
+            db.query(models.MovieTag.movieID)
             .filter(models.MovieTag.tagID.in_(tag_ids))
-            .distinct()
+            .group_by(models.MovieTag.movieID)
+            .having(func.count(models.MovieTag.tagID) == len(tag_ids))  # Ensure all tags are matched
+            .subquery()
         )
+        query = query.filter(models.Movie.movieID.in_(subquery))
 
     total = query.count()  # Count total results before applying limit/offset
     movies = query.offset(offset).limit(limit).all()
