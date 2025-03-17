@@ -1,61 +1,93 @@
 package ca.uwaterloo.flickpick.ui.screen
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Psychology
 import androidx.compose.material.icons.filled.Star
-import androidx.compose.material.icons.rounded.FilterList
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import ca.uwaterloo.flickpick.managers.RecommendationRepository
-import ca.uwaterloo.flickpick.ui.component.MovieCard
-import ca.uwaterloo.flickpick.ui.component.MovieCoverFlowCarousel
-import ca.uwaterloo.flickpick.ui.component.MovieGrid
+import ca.uwaterloo.flickpick.domain.manager.PrimaryUserManager
+import ca.uwaterloo.flickpick.domain.manager.RecommendationRepository
+import ca.uwaterloo.flickpick.ui.component.BrowseMovieReminder
+import ca.uwaterloo.flickpick.ui.component.FiltersCustomizer
 import ca.uwaterloo.flickpick.ui.component.TopBar
-import ca.uwaterloo.flickpick.ui.component.TopBarButtonData
 
 @Composable
 fun RecommendationScreen(navController: NavController) {
     Scaffold(
-        topBar = {
-            TopBar("Your Picks",
-                listOf(
-                    TopBarButtonData(
-                        icon = Icons.Rounded.FilterList,
-                        onClick = {}
-                    )
-                ))
-        }
+        topBar = { TopBar("Your Picks") }
     ) { padding ->
-        Box(
+        var showFilterCustomizer by remember { mutableStateOf(false) }
+        val filters by RecommendationRepository.filters
+        if (PrimaryUserManager.reviews.value.isEmpty()) {
+            Spacer(modifier = Modifier.padding(padding))
+            BrowseMovieReminder(navController, "Add a review to get\nrecommendations!");
+            return@Scaffold
+        }
+        Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding),
-            contentAlignment = Alignment.Center
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            IconButton(
+            Button(
                 onClick = { navController.navigate("recommend/carousel") }
             ) {
-                Icon(
-                    imageVector = Icons.Default.Star,
-                    contentDescription = "Star Button"
-                )
+                Row(
+                    modifier = Modifier.width(160.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.Star,
+                        contentDescription = "Star Button"
+                    )
+                    Spacer(Modifier.width(10.dp))
+                    Text(text = "Show me my picks")
+                }
+            }
+            Spacer(Modifier.height(20.dp))
+            Button(
+                onClick = { showFilterCustomizer = true }
+            ) {
+                Row(
+                    modifier = Modifier.width(160.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.Psychology,
+                        contentDescription = "Preference Button"
+                    )
+                    Spacer(Modifier.width(10.dp))
+                    Text(text = if (filters == null) "Set preferences" else "Update preferences")
+                }
+            }
+        }
+        if (showFilterCustomizer) {
+            FiltersCustomizer(initial = filters) { f ->
+                showFilterCustomizer = false
+                RecommendationRepository.setFilters(f)
+                RecommendationRepository.clearPersonalRecommendation()
             }
         }
     }

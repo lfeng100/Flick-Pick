@@ -9,7 +9,7 @@ data class Movie(
     val movieID: String,
     val title: String,
     val releaseYear: Int,
-    val genres: List<String>, // Assuming JSON array
+    val genres: List<String>,
     val rating: Float?,
     val description: String?,
     @Json(name = "tmdb_id") val tmdbId: String?,
@@ -18,12 +18,10 @@ data class Movie(
 )
  {
     fun getPosterUrl(): String? {
-        Log.d("MovieItem", "Poster Path: ${posterPath}")
         return posterPath?.let { "https://image.tmdb.org/t/p/w200$it.jpg" }
     }
 
      fun getHighResPosterUrl(): String? {
-         Log.d("MovieItem", "Poster Path: ${posterPath}")
          return posterPath?.let { "https://image.tmdb.org/t/p/w780$it.jpg" }
      }
 }

@@ -1,4 +1,5 @@
 from sqlalchemy.orm import Session
+from sqlalchemy.sql import func
 import models, schemas
 import json
 
@@ -121,6 +122,10 @@ def get_groups(db: Session, limit: int = 10, offset: int = 0):
         "page": (offset // limit) + 1,
         "pages": (total + limit - 1) // limit
     }
+
+def get_group_by_id(db: Session, group_id: str):
+    """Retrieve a single group by its groupID."""
+    return db.query(models.Group).filter(models.Group.groupID == group_id).first()
 
 def search_groups(db: Session, query: str):
     return db.query(models.Group).filter(models.Group.groupName.ilike(f"%{query}%")).all()
@@ -297,11 +302,15 @@ def search_movies(db: Session, title_query: str = None, tag_ids: list = None, li
 
     # Filter by tags if provided
     if tag_ids and isinstance(tag_ids, list) and len(tag_ids) > 0:
-        query = (
-            query.join(models.MovieTag)
+        # Count number of matching tags per movie
+        subquery = (
+            db.query(models.MovieTag.movieID)
             .filter(models.MovieTag.tagID.in_(tag_ids))
-            .distinct()
+            .group_by(models.MovieTag.movieID)
+            .having(func.count(models.MovieTag.tagID) == len(tag_ids))  # Ensure all tags are matched
+            .subquery()
         )
+        query = query.filter(models.Movie.movieID.in_(subquery))
 
     total = query.count()  # Count total results before applying limit/offset
     movies = query.offset(offset).limit(limit).all()

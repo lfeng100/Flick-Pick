@@ -31,6 +31,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import ca.uwaterloo.flickpick.R
 import ca.uwaterloo.flickpick.dataObjects.Database.Models.Movie
 import coil.imageLoader
@@ -41,6 +42,7 @@ import kotlin.math.sign
 
 @Composable
 fun MovieCoverFlowCarousel(
+    navController: NavController,
     movies: List<Movie>,
     onIndexChanged: (Int) -> Unit,
     onRefreshClicked: () -> Unit
@@ -56,16 +58,8 @@ fun MovieCoverFlowCarousel(
     val context = LocalContext.current
     LaunchedEffect(movies) {
         for (movie in movies) {
-            // Preload posters and hero images
             val posterUrl = movie.getPosterUrl()
             posterUrl?.let { url ->
-                val request = ImageRequest.Builder(context)
-                    .data(url)
-                    .build()
-                context.imageLoader.enqueue(request)
-            }
-            val highResPosterUrl = movie.getHighResPosterUrl()
-            highResPosterUrl?.let { url ->
                 val request = ImageRequest.Builder(context)
                     .data(url)
                     .build()
@@ -113,7 +107,13 @@ fun MovieCoverFlowCarousel(
         }
         itemsIndexed(movies) { index, movie ->
             CoverFlowItem(listState, index + 1) {
-                MovieCard(movie, 180.dp)
+                MovieCard(
+                    movie = movie,
+                    width = 180.dp,
+                    onClick = {
+                        navController.navigate("movie/${movie.movieID}")
+                    }
+                )
             }
         }
         item {

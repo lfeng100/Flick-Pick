@@ -47,7 +47,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import ca.uwaterloo.flickpick.R
 import ca.uwaterloo.flickpick.dataObjects.Database.Models.Movie
-import ca.uwaterloo.flickpick.managers.PrimaryUserManager
+import ca.uwaterloo.flickpick.domain.manager.PrimaryUserManager
 
 @Composable
 fun MovieDetails(movie: Movie) {
@@ -97,19 +97,19 @@ data class ToggleButtonItem(
 
 @Composable
 fun MovieInteractionButtonRow(navController: NavController, movie: Movie, showTMDBLink: Boolean = true) {
-    val isReviewChecked = remember {
+    val isReviewChecked = remember(movie) {
         derivedStateOf {
             val ratings by PrimaryUserManager.reviews
             ratings[movie.movieID] != null
         }
     }
-    val isWatchedChecked = remember {
+    val isWatchedChecked = remember(movie) {
         derivedStateOf {
             val watched by PrimaryUserManager.watched
             watched.binarySearch(movie.movieID) >= 0
         }
     }
-    val isWatchlistChecked = remember {
+    val isWatchlistChecked = remember(movie) {
         derivedStateOf {
             val watchlist by PrimaryUserManager.watchlist
             watchlist.binarySearch(movie.movieID) >= 0

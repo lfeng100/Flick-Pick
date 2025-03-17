@@ -24,7 +24,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import ca.uwaterloo.flickpick.dataObjects.Database.Models.Movie
-import ca.uwaterloo.flickpick.managers.PrimaryUserManager
+import ca.uwaterloo.flickpick.domain.manager.PrimaryUserManager
 import ca.uwaterloo.flickpick.ui.component.BackButtonTopBar
 import ca.uwaterloo.flickpick.ui.component.MovieTitleText
 import ca.uwaterloo.flickpick.ui.component.StarRatingBar

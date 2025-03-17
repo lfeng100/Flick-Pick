@@ -56,6 +56,7 @@ dependencies {
     implementation("com.google.firebase:firebase-auth")
     val nav_version = "2.8.7"
     implementation(libs.androidx.core.ktx)
+    implementation ("androidx.compose.material3:material3:1.1.2")
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("io.coil-kt:coil-compose:2.2.2")
     implementation("com.squareup.retrofit2:converter-moshi:2.9.0")

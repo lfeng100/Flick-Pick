@@ -1,6 +1,7 @@
 import android.util.Log
 import ca.uwaterloo.flickpick.dataObjects.Database.Models.Movie
 import ca.uwaterloo.flickpick.dataObjects.Database.DatabaseClient
+import ca.uwaterloo.flickpick.dataObjects.Database.Models.Tag
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.CoroutineScope
@@ -17,10 +18,19 @@ object MovieRepository {
     private val _isFetching = MutableStateFlow(false)
     val isFetching = _isFetching.asStateFlow()
 
+    private val _tags = MutableStateFlow(emptyList<Tag>())
+    val tags = _tags.asStateFlow()
+
+    private val _selectedFilters = MutableStateFlow(mapOf<String, String>())
+    val selectedFilters = _selectedFilters.asStateFlow()
+
     private val movieCache: MutableMap<String, Movie> = ConcurrentHashMap()
     private var job: Job? = null
     private var page = 0
 
+    init{
+        fetchTags()
+    }
     fun fetchMoreMovies() {
         Log.i("MovieCatalog", "Fetching page $page from backend")
         if (job?.isActive == true) {
@@ -42,6 +52,23 @@ object MovieRepository {
             _isFetching.value = false
         }
     }
+    fun fetchTags() {
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                val response = DatabaseClient.apiService.getTags()
+                _tags.value = response
+            } catch (e: Exception) {
+                Log.e("MovieRepository", "Error fetching tags: ${e.message}")
+            }
+        }
+    }
+
+    fun applyFilters(selectedTags: Map<String, String>) {
+        //update filter
+        _selectedFilters.value = selectedTags
+        //search movies
+        searchMovies()
+    }
 
     suspend fun getMovieForId(movieId: String): Movie? {
         if (movieCache[movieId] != null) {
@@ -58,6 +85,25 @@ object MovieRepository {
                 Log.e("API_ERROR", "Error fetching movies: ${e.message}")
                 null
             }
+        }
+    }
+    fun searchMovies(titleQuery: String? = null) {
+        if (job?.isActive == true) {
+            return
+        }
+        job = CoroutineScope(Dispatchers.IO).launch {
+            _isFetching.value = true
+            try {
+                val movies = DatabaseClient.apiService.searchMovies(
+                    titleQuery,
+                    _selectedFilters.value.values.toList()
+                )
+                _movies.value = movies.items
+                Log.i("MovieRepository", "Movies updated using filters: ${_selectedFilters.value}")
+            } catch (e: Exception) {
+                Log.e("MovieRepository", "Error searching movies: ${e.message}")
+            }
+            _isFetching.value = false
         }
     }
 }

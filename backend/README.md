@@ -28,6 +28,11 @@ Run the setup file to initialize DB and Tables:
 or in Powershell:
 ```Get-Content .\setup.sql | mysql -u root -p```
 
+(Optional) Similarly, populate tables with mock users and groups:
+```mysql -u root -p < seed.sql```
+or in Powershell:
+```Get-Content .\seed.sql | mysql -u root -p```
+
 Check if db and tables exists:
 ```mysql -u root -p```
 ```

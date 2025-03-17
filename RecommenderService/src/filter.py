@@ -10,14 +10,14 @@ class IncludedGenresFilter:
         self.includedGenres = includedGenres
 
     def allow(self, movie_id: str, movie_info: dict) -> bool:
-        return movie_info['genres'].isdisjoint(self.includedGenres)
+        return not movie_info['genres'].isdisjoint(self.includedGenres)
 
 class ExcludedGenresFilter:
     def __init__(self, excludedGenres: list):
         self.excludedGenres = excludedGenres
 
     def allow(self, movie_id: str, movie_info: dict) -> bool:
-        return not movie_info['genres'].isdisjoint(self.excludedGenres)
+        return movie_info['genres'].isdisjoint(self.excludedGenres)
 
 class MinYearFilter:
     def __init__(self, minYear: int):
