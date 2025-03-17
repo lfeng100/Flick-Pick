@@ -1,6 +1,7 @@
 import android.util.Log
 import ca.uwaterloo.flickpick.dataObjects.Database.Models.Movie
 import ca.uwaterloo.flickpick.dataObjects.Database.DatabaseClient
+import ca.uwaterloo.flickpick.dataObjects.Database.Models.Tag
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.CoroutineScope
@@ -17,8 +18,11 @@ object MovieRepository {
     private val _isFetching = MutableStateFlow(false)
     val isFetching = _isFetching.asStateFlow()
 
-    private val _tags = MutableStateFlow(emptyList<String>())
+    private val _tags = MutableStateFlow(emptyList<Tag>())
     val tags = _tags.asStateFlow()
+
+    private val _selectedFilters = MutableStateFlow(emptyList<String>())
+    val selectedFilters = _selectedFilters.asStateFlow()
 
     private val movieCache: MutableMap<String, Movie> = ConcurrentHashMap()
     private var job: Job? = null
@@ -52,10 +56,17 @@ object MovieRepository {
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 val response = DatabaseClient.apiService.getTags()
-                _tags.value = response.items.map { it.tagID }
+                _tags.value = response
             } catch (e: Exception) {
                 Log.e("MovieRepository", "Error fetching tags: ${e.message}")
             }
+        }
+    }
+
+    fun applyFilters(selectedTags: List<String>) {
+        if (_selectedFilters.value != selectedTags) {
+            _selectedFilters.value = selectedTags
+            searchMovies(selectedTags = _selectedFilters.value)
         }
     }
 
@@ -84,13 +95,18 @@ object MovieRepository {
         job = CoroutineScope(Dispatchers.IO).launch {
             _isFetching.value = true
             try {
-                val response = DatabaseClient.apiService.searchMovies(titleQuery, selectedTags)
+                val response = DatabaseClient.apiService.searchMovies(
+                    titleQuery,
+                    selectedTags ?: _selectedFilters.value
+                )
                 _movies.value = response.items
+                Log.i("MovieRepository", "Movies updated with filters: ${_selectedFilters.value}")
             } catch (e: Exception) {
                 Log.e("MovieRepository", "Error searching movies: ${e.message}")
             }
             _isFetching.value = false
         }
     }
+
 
 }
