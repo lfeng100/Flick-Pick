@@ -22,6 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
 import ca.uwaterloo.flickpick.dataObjects.Database.Models.Movie
 import ca.uwaterloo.flickpick.domain.manager.PrimaryUserManager
+import ca.uwaterloo.flickpick.ui.component.BrowseMovieReminder
 import ca.uwaterloo.flickpick.ui.component.LogoTopBar
 import ca.uwaterloo.flickpick.ui.component.MovieGrid
 import kotlinx.coroutines.launch
@@ -87,9 +88,27 @@ fun HomeScreen(navController: NavController) {
                 modifier = Modifier.fillMaxSize()
             ) { page ->
                 when (page) {
-                    0 -> MovieGrid(reviewed, navController)
-                    1 -> MovieGrid(watched, navController)
-                    2 -> MovieGrid(watchlist, navController)
+                    0 -> {
+                        if (PrimaryUserManager.reviews.value.isEmpty()) {
+                            BrowseMovieReminder(navController, "You don't have any reviews!");
+                            return@HorizontalPager;
+                        }
+                        MovieGrid(reviewed, navController)
+                    }
+                    1 -> {
+                        if (PrimaryUserManager.watched.value.isEmpty()) {
+                            BrowseMovieReminder(navController, "You haven't watched anything!");
+                            return@HorizontalPager;
+                        }
+                        MovieGrid(watched, navController)
+                    }
+                    2 -> {
+                        if (PrimaryUserManager.watchlist.value.isEmpty()) {
+                            BrowseMovieReminder(navController, "Your watchlist is empty!");
+                            return@HorizontalPager;
+                        }
+                        MovieGrid(watchlist, navController)
+                    }
                 }
             }
         }

@@ -24,7 +24,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import ca.uwaterloo.flickpick.domain.manager.PrimaryUserManager
 import ca.uwaterloo.flickpick.domain.manager.RecommendationRepository
+import ca.uwaterloo.flickpick.ui.component.BrowseMovieReminder
 import ca.uwaterloo.flickpick.ui.component.FiltersCustomizer
 import ca.uwaterloo.flickpick.ui.component.TopBar
 
@@ -35,6 +37,11 @@ fun RecommendationScreen(navController: NavController) {
     ) { padding ->
         var showFilterCustomizer by remember { mutableStateOf(false) }
         val filters by RecommendationRepository.filters
+        if (PrimaryUserManager.reviews.value.isEmpty()) {
+            Spacer(modifier = Modifier.padding(padding))
+            BrowseMovieReminder(navController, "Add a review to get\nrecommendations!");
+            return@Scaffold
+        }
         Column(
             modifier = Modifier
                 .fillMaxSize()

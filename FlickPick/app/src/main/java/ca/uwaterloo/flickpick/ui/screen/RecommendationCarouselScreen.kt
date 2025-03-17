@@ -65,6 +65,7 @@ fun RecommendationCarouselScreen(navController: NavController) {
         ) {
             if (recommendations.isNotEmpty()) {
                 MovieCoverFlowCarousel(
+                    navController = navController,
                     movies = recommendations,
                     onIndexChanged = { index ->
                         targetMovie = recommendations[index]
