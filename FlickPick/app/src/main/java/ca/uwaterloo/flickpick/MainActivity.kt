@@ -19,8 +19,9 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import ca.uwaterloo.flickpick.ui.component.BottomNavBar
-import ca.uwaterloo.flickpick.ui.screen.HomeScreen
 import ca.uwaterloo.flickpick.ui.screen.BrowseScreen
+import ca.uwaterloo.flickpick.ui.screen.GroupsScreen
+import ca.uwaterloo.flickpick.ui.screen.HomeScreen
 import ca.uwaterloo.flickpick.ui.screen.MovieInfoScreen
 import ca.uwaterloo.flickpick.ui.screen.ProfileScreen
 import ca.uwaterloo.flickpick.ui.screen.RecommendationCarouselScreen
@@ -78,7 +79,7 @@ fun MainScreen() {
             composable("library") { HomeScreen(mainNavController) }
             composable("browse") { BrowseScreen(mainNavController) }
             composable("recommend") { RecommendationScreen(mainNavController) }
-            composable("group") { ProfileScreen(mainNavController) }
+            composable("group") { GroupsScreen(mainNavController) }
             composable("profile") { ProfileScreen(mainNavController) }
             composable("movie/{movieId}") { navBackStackEntry ->
                 val movieId = navBackStackEntry.arguments?.getString("movieId")

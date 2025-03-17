@@ -42,7 +42,7 @@ fun BottomNavBar(navController : NavController) {
         NavItem("Library", "library", Icons.Filled.VideoLibrary),
         NavItem("Browse", "browse", Icons.Filled.Explore),
         NavItem("Picks", "recommend", Icons.Filled.Movie),
-        NavItem("Groups", "groups", Icons.Filled.Groups),
+        NavItem("Groups", "group", Icons.Filled.Groups),
         NavItem("Profile", "profile", Icons.Filled.AccountCircle)
     )
     AnimatedVisibility(
