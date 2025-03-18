@@ -102,7 +102,7 @@ fun GroupCardsList(navController: NavController) {
             GroupCard(
                 groupName = "Group #${index + 1}",
                 onClick = {
-                    navController.navigate("library")
+                    navController.navigate("joingroup")
                 }
             )
         }
