@@ -18,6 +18,12 @@ class UserResponse(UserBase):
     class Config:
         from_attributes = True
 
+class PaginatedUsersResponse(BaseModel):
+    items: List[UserResponse]
+    total: int
+    page: int
+    pages: int
+
 # --- MOVIES SCHEMA ---
 class MovieBase(BaseModel):
     title: str
@@ -39,6 +45,12 @@ class MovieResponse(MovieBase):
     class Config:
         from_attributes = True
 
+class PaginatedMovieResponse(BaseModel):
+    items: List[MovieResponse]
+    total: int
+    page: int
+    pages: int
+
 # --- GROUPS SCHEMA ---
 class GroupBase(BaseModel):
     groupName: str
@@ -52,6 +64,12 @@ class GroupResponse(GroupBase):
 
     class Config:
         from_attributes = True
+
+class PaginatedGroupsResponse(BaseModel):
+    items: List[GroupResponse]
+    total: int
+    page: int
+    pages: int
 
 # --- GROUP USERS SCHEMA ---
 class GroupUserBase(BaseModel):

@@ -41,15 +41,18 @@ def update_user(db: Session, user_id: str, user_update: schemas.UserCreate):
     db.refresh(db_user)
     return db_user
 
-def update_review(db: Session, review_id: str, review_update: schemas.ReviewCreate):
-    db_review = db.query(models.Review).filter(models.Review.reviewID == review_id).first()
-    if not db_review:
-        return None
-    db_review.rating = review_update.rating
-    db_review.message = review_update.message
-    db.commit()
-    db.refresh(db_review)
-    return db_review
+def search_users(db: Session, username_query: str, limit: int = 10, offset: int = 0):
+    query = db.query(models.User).filter(models.User.username.ilike(f"%{username_query}%"))
+
+    total = query.count()
+    users = query.offset(offset).limit(limit).all()
+
+    return {
+        "items": users,
+        "total": total,
+        "page": (offset // limit) + 1,
+        "pages": (total + limit - 1) // limit
+    }
 
 # --- MOVIES CRUD ---
 def create_movie(db: Session, movie: schemas.MovieCreate):
@@ -127,8 +130,18 @@ def get_group_by_id(db: Session, group_id: str):
     """Retrieve a single group by its groupID."""
     return db.query(models.Group).filter(models.Group.groupID == group_id).first()
 
-def search_groups(db: Session, query: str):
-    return db.query(models.Group).filter(models.Group.groupName.ilike(f"%{query}%")).all()
+def search_groups(db: Session, query: str, limit: int = 10, offset: int = 0):
+    search_query = db.query(models.Group).filter(models.Group.groupName.ilike(f"%{query}%"))
+
+    total = search_query.count()
+    groups = search_query.offset(offset).limit(limit).all()
+
+    return {
+        "items": groups,
+        "total": total,
+        "page": (offset // limit) + 1,
+        "pages": (total + limit - 1) // limit
+    }
 
 def delete_group(db: Session, group_id: str):
     group = db.query(models.Group).filter(models.Group.groupID == group_id).first()
@@ -219,12 +232,6 @@ def get_tags_for_user(db: Session, user_id: str):
 
 # --- REVIEWS CRUD ---
 def create_review(db: Session, review: schemas.ReviewCreate):
-    # db_review = models.Review(
-    #     rating=review.rating,
-    #     message=review.message,
-    #     userID=review.userID,
-    #     movieID=review.movieID
-    # )
     db_review = models.Review(**review.dict())
     db.add(db_review)
     db.commit()
@@ -265,6 +272,16 @@ def get_reviews_by_movie(db: Session, movie_id: str, limit: int = 10, offset: in
         "page": (offset // limit) + 1,
         "pages": (total + limit - 1) // limit
     }
+
+def update_review(db: Session, review_id: str, review_update: schemas.ReviewCreate):
+    db_review = db.query(models.Review).filter(models.Review.reviewID == review_id).first()
+    if not db_review:
+        return None
+    db_review.rating = review_update.rating
+    db_review.message = review_update.message
+    db.commit()
+    db.refresh(db_review)
+    return db_review
 
 # --- USER WATCHED CRUD ---
 def add_user_watched(db: Session, watched: schemas.UserWatchedCreate):

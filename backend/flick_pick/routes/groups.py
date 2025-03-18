@@ -8,7 +8,7 @@ router = APIRouter()
 def create_group(group: schemas.GroupCreate, db: Session = Depends(database.get_db)):
     return crud.create_group(db, group)
 
-@router.get("/groups/")
+@router.get("/groups/", response_model=schemas.PaginatedGroupsResponse)
 def read_groups(
     db: Session = Depends(database.get_db),
     limit: int = Query(10, alias="limit", ge=1, le=100),
@@ -23,9 +23,14 @@ def read_group(group_id: str, db: Session = Depends(database.get_db)):
         raise HTTPException(status_code=404, detail="Group not found")
     return group
 
-@router.get("/groups/search/")
-def search_groups(query: str, db: Session = Depends(database.get_db)):
-    return crud.search_groups(db, query)
+@router.get("/groups/search/", response_model=schemas.PaginatedGroupsResponse)
+def search_groups(
+    query: str = Query(..., description="Search query for group names"),
+    limit: int = Query(10, description="Number of results per page", ge=1, le=100),
+    offset: int = Query(0, description="Pagination offset", ge=0),
+    db: Session = Depends(database.get_db)
+):
+    return crud.search_groups(db, query, limit, offset)
 
 @router.delete("/groups/{group_id}")
 def delete_group(group_id: str, db: Session = Depends(database.get_db)):
