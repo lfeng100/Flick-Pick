@@ -14,6 +14,8 @@ data class ReviewData(
 )
 
 object PrimaryUserManager {
+    private val primaryUserID = "default"
+
     private val _reviews = mutableStateMapOf<String, ReviewData>()
     private val _watchlist = mutableStateListOf<String>()
     private val _watched = mutableStateListOf<String>()

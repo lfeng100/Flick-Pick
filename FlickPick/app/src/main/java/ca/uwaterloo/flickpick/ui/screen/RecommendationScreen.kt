@@ -28,12 +28,12 @@ import ca.uwaterloo.flickpick.domain.manager.PrimaryUserManager
 import ca.uwaterloo.flickpick.domain.manager.RecommendationRepository
 import ca.uwaterloo.flickpick.ui.component.BrowseMovieReminder
 import ca.uwaterloo.flickpick.ui.component.FiltersCustomizer
-import ca.uwaterloo.flickpick.ui.component.TopBar
+import ca.uwaterloo.flickpick.ui.component.TitleTopBar
 
 @Composable
 fun RecommendationScreen(navController: NavController) {
     Scaffold(
-        topBar = { TopBar("Your Picks") }
+        topBar = { TitleTopBar("Your Picks") }
     ) { padding ->
         var showFilterCustomizer by remember { mutableStateOf(false) }
         val filters by RecommendationRepository.filters

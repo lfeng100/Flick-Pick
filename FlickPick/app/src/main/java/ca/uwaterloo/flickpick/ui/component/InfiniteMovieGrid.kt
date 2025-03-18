@@ -5,9 +5,11 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -50,17 +52,22 @@ fun InfiniteMovieGrid(movies: List<Movie>,
             with(LocalDensity.current) { width.toDp() } / (movieCardWidth + 4.dp)
         } else 1
     val rows = movies.chunked(itemsPerRow.toInt())
-    if (movies.isEmpty() && !isFetching) {
-        // 🔥 Show "No movies found" message when no movies are available
+    if (movies.isEmpty()) {
         Box(
             modifier = Modifier.fillMaxSize(),
             contentAlignment = Alignment.Center
         ) {
-            Text(
-                text = "No movies found",
-                style = MaterialTheme.typography.headlineSmall,
-                color = Color.Gray
-            )
+            if (isFetching) {
+                CircularProgressIndicator(
+                    modifier = Modifier.size(36.dp)
+                )
+            } else {
+                Text(
+                    text = "No movies found",
+                    style = MaterialTheme.typography.headlineSmall,
+                    color = MaterialTheme.colorScheme.onBackground.copy(0.75f)
+                )
+            }
         }
     } else {
         LazyColumn(
