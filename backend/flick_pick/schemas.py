@@ -14,7 +14,7 @@ class UserResponse(UserBase):
     userID: str
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 # --- MOVIES SCHEMA ---
 class MovieBase(BaseModel):
@@ -35,7 +35,7 @@ class MovieResponse(MovieBase):
     movieID: str
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 # --- GROUPS SCHEMA ---
 class GroupBase(BaseModel):
@@ -49,7 +49,7 @@ class GroupResponse(GroupBase):
     groupID: str
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 # --- GROUP USERS SCHEMA ---
 class GroupUserBase(BaseModel):
@@ -63,7 +63,7 @@ class GroupUserResponse(GroupUserBase):
     joinedAt: datetime
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 # --- TAGS SCHEMA ---
 class TagBase(BaseModel):
@@ -77,7 +77,7 @@ class TagResponse(TagBase):
     tagID: str
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 # --- MOVIE TAGS SCHEMA ---
 class MovieTagBase(BaseModel):
@@ -89,7 +89,7 @@ class MovieTagCreate(MovieTagBase):
 
 class MovieTagResponse(MovieTagBase):
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 # --- PREFERENCES SCHEMA ---
 class PreferenceBase(BaseModel):
@@ -101,7 +101,7 @@ class PreferenceCreate(PreferenceBase):
 
 class PreferenceResponse(PreferenceBase):
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 # --- REVIEWS SCHEMA ---
 class ReviewBase(BaseModel):
@@ -109,6 +109,7 @@ class ReviewBase(BaseModel):
     message: Optional[str]
 
 class ReviewCreate(ReviewBase):
+    reviewID: str  # Primary key
     userID: str
     movieID: str
 
@@ -119,7 +120,7 @@ class ReviewResponse(ReviewBase):
     movieID: str
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 # --- USER WATCHED SCHEMA ---
 class UserWatchedBase(BaseModel):
@@ -131,7 +132,7 @@ class UserWatchedCreate(UserWatchedBase):
 
 class UserWatchedResponse(UserWatchedBase):
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 # --- USER WATCHLIST SCHEMA ---
 class UserWatchlistBase(BaseModel):
@@ -143,4 +144,4 @@ class UserWatchlistCreate(UserWatchlistBase):
 
 class UserWatchlistResponse(UserWatchlistBase):
     class Config:
-        orm_mode = True
+        from_attributes = True

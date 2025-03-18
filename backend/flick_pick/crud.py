@@ -272,6 +272,22 @@ def add_user_watched(db: Session, watched: schemas.UserWatchedCreate):
     db.commit()
     return db_watched
 
+def get_user_watched(db: Session, user_id: str, limit: int = 10, offset: int = 0):
+    """Retrieve all movies a user has watched."""
+    query = db.query(models.Movie).join(models.UserWatched).filter(models.UserWatched.userID == user_id)
+
+    total = query.count()
+    movies = query.offset(offset).limit(limit).all()
+
+    movie_responses = [schemas.MovieResponse.from_orm(movie) for movie in movies]
+
+    return {
+        "items": movie_responses,
+        "total": total,
+        "page": (offset // limit) + 1,
+        "pages": (total + limit - 1) // limit
+    }
+
 def delete_user_watched(db: Session, user_id: str, movie_id: str):
     watched = db.query(models.UserWatched).filter(
         models.UserWatched.userID == user_id, models.UserWatched.movieID == movie_id
@@ -288,6 +304,21 @@ def add_user_watchlist(db: Session, watchlist: schemas.UserWatchlistCreate):
     db.commit()
     return db_watchlist
 
+def get_user_watchlist(db: Session, user_id: str, limit: int = 10, offset: int = 0):
+    """Retrieve all movies in a user's watchlist."""
+    query = db.query(models.Movie).join(models.UserWatchlist).filter(models.UserWatchlist.userID == user_id)
+
+    total = query.count()
+    movies = query.offset(offset).limit(limit).all()
+
+    movie_responses = [schemas.MovieResponse.from_orm(movie) for movie in movies]
+
+    return {
+        "items": movie_responses,
+        "total": total,
+        "page": (offset // limit) + 1,
+        "pages": (total + limit - 1) // limit
+    }
 
 def delete_user_watchlist(db: Session, user_id: str, movie_id: str):
     watchlist = db.query(models.UserWatchlist).filter(
