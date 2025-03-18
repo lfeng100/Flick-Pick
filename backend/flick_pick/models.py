@@ -2,12 +2,15 @@ from sqlalchemy import Column, String, Integer, Float, ForeignKey, TIMESTAMP, Te
 from sqlalchemy.orm import relationship
 from sqlalchemy.dialects.mysql import JSON
 from database import Base
+import uuid
 
 class User(Base):
     __tablename__ = "Users"
-    userID = Column(String(36), primary_key=True)
+    userID = Column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
     email = Column(String(255), unique=True, nullable=False)
     username = Column(String(255), unique=True, nullable=False)
+    firstName = Column(String(100), nullable=False)
+    lastName = Column(String(100), nullable=False)
 
 class Movie(Base):
     __tablename__ = "Movies"
@@ -24,10 +27,10 @@ class Movie(Base):
 
 class Group(Base):
     __tablename__ = "Groups"
-    groupID = Column(String(36), primary_key=True)
+    groupID = Column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
     groupName = Column(String(255), nullable=False)
     adminUserID = Column(String(36), ForeignKey("Users.userID", ondelete="SET NULL"))
-
+    
 class Tag(Base):
     __tablename__ = "Tags"
     tagID = Column(String(36), primary_key=True)

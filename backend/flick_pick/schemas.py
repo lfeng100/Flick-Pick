@@ -6,9 +6,11 @@ from datetime import datetime
 class UserBase(BaseModel):
     email: str
     username: str
+    firstName: str
+    lastName: str
 
 class UserCreate(UserBase):
-    userID: str  # Primary key, required when creating a user
+    pass
 
 class UserResponse(UserBase):
     userID: str
@@ -43,7 +45,7 @@ class GroupBase(BaseModel):
     adminUserID: Optional[str]
 
 class GroupCreate(GroupBase):
-    groupID: str  # Primary key
+    pass
 
 class GroupResponse(GroupBase):
     groupID: str
@@ -109,7 +111,6 @@ class ReviewBase(BaseModel):
     message: Optional[str]
 
 class ReviewCreate(ReviewBase):
-    reviewID: str  # Primary key
     userID: str
     movieID: str
 
