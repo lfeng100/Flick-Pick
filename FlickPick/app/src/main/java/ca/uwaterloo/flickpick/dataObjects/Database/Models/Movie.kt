@@ -9,7 +9,7 @@ data class Movie(
     val movieID: String,
     val title: String,
     val releaseYear: Int,
-    val genres: List<String>, // Assuming JSON array
+    val genres: List<String>,
     val rating: Float?,
     val description: String?,
     @Json(name = "tmdb_id") val tmdbId: String?,
