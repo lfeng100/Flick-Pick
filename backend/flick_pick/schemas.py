@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, UUID4
 from typing import Optional, List, Literal
 from datetime import datetime
 
@@ -10,7 +10,7 @@ class UserBase(BaseModel):
     lastName: str
 
 class UserCreate(UserBase):
-    pass
+    userID: Optional[UUID4] = None
 
 class UserResponse(UserBase):
     userID: str

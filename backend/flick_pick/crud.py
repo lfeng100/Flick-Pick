@@ -5,7 +5,10 @@ import json
 
 # --- USERS CRUD ---
 def create_user(db: Session, user: schemas.UserCreate):
-    db_user = models.User(**user.dict())
+    user_dict = user.dict()
+    user_dict["userID"] = user_dict["userID"] or str(uuid.uuid4())
+
+    db_user = models.User(**user_dict)
     db.add(db_user)
     db.commit()
     db.refresh(db_user)
