@@ -109,7 +109,6 @@ class ReviewBase(BaseModel):
     message: Optional[str]
 
 class ReviewCreate(ReviewBase):
-    reviewID: str  # Primary key
     userID: str
     movieID: str
 

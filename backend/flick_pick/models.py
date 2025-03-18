@@ -52,7 +52,7 @@ class Preference(Base):
 
 class Review(Base):
     __tablename__ = "Reviews"
-    reviewID = Column(String(36), primary_key=True)
+    reviewID = Column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
     rating = Column(Float, nullable=False)
     message = Column(String(255))
     timestamp = Column(TIMESTAMP, server_default="CURRENT_TIMESTAMP")

@@ -219,7 +219,12 @@ def get_tags_for_user(db: Session, user_id: str):
 
 # --- REVIEWS CRUD ---
 def create_review(db: Session, review: schemas.ReviewCreate):
-    db_review = models.Review(**review.dict())
+    db_review = models.Review(
+        rating=review.rating,
+        message=review.message,
+        userID=review.userID,
+        movieID=review.movieID
+    )
     db.add(db_review)
     db.commit()
     return db_review
