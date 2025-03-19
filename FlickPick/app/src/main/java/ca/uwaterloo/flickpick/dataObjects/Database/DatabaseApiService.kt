@@ -78,7 +78,6 @@ interface DatabaseApiService {
     @GET("group/{id}")
     suspend fun getGroupById(@Path("id") groupId: String): Group
 
-
     @POST("groups/")
     suspend fun createGroup(@Body group: GroupCreate):Group
 
@@ -86,7 +85,14 @@ interface DatabaseApiService {
     suspend fun addUserToGroup(
        @Body addUserToGroup: AddUserToGroup
     ): AddUserToGroup
-    
+
+    @GET("groupusers/{id}")
+    suspend fun getGroupUsersById(
+        @Path("id") groupId: String,
+        @Query("limit") limit: Int = 10,
+        @Query("offset") offset: Int = 0
+    ):UserResponse
+
     // reviews
     @POST("reviews/")
     suspend fun createReview(@Body review: ReviewCreate): Review
