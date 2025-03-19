@@ -47,7 +47,8 @@ fun BrowseMovieReminder(navController: NavController, text: String) {
         Text(
             text = text,
             textAlign = TextAlign.Center,
-            style = MaterialTheme.typography.bodyLarge
+            style = MaterialTheme.typography.bodyLarge,
+            color = MaterialTheme.colorScheme.onBackground.copy(0.75f)
         )
         Spacer(Modifier.height(32.dp))
         Button(

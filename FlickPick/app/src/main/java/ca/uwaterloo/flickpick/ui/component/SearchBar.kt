@@ -24,7 +24,7 @@ fun SearchBar(query: String, onQueryChanged: (String) -> Unit) {
         placeholder = { Text("Search") },
         modifier = Modifier
             .fillMaxWidth()
-            .padding(8.dp)
+            .padding(start=16.dp, bottom=16.dp, end=16.dp)
             .clip(RoundedCornerShape(8.dp))
             .background(MaterialTheme.colorScheme.surface),
         singleLine = true

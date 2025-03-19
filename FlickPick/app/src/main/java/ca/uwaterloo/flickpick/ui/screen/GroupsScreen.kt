@@ -13,7 +13,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
 import ca.uwaterloo.flickpick.ui.component.GroupCardsList
-import ca.uwaterloo.flickpick.ui.component.TopBar
+import ca.uwaterloo.flickpick.ui.component.TitleTopBar
 import ca.uwaterloo.flickpick.ui.component.TopBarButtonData
 
 @Composable
@@ -22,7 +22,7 @@ fun GroupsScreen(navController: NavController) {
 
     Scaffold(
         topBar = {
-            TopBar("Groups",
+            TitleTopBar("Groups",
                 listOf(
                     TopBarButtonData(
                         icon = Icons.Rounded.Search,

@@ -21,7 +21,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
 import ca.uwaterloo.flickpick.dataObjects.Database.Models.Movie
-import ca.uwaterloo.flickpick.domain.manager.PrimaryUserManager
+import ca.uwaterloo.flickpick.domain.repository.PrimaryUserRepository
 import ca.uwaterloo.flickpick.ui.component.BrowseMovieReminder
 import ca.uwaterloo.flickpick.ui.component.LogoTopBar
 import ca.uwaterloo.flickpick.ui.component.MovieGrid
@@ -31,19 +31,13 @@ import kotlinx.coroutines.launch
 fun HomeScreen(navController: NavController) {
     val reviewedIds by remember {
         derivedStateOf {
-            PrimaryUserManager.watched.value.filter {
-                PrimaryUserManager.reviews.value.containsKey(it)
+            PrimaryUserRepository.watched.value.filter {
+                PrimaryUserRepository.reviews.value.containsKey(it)
             }
         }
     }
-    val watchedIds by remember {
-        derivedStateOf {
-            PrimaryUserManager.watched.value.filter {
-                !PrimaryUserManager.reviews.value.containsKey(it)
-            }
-        }
-    }
-    val watchlistIds by PrimaryUserManager.watchlist
+    val watchedIds by PrimaryUserRepository.watched
+    val watchlistIds by PrimaryUserRepository.watchlist
 
     var reviewed by remember { mutableStateOf(emptyList<Movie>()) }
     var watched by remember { mutableStateOf(emptyList<Movie>()) }
@@ -61,7 +55,7 @@ fun HomeScreen(navController: NavController) {
         }
     }
     Scaffold(
-        topBar = { LogoTopBar(emptyList()) }
+        topBar = { LogoTopBar() }
     ) { padding ->
         val tabTitles = listOf("Reviewed", "Watched", "Watchlist")
         val pagerState = rememberPagerState(pageCount = { tabTitles.size })
@@ -89,21 +83,21 @@ fun HomeScreen(navController: NavController) {
             ) { page ->
                 when (page) {
                     0 -> {
-                        if (PrimaryUserManager.reviews.value.isEmpty()) {
+                        if (reviewed.isEmpty()) {
                             BrowseMovieReminder(navController, "You don't have any reviews!");
                             return@HorizontalPager;
                         }
                         MovieGrid(reviewed, navController)
                     }
                     1 -> {
-                        if (PrimaryUserManager.watched.value.isEmpty()) {
-                            BrowseMovieReminder(navController, "You haven't watched anything!");
+                        if (watched.isEmpty()) {
+                            BrowseMovieReminder(navController, "Your watched is empty!");
                             return@HorizontalPager;
                         }
                         MovieGrid(watched, navController)
                     }
                     2 -> {
-                        if (PrimaryUserManager.watchlist.value.isEmpty()) {
+                        if (watchlist.isEmpty()) {
                             BrowseMovieReminder(navController, "Your watchlist is empty!");
                             return@HorizontalPager;
                         }
@@ -114,25 +108,3 @@ fun HomeScreen(navController: NavController) {
         }
     }
 }
-
-//@Composable
-//fun MovieCarousel(navController: NavController, title: String, movies: List<Movie>) {
-//    Column(modifier = Modifier.fillMaxWidth().padding(top=6.dp, bottom =6.dp, start=16.dp, end=16.dp)) {
-//        Text(
-//            text = title,
-//            style = MaterialTheme.typography.titleLarge
-//        )
-//        LazyRow(modifier = Modifier.height(150.dp)) {
-//            items(movies) { movie ->
-//                MovieCard(
-//                    movie = movie,
-//                    width = 100.dp,
-//                    onClick = {
-//                        navController.navigate("movie/${movie.movieID}")
-//                    }
-//                )
-//            }
-//        }
-//    }
-//}
-

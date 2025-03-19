@@ -5,6 +5,7 @@ import android.widget.Toast
 import androidx.navigation.NavController
 import ca.uwaterloo.flickpick.dataObjects.Database.DatabaseClient
 import ca.uwaterloo.flickpick.dataObjects.Database.Models.User
+import ca.uwaterloo.flickpick.dataObjects.Database.Models.UserCreate
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -30,9 +31,15 @@ class FirebaseAuthentication {
     }
 
     fun createUserBackend(email: String, username: String, userID: String, context: Context, navController: NavController) {
-        val user = User(email = email, username = username, userID = userID)
         CoroutineScope(Dispatchers.IO).launch {
-            DatabaseClient.apiService.createUser(user)
+            DatabaseClient.apiService.createUser(
+                UserCreate(
+                    username = username,
+                    email = email,
+                    firstName = "John",
+                    lastName = "Smith"
+                )
+            )
             withContext(Dispatchers.Main){
                 navController.navigate("login")
             }

@@ -24,20 +24,20 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import ca.uwaterloo.flickpick.domain.manager.PrimaryUserManager
-import ca.uwaterloo.flickpick.domain.manager.RecommendationRepository
+import ca.uwaterloo.flickpick.domain.repository.PrimaryUserRepository
+import ca.uwaterloo.flickpick.domain.repository.RecommendationRepository
 import ca.uwaterloo.flickpick.ui.component.BrowseMovieReminder
 import ca.uwaterloo.flickpick.ui.component.FiltersCustomizer
-import ca.uwaterloo.flickpick.ui.component.TopBar
+import ca.uwaterloo.flickpick.ui.component.TitleTopBar
 
 @Composable
 fun RecommendationScreen(navController: NavController) {
     Scaffold(
-        topBar = { TopBar("Your Picks") }
+        topBar = { TitleTopBar("Your Picks") }
     ) { padding ->
         var showFilterCustomizer by remember { mutableStateOf(false) }
         val filters by RecommendationRepository.filters
-        if (PrimaryUserManager.reviews.value.isEmpty()) {
+        if (PrimaryUserRepository.reviews.value.isEmpty()) {
             Spacer(modifier = Modifier.padding(padding))
             BrowseMovieReminder(navController, "Add a review to get\nrecommendations!");
             return@Scaffold

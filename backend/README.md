@@ -25,13 +25,9 @@ Change into the database directory:
 
 Run the setup file to initialize DB and Tables:
 ```mysql -u root -p < setup.sql```
+
 or in Powershell:
 ```Get-Content .\setup.sql | mysql -u root -p```
-
-(Optional) Similarly, populate tables with mock users and groups:
-```mysql -u root -p < seed.sql```
-or in Powershell:
-```Get-Content .\seed.sql | mysql -u root -p```
 
 Check if db and tables exists:
 ```mysql -u root -p```
@@ -43,5 +39,11 @@ SHOW TABLES;
 
 Populate Database by running populate_db.py script (make sure in virtual environment and dependencies installed):
 ```python populate_db.py```
+
+(Optional) Similarly, populate tables with mock users and groups (must be done after running populate_db.py):
+```mysql -u root -p < seed.sql```
+
+or in Powershell:
+```Get-Content .\seed.sql | mysql -u root -p```
 
 To Update the DB, drop the database and rerun the setup.sql script.

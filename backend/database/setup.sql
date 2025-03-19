@@ -4,9 +4,11 @@ USE flick_pick;
 
 -- Create Users Table
 CREATE TABLE IF NOT EXISTS Users (
-    userID VARCHAR(36) PRIMARY KEY,
+    userID VARCHAR(36) PRIMARY KEY DEFAULT (UUID()),
     email VARCHAR(255) UNIQUE NOT NULL,
-    username VARCHAR(255) UNIQUE NOT NULL
+    username VARCHAR(255) UNIQUE NOT NULL,
+    firstName VARCHAR(100) NOT NULL,
+    lastName VARCHAR(100) NOT NULL
 );
 
 -- Create Movies Table
@@ -25,7 +27,7 @@ CREATE TABLE IF NOT EXISTS Movies (
 
 -- Create Groups Table
 CREATE TABLE IF NOT EXISTS `Groups` (
-    groupID VARCHAR(36) PRIMARY KEY,
+    groupID VARCHAR(36) PRIMARY KEY DEFAULT (UUID()),
     groupName VARCHAR(255) NOT NULL,
     adminUserID VARCHAR(36),
     FOREIGN KEY (adminUserID) REFERENCES Users(userID) ON DELETE SET NULL
@@ -68,7 +70,7 @@ CREATE TABLE IF NOT EXISTS Preferences (
 
 -- Create Reviews Table
 CREATE TABLE IF NOT EXISTS Reviews (
-    reviewID VARCHAR(36) PRIMARY KEY,
+    reviewID VARCHAR(36) NOT NULL DEFAULT (UUID()) PRIMARY KEY,
     rating FLOAT NOT NULL,
     message VARCHAR(255),
     timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
