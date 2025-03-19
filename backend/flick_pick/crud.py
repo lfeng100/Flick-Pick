@@ -130,8 +130,25 @@ def get_groups(db: Session, limit: int = 10, offset: int = 0):
     }
 
 def get_group_by_id(db: Session, group_id: str):
-    """Retrieve a single group by its groupID."""
-    return db.query(models.Group).filter(models.Group.groupID == group_id).first()
+    """Retrieve a single group by its groupID, including group size and admin username."""
+    group = db.query(models.Group).filter(models.Group.groupID == group_id).first()
+    if not group:
+        return None
+
+    # Count members in the group
+    group_size = db.query(models.GroupUser).filter(models.GroupUser.groupID == group_id).count()
+
+    # Fetch admin's username
+    admin_user = db.query(models.User.username).filter(models.User.userID == group.adminUserID).first()
+    admin_username = admin_user.username if admin_user else None
+
+    return {
+        "groupID": group.groupID,
+        "groupName": group.groupName,
+        "adminUserID": group.adminUserID,
+        "adminUsername": admin_username,
+        "groupSize": group_size
+    }
 
 def search_groups(db: Session, query: str, limit: int = 10, offset: int = 0):
     search_query = db.query(models.Group).filter(models.Group.groupName.ilike(f"%{query}%"))
