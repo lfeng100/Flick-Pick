@@ -17,10 +17,10 @@ data class Movie(
     @Json(name = "poster_path") val posterPath: String?
 ) {
     fun getPosterUrl(): String? {
-        return posterPath?.let { "https://image.tmdb.org/t/p/w200$it.jpg" }
+        return posterPath?.let { "https://image.tmdb.org/t/p/w200$it" }
     }
 
     fun getHighResPosterUrl(): String? {
-     return posterPath?.let { "https://image.tmdb.org/t/p/w780$it.jpg" }
+     return posterPath?.let { "https://image.tmdb.org/t/p/w780$it" }
     }
 }

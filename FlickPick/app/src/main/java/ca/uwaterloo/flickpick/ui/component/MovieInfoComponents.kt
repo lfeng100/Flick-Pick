@@ -89,7 +89,7 @@ fun MovieTitleText(movie: Movie, centered: Boolean = false) {
 data class ToggleButtonItem(
     val checkedIcon: ImageVector,
     val uncheckedIcon: ImageVector,
-    var checkedTint: Color = Color.White,
+    var checkedTint: Color,
     var isChecked : State<Boolean>,
     var onChecked : () -> Unit,
     var onUnchecked : () -> Unit
@@ -123,21 +123,24 @@ fun MovieInteractionButtonRow(navController: NavController, movie: Movie, showTM
             onChecked = {
                 navController.navigate("review/${movie.movieID}")
             },
-            onUnchecked = { PrimaryUserRepository.removeReview(movie.movieID) }
+            onUnchecked = { PrimaryUserRepository.removeReview(movie.movieID) },
+            checkedTint = MaterialTheme.colorScheme.onBackground
         ),
         ToggleButtonItem(
             checkedIcon = Icons.Filled.Visibility,
             uncheckedIcon = Icons.Outlined.Visibility,
             isChecked = isWatchedChecked,
             onChecked = { PrimaryUserRepository.addToWatched(movie.movieID) },
-            onUnchecked = { PrimaryUserRepository.removeFromWatched(movie.movieID) }
+            onUnchecked = { PrimaryUserRepository.removeFromWatched(movie.movieID) },
+            checkedTint = MaterialTheme.colorScheme.onBackground
         ),
         ToggleButtonItem(
             checkedIcon = Icons.Filled.WatchLater,
             uncheckedIcon = Icons.Outlined.WatchLater,
             isChecked = isWatchlistChecked,
             onChecked = { PrimaryUserRepository.addToWatchlist(movie.movieID) },
-            onUnchecked = { PrimaryUserRepository.removeFromWatchlist(movie.movieID) }
+            onUnchecked = { PrimaryUserRepository.removeFromWatchlist(movie.movieID) },
+            checkedTint = MaterialTheme.colorScheme.onBackground
         )
     )
     Row (

@@ -36,14 +36,13 @@ fun BrowseMovieReminder(navController: NavController, text: String) {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Image(
-            modifier = Modifier.size(128.dp),
-            // TODO: attribution to unlimicon from Noun Project
+            modifier = Modifier.size(180.dp),
+            // TODO: attribution to Ranah Pixel Studio from Noun Project
             painter = painterResource(id = R.drawable.movie_browse_graphic),
             colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary),
             contentDescription = "Reel Icon",
             contentScale = ContentScale.Fit
         )
-        Spacer(Modifier.height(32.dp))
         Text(
             text = text,
             textAlign = TextAlign.Center,

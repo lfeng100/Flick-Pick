@@ -2,6 +2,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy.sql import func
 import models, schemas
 import json
+import uuid
 
 # --- USERS CRUD ---
 def create_user(db: Session, user: schemas.UserCreate):
