@@ -10,6 +10,8 @@ import ca.uwaterloo.flickpick.dataObjects.Database.Models.Review
 import ca.uwaterloo.flickpick.dataObjects.Database.Models.ReviewCreate
 import ca.uwaterloo.flickpick.dataObjects.Database.Models.Tag
 import ca.uwaterloo.flickpick.dataObjects.Database.Models.User
+import ca.uwaterloo.flickpick.dataObjects.Database.Responses.GroupUsers
+import ca.uwaterloo.flickpick.dataObjects.Database.Responses.MovieResponse
 import ca.uwaterloo.flickpick.dataObjects.Database.Responses.GroupResponse
 import ca.uwaterloo.flickpick.dataObjects.Database.Models.UserCreate
 import ca.uwaterloo.flickpick.dataObjects.Database.Models.UserWatched
@@ -28,7 +30,10 @@ interface DatabaseApiService {
     @GET("users/{user_id}")
     suspend fun getUser(@Path("user_id") userID: String): Response<User?>
 
-    // movies
+    @GET("users/{id}")
+    suspend fun getUserById(@Path("id") userId: String): User
+
+    // Movies
     @GET("movies/")
     suspend fun getAllMovies(
         @Query("limit") limit: Int = 12,
@@ -51,6 +56,9 @@ interface DatabaseApiService {
     suspend fun getTags(): List<Tag>
 
     // Groups
+    @GET("groups/{groupID}")
+    suspend fun getGroupsById(@Path("groupID") groupId: String): GroupUsers
+ 
     @GET("groups/")
     suspend fun getAllGroups(
         @Query("limit") limit: Int = 10,

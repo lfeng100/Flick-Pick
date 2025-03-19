@@ -1,6 +1,7 @@
 package ca.uwaterloo.flickpick
 
 
+import JoinGroupScreen
 import android.content.pm.ActivityInfo
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -105,6 +106,7 @@ fun MainScreen() {
             composable("recommend") { RecommendationScreen(mainNavController) }
             composable("group") { GroupsScreen(mainNavController) }
             composable("profile") { ProfileScreen(mainNavController) }
+            composable("joingroup") { JoinGroupScreen(mainNavController) }
             composable("movie/{movieId}") { navBackStackEntry ->
                 val movieId = navBackStackEntry.arguments?.getString("movieId")
                 if (movieId != null) {
