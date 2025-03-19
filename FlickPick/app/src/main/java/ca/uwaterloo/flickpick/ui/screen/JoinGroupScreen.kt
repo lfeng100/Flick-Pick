@@ -14,6 +14,7 @@ import androidx.compose.ui.text.style.LineHeightStyle
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import ca.uwaterloo.flickpick.dataObjects.Database.DatabaseClient
+import ca.uwaterloo.flickpick.domain.repository.PrimaryUserRepository
 import ca.uwaterloo.flickpick.ui.component.JoinGroupCard
 import com.google.firebase.auth.FirebaseAuth
 import kotlin.random.Random
@@ -22,8 +23,7 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun JoinGroupScreen(navController: NavController, groupId: String) {
-    val userId = "05b58228-0a3f-403d-91fe-cab0868ebd68" //FirebaseAuth.getInstance().currentUser!!.uid
-    val groupId = groupId
+    val userId = PrimaryUserRepository.getPrimaryUserID()
     var userNameByID by remember { mutableStateOf<String?>(null) }
     var groupCount by remember { mutableStateOf<Int?>(null) }
     var groupName by remember { mutableStateOf<String?>(null) }

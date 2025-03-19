@@ -37,10 +37,7 @@ import ca.uwaterloo.flickpick.ui.theme.PurpleGrey40
 fun GroupCard(group: Group, onClick: (() -> Unit)) {
     Card(
         modifier = Modifier
-            .padding(
-                horizontal = 8.dp,
-                vertical = 2.dp
-            )
+            .padding(2.dp)
             .clickable(onClick = onClick)
             .background(MaterialTheme.colorScheme.surface),
         shape = RoundedCornerShape(6.dp)
@@ -80,13 +77,13 @@ fun GroupCard(group: Group, onClick: (() -> Unit)) {
                 text = group.groupName,
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Bold,
-                color = PurpleGrey40
+                color = MaterialTheme.colorScheme.onSurface
             )
             Spacer(Modifier.weight(1f))
             Icon(
                 imageVector = Icons.Outlined.ArrowCircleRight,
                 contentDescription = "Arrow Icon",
-                tint = PurpleGrey40,
+                tint = MaterialTheme.colorScheme.onSurface,
                 modifier = Modifier.size(30.dp)
             )
         }

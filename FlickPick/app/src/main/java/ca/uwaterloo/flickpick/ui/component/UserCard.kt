@@ -34,10 +34,7 @@ import ca.uwaterloo.flickpick.ui.theme.PurpleGrey40
 fun UserCard(userName: String, onClick: () -> Unit, rightIcon : ImageVector, rightIconColor: Color){
     Card(
         modifier = Modifier
-            .padding(
-                horizontal = 8.dp,
-                vertical = 2.dp
-            )
+            .padding(2.dp)
             .clickable(onClick = onClick),
         shape = RoundedCornerShape(10.dp),
     ) {
@@ -76,7 +73,7 @@ fun UserCard(userName: String, onClick: () -> Unit, rightIcon : ImageVector, rig
                 text = userName,
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Bold,
-                color = PurpleGrey40
+                color = MaterialTheme.colorScheme.onSurface
             )
             Spacer(Modifier.weight(1f))
             Box(

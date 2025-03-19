@@ -100,6 +100,7 @@ fun CreateGroupScreen(navController: NavController) {
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
+                .padding(start=16.dp, end=16.dp)
         ) {
             Column(
                 horizontalAlignment = Alignment.Start,
@@ -109,7 +110,6 @@ fun CreateGroupScreen(navController: NavController) {
                     value = groupName,
                     placeHolderText = "Enter group name (optional)"
                 )
-
                 LazyColumn(
                     modifier = Modifier.weight(1f) // Takes up available space above the button
                 ) {

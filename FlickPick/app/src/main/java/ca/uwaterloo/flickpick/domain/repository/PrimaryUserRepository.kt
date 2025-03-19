@@ -57,6 +57,10 @@ object PrimaryUserRepository {
         }
     }
 
+    fun getPrimaryUserID(): String {
+        return userID
+    }
+
     fun addToWatchlist(movieId: String) {
         if (_watchlist.insertSorted(movieId)) {
             enqueueRequest {
