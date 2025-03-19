@@ -41,19 +41,29 @@ import ca.uwaterloo.flickpick.ui.component.TopBarButtonData
 import ca.uwaterloo.flickpick.ui.component.UserCard
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.filled.GroupAdd
+import androidx.compose.material.icons.filled.Groups
+import androidx.compose.material.icons.outlined.AddCircle
+import androidx.compose.material.icons.outlined.CheckCircle
 import androidx.compose.material.icons.rounded.AddCircleOutline
 import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material3.Button
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.text.style.TextAlign
+import ca.uwaterloo.flickpick.dataObjects.Database.Models.GroupCreate
 import ca.uwaterloo.flickpick.ui.component.TitleTopBar
+import ca.uwaterloo.flickpick.ui.theme.PurpleGrey40
+import com.google.firebase.auth.FirebaseAuth
+import kotlinx.coroutines.launch
 
 
 @Composable
 fun CreateGroupScreen(navController: NavController) {
     val groupName = remember { mutableStateOf(TextFieldValue("")) }
-
     val users = remember { mutableStateOf(emptyList<User>()) }
     val isLoading = remember { mutableStateOf(true) }
+    val coroutineScope = rememberCoroutineScope()
+    val selectedUsers = remember { mutableStateOf(mutableSetOf<String>()) }
+
 
     LaunchedEffect(Unit) {
         try {
@@ -66,17 +76,29 @@ fun CreateGroupScreen(navController: NavController) {
             isLoading.value = false
         }
     }
+
+
+    fun createGroup(){
+        coroutineScope.launch{
+            try{
+                val createGroup = GroupCreate(
+                    groupName = groupName.value.text,
+                    adminUserID = "05b58228-0a3f-403d-91fe-cab0868ebd68",
+                    adminUsername = "michael_g",
+                    groupSize = 0
+                )
+                val response = DatabaseClient.apiService.createGroup(createGroup)
+                Log.d("CreateGroupScreen", "Group created successfully: $response")
+                Log.d("CreateGroupScreen", "groupSize: ${users.value.size}")
+                navController.navigate("group")
+            }catch (e:Exception){
+                Log.e("CreateGroupScreen","Error creating group: ${e.message}")
+            }
+        }
+    }
+
+
     Scaffold(
-//        topBar = {
-//            TopBar("Create Group",
-//                listOf(
-//                    TopBarButtonData(
-//                        icon = Icons.AutoMirrored.Filled.ArrowBack,
-//                        onClick = { navController.popBackStack() }
-//                    )
-//                )
-//            )
-//        }
         topBar = {
             TitleTopBar("Create Groups",
                 listOf(
@@ -106,9 +128,24 @@ fun CreateGroupScreen(navController: NavController) {
                     modifier = Modifier.weight(1f) // Takes up available space above the button
                 ) {
                     items(users.value) { user ->
+                        val isSelected = selectedUsers.value.contains(user.userID)
+
                         UserCard(
                             userName = user.username,
-                            onClick = { navController.popBackStack() })
+                            rightIcon = if (isSelected) Icons.Outlined.CheckCircle else Icons.Outlined.AddCircle,
+                            onClick = {
+                                selectedUsers.value = selectedUsers.value.toMutableSet().apply{
+                                if (isSelected){
+                                    remove(user.userID)
+                                    Log.d("UserCard", "User deselected: ${user.username} (ID: ${user.userID})")
+                                } else {
+                                    add(user.userID)
+                                    Log.d("UserCard", "User selected: ${user.username} (ID: ${user.userID})")
+                                }
+                            }
+                            },
+                            rightIconColor = if (isSelected) Color.Green else PurpleGrey40
+                        )
                     }
                 }
                 Spacer(Modifier.padding(bottom = 120.dp))
@@ -124,7 +161,7 @@ fun CreateGroupScreen(navController: NavController) {
             ) {
                 //Create group button
                 Button(
-                    onClick = { navController.navigate("browse") },
+                    onClick = { createGroup() },
                     modifier = Modifier
                         .width(240.dp)
                         .height(60.dp),

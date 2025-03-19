@@ -1,6 +1,7 @@
 package ca.uwaterloo.flickpick.dataObjects.Database
 
 import ca.uwaterloo.flickpick.dataObjects.Database.Models.Group
+import ca.uwaterloo.flickpick.dataObjects.Database.Models.GroupCreate
 import com.squareup.moshi.Moshi
 import retrofit2.http.*
 import retrofit2.Retrofit
@@ -76,6 +77,9 @@ interface DatabaseApiService {
     @GET("group/{id}")
     suspend fun getGroupById(@Path("id") groupId: String): Group
 
+    @POST("groups/")
+    suspend fun createGroup(@Body group: GroupCreate):Group
+
     // reviews
     @POST("reviews/")
     suspend fun createReview(@Body review: ReviewCreate): Review
@@ -89,6 +93,8 @@ interface DatabaseApiService {
         @Query("limit") limit: Int = 100,
         @Query("offset") offset: Int = 0
     ) : ReviewResponse
+
+
 
     // userwatched
     @POST("userwatched/")

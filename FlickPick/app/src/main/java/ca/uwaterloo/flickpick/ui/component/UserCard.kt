@@ -2,6 +2,7 @@ package ca.uwaterloo.flickpick.ui.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -23,18 +24,22 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import ca.uwaterloo.flickpick.ui.theme.PurpleGrey40
 
 @Composable
-fun UserCard(userName: String, onClick: () -> Unit){
+fun UserCard(userName: String, onClick: () -> Unit, rightIcon : ImageVector, rightIconColor: Color){
     Card(
         modifier = Modifier
             .padding(
                 horizontal = 8.dp,
                 vertical = 2.dp
-            ),
+            )
+            .clickable(onClick = onClick),
         shape = RoundedCornerShape(10.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.Black.copy(alpha = 0.85f))
     ) {
         Row(
             modifier = Modifier
@@ -50,7 +55,7 @@ fun UserCard(userName: String, onClick: () -> Unit){
                 modifier = Modifier
                     .size(45.dp)
                     .background(
-                        color = Color.Black,
+                        color = MaterialTheme.colorScheme.primary,
                         shape = CircleShape
                     )
                     .border(
@@ -69,8 +74,9 @@ fun UserCard(userName: String, onClick: () -> Unit){
             Spacer(modifier = Modifier.width(16.dp))
             Text(
                 text = userName,
-                color = Color.White,
-                style = MaterialTheme.typography.titleLarge
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Bold,
+                color = PurpleGrey40
             )
             Spacer(Modifier.weight(1f))
             Box(
@@ -88,9 +94,9 @@ fun UserCard(userName: String, onClick: () -> Unit){
                     )
             ) {
                 Icon(
-                    imageVector = Icons.Outlined.AddCircle,
-                    contentDescription = "Add Circle",
-                    tint = Color.Black,
+                    imageVector = rightIcon,
+                    contentDescription = "right Icon",
+                    tint = rightIconColor,
                     modifier = Modifier.size(46.dp)
                 )
             }
