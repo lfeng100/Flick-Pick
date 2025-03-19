@@ -20,9 +20,9 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @Composable
-fun JoinGroupScreen(navController: NavController) {
+fun JoinGroupScreen(navController: NavController, groupId: String) {
     val userId = "05b58228-0a3f-403d-91fe-cab0868ebd68" //TODO: Update this ID to current userID when it is globally stored
-    val groupId = "dedd1f42-c728-4a9d-9798-3662314cafb3"
+    val groupId = groupId
     var userNameByID by remember { mutableStateOf<String?>(null) }
     var groupCount by remember { mutableStateOf<Int?>(null) }
     var groupName by remember { mutableStateOf<String?>(null) }

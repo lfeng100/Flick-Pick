@@ -106,7 +106,6 @@ fun MainScreen() {
             composable("recommend") { RecommendationScreen(mainNavController) }
             composable("group") { GroupsScreen(mainNavController) }
             composable("profile") { ProfileScreen(mainNavController) }
-            composable("joingroup") { JoinGroupScreen(mainNavController) }
             composable("movie/{movieId}") { navBackStackEntry ->
                 val movieId = navBackStackEntry.arguments?.getString("movieId")
                 if (movieId != null) {
@@ -125,7 +124,7 @@ fun MainScreen() {
             composable("group/{groupId}") { navBackStackEntry ->
                 val groupId = navBackStackEntry.arguments?.getString("groupId")
                 if (groupId != null) {
-                    //SCREEN NAME(mainNavController, groupId) // @ARYAN CHANGE SCREEN NAME
+                    JoinGroupScreen(mainNavController, groupId) // @ARYAN CHANGE SCREEN NAME
                 }
             }
         }

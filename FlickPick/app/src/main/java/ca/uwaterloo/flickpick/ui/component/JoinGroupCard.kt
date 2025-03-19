@@ -83,7 +83,7 @@ fun JoinGroupCard(groupName: String, userName: String, adminUsername: String, me
                 }
                 Spacer(modifier = Modifier.height(4.dp))
                 Button(
-                    onClick = { navController.navigate("library") },
+                    onClick = { navController.navigate("group") },
                     colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
                     modifier = Modifier.fillMaxWidth()
                 ) {
