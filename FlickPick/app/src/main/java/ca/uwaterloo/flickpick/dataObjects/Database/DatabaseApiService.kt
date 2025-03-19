@@ -15,7 +15,6 @@ import ca.uwaterloo.flickpick.dataObjects.Database.Responses.MovieResponse
 import ca.uwaterloo.flickpick.dataObjects.Database.Responses.GroupResponse
 import ca.uwaterloo.flickpick.dataObjects.Database.Models.UserCreate
 import ca.uwaterloo.flickpick.dataObjects.Database.Models.UserWatched
-import ca.uwaterloo.flickpick.dataObjects.Database.Responses.MovieResponse
 import ca.uwaterloo.flickpick.dataObjects.Database.Responses.ReviewResponse
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import retrofit2.Response

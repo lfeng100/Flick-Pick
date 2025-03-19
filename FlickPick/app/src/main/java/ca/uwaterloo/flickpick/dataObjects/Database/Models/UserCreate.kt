@@ -4,8 +4,9 @@ import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
 data class UserCreate(
-    val username: String,
     val email: String,
+    val username: String,
     val firstName: String,
-    val lastName: String
+    val lastName: String,
+    val userID: String
 )

@@ -15,13 +15,13 @@ import kotlinx.coroutines.withContext
 class FirebaseAuthentication {
     private val auth = FirebaseAuth.getInstance()
 
-    fun createAccount(email: String, username: String, password: String, context: Context, navController: NavController) {
+    fun createAccount(firstName: String, lastName: String, email: String, username: String, password: String, context: Context, navController: NavController) {
         auth.createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     val firebaseUser = task.result?.user
                     val userID = firebaseUser?.uid ?: ""
-                    createUserBackend(email, username, userID, context, navController)
+                    createUserBackend(firstName, lastName, email, username, userID, context, navController)
                     Toast.makeText(context, "Registration Successful!", Toast.LENGTH_SHORT).show()
                 } else {
                     val errorMessage = task.exception?.message ?: "Registration Failed"
@@ -30,14 +30,15 @@ class FirebaseAuthentication {
             }
     }
 
-    fun createUserBackend(email: String, username: String, userID: String, context: Context, navController: NavController) {
+    fun createUserBackend(firstName: String, lastName: String, email: String, username: String, userID: String, context: Context, navController: NavController) {
         CoroutineScope(Dispatchers.IO).launch {
             DatabaseClient.apiService.createUser(
                 UserCreate(
-                    username = username,
+                    firstName = firstName,
+                    lastName = lastName,
                     email = email,
-                    firstName = "John",
-                    lastName = "Smith"
+                    username = username,
+                    userID = userID
                 )
             )
             withContext(Dispatchers.Main){

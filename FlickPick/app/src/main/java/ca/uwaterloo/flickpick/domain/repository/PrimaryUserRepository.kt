@@ -155,10 +155,11 @@ object PrimaryUserRepository {
                     if (userIDPref == null || DatabaseClient.apiService.getUser(userIDPref).body() == null) {
                         userID = DatabaseClient.apiService.createUser(
                             UserCreate(
+                                userID = "3d7e36e5-097d-472b-a00c-b4edc5018fb7",
                                 email = "default@uwaterloo.ca",
                                 username = "default",
                                 firstName = "John",
-                                lastName = "Smith"
+                                lastName = "Smith",
                             )
                         ).userID
                         val editor = sharedPref.edit()
