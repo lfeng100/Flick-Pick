@@ -80,7 +80,7 @@ fun JoinGroupCard(groupName: String, userName: String, adminUsername: String, me
                 Button(
                     onClick = {
                         userInGroup(userId, groupId)
-                        navController.navigate("library")
+                        navController.navigate("groupmain")
                 },
                     colors = ButtonDefaults.buttonColors(containerColor = Color.White),
                     modifier = Modifier.fillMaxWidth()
