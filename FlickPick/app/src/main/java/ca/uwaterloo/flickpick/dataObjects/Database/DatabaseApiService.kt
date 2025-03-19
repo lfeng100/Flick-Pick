@@ -1,5 +1,6 @@
 package ca.uwaterloo.flickpick.dataObjects.Database
 
+import ca.uwaterloo.flickpick.dataObjects.Database.Models.Group
 import com.squareup.moshi.Moshi
 import retrofit2.http.*
 import retrofit2.Retrofit
@@ -7,6 +8,7 @@ import retrofit2.converter.moshi.MoshiConverterFactory
 import ca.uwaterloo.flickpick.dataObjects.Database.Models.Movie
 import ca.uwaterloo.flickpick.dataObjects.Database.Models.Tag
 import ca.uwaterloo.flickpick.dataObjects.Database.Models.User
+import ca.uwaterloo.flickpick.dataObjects.Database.Responses.GroupResponse
 import ca.uwaterloo.flickpick.dataObjects.Database.Responses.MovieResponse
 import ca.uwaterloo.flickpick.dataObjects.Database.Responses.TagResponse
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
@@ -36,6 +38,17 @@ interface DatabaseApiService {
     //tags
     @GET("tags/")
     suspend fun getTags(): List<Tag>
+
+    // Groups
+    @GET("groups/")
+    suspend fun getAllGroups(
+        @Query("limit") limit: Int = 10,
+        @Query("offset") offset: Int = 0
+    ): GroupResponse
+
+    @GET("group/{id}")
+    suspend fun getGroupById(@Path("id") groupId: String): Group
+
 }
 
 object DatabaseClient {
