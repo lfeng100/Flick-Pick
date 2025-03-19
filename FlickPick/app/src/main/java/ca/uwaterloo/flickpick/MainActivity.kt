@@ -30,6 +30,7 @@ import androidx.navigation.compose.rememberNavController
 import ca.uwaterloo.flickpick.domain.repository.PrimaryUserRepository
 import ca.uwaterloo.flickpick.ui.component.BottomNavBar
 import ca.uwaterloo.flickpick.ui.screen.BrowseScreen
+import ca.uwaterloo.flickpick.ui.screen.GroupMainScreen
 import ca.uwaterloo.flickpick.ui.screen.GroupsScreen
 import ca.uwaterloo.flickpick.ui.screen.HomeScreen
 import ca.uwaterloo.flickpick.ui.screen.MovieInfoScreen
@@ -106,6 +107,7 @@ fun MainScreen() {
             composable("recommend") { RecommendationScreen(mainNavController) }
             composable("group") { GroupsScreen(mainNavController) }
             composable("profile") { ProfileScreen(mainNavController) }
+            composable("groupmain") { GroupMainScreen(mainNavController) }
             composable("movie/{movieId}") { navBackStackEntry ->
                 val movieId = navBackStackEntry.arguments?.getString("movieId")
                 if (movieId != null) {
@@ -124,7 +126,7 @@ fun MainScreen() {
             composable("group/{groupId}") { navBackStackEntry ->
                 val groupId = navBackStackEntry.arguments?.getString("groupId")
                 if (groupId != null) {
-                    JoinGroupScreen(mainNavController, groupId) // @ARYAN CHANGE SCREEN NAME
+                    JoinGroupScreen(mainNavController, groupId)
                 }
             }
         }
