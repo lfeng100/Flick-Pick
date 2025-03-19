@@ -18,7 +18,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -108,7 +107,6 @@ fun MainScreen() {
             composable("recommend") { RecommendationScreen(mainNavController) }
             composable("group") { GroupsScreen(mainNavController) }
             composable("profile") { ProfileScreen(mainNavController) }
-            composable("groupmain") { GroupMainScreen(mainNavController) }
             composable("movie/{movieId}") { navBackStackEntry ->
                 val movieId = navBackStackEntry.arguments?.getString("movieId")
                 if (movieId != null) {
@@ -131,6 +129,12 @@ fun MainScreen() {
                 val groupId = navBackStackEntry.arguments?.getString("groupId")
                 if (groupId != null) {
                     JoinGroupScreen(mainNavController, groupId)
+                }
+            }
+            composable("groupmain/{groupId}") { navBackStackEntry ->
+                val groupId = navBackStackEntry.arguments?.getString("groupId")
+                if (groupId != null) {
+                    GroupMainScreen(mainNavController, groupId)
                 }
             }
         }
