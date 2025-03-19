@@ -69,7 +69,7 @@ def create_movie(db: Session, movie: schemas.MovieCreate):
     return db_movie
 
 def get_movies(db: Session, limit: int = 10, offset: int = 0):
-    total = db.query(models.Movie).count() 
+    total = db.query(models.Movie).count()
     movies = db.query(models.Movie).offset(offset).limit(limit).all()
     return {
         "items": movies,
@@ -81,8 +81,8 @@ def get_movies(db: Session, limit: int = 10, offset: int = 0):
 def get_movie(db: Session, movie_id: str):
     movie = db.query(models.Movie).filter(models.Movie.movieID == movie_id).first()
     if movie:
-        if isinstance(movie.genres, str):  
-            movie.genres = json.loads(movie.genres)  
+        if isinstance(movie.genres, str):
+            movie.genres = json.loads(movie.genres)
 
     return movie
 
@@ -255,6 +255,7 @@ def create_review(db: Session, review: schemas.ReviewCreate):
     db_review = models.Review(**review.dict())
     db.add(db_review)
     db.commit()
+    db.refresh(db_review) # Need this or the json is empty when returned
     return db_review
 
 def get_reviews(db: Session):
@@ -269,7 +270,7 @@ def delete_review(db: Session, review_id: str):
 
 def get_reviews_by_user(db: Session, user_id: str, limit: int = 10, offset: int = 0):
     query = db.query(models.Review).filter(models.Review.userID == user_id)
-    
+
     total = query.count()
     reviews = query.offset(offset).limit(limit).all()
 

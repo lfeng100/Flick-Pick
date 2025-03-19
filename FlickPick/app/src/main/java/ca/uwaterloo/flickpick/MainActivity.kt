@@ -7,18 +7,27 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.compositionLocalOf
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import ca.uwaterloo.flickpick.domain.repository.PrimaryUserRepository
 import ca.uwaterloo.flickpick.ui.component.BottomNavBar
 import ca.uwaterloo.flickpick.ui.screen.BrowseScreen
 import ca.uwaterloo.flickpick.ui.screen.GroupsScreen
@@ -73,6 +82,21 @@ fun MainScreen() {
             (context as? ComponentActivity)?.finish()
         }
     }
+    LaunchedEffect(Unit) {
+        PrimaryUserRepository.loadPrimaryUserLists(context)
+    }
+    val primaryUserIsLoaded by PrimaryUserRepository.isLoaded.collectAsState()
+    if (!primaryUserIsLoaded) {
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            CircularProgressIndicator(
+                modifier = Modifier.size(36.dp)
+            )
+        }
+        return
+    }
     Scaffold(
         bottomBar = { BottomNavBar(mainNavController) }
     ){ padding ->
@@ -97,6 +121,12 @@ fun MainScreen() {
             }
             composable("recommend/carousel") {
                 RecommendationCarouselScreen(mainNavController)
+            }
+            composable("group/{groupId}") { navBackStackEntry ->
+                val groupId = navBackStackEntry.arguments?.getString("groupId")
+                if (groupId != null) {
+                    //SCREEN NAME(mainNavController, groupId) // @ARYAN CHANGE SCREEN NAME
+                }
             }
         }
     }

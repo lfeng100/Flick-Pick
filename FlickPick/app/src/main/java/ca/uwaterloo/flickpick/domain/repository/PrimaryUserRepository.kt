@@ -1,0 +1,224 @@
+package ca.uwaterloo.flickpick.domain.repository
+
+import android.content.Context
+import android.provider.ContactsContract.Data
+import android.util.Log
+import androidx.compose.runtime.State
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateMapOf
+import androidx.compose.runtime.snapshots.SnapshotStateList
+import ca.uwaterloo.flickpick.dataObjects.Database.DatabaseClient
+import ca.uwaterloo.flickpick.dataObjects.Database.Models.Review
+import ca.uwaterloo.flickpick.dataObjects.Database.Models.ReviewCreate
+import ca.uwaterloo.flickpick.dataObjects.Database.Models.UserCreate
+import ca.uwaterloo.flickpick.dataObjects.Database.Models.UserWatched
+import ca.uwaterloo.flickpick.dataObjects.recommender.model.Rating
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
+
+data class PrimaryUserReviewData(
+    val movieId: String,
+    val score: Float,
+    val message: String?
+)
+
+object PrimaryUserRepository {
+    private var userID = ""
+
+    private val _reviews = mutableStateMapOf<String, PrimaryUserReviewData>()
+    private val _watchlist = mutableStateListOf<String>()
+    private val _watched = mutableStateListOf<String>()
+
+    val reviews: State<Map<String, PrimaryUserReviewData>> = derivedStateOf { _reviews }
+    val watchlist: State<List<String>> = derivedStateOf { _watchlist }
+    val watched: State<List<String>> = derivedStateOf { _watched }
+
+    private val reviewMap = mutableMapOf<String, Review>()
+
+    private val channel = Channel<suspend () -> Unit>()
+
+    init {
+        CoroutineScope(Dispatchers.IO).launch {
+            for (task in channel) {
+                task()
+            }
+        }
+    }
+
+    private fun enqueueRequest(request: suspend () -> Unit) {
+        CoroutineScope(Dispatchers.Default).launch {
+            channel.send(request)
+        }
+    }
+
+    fun addToWatchlist(movieId: String) {
+        if (_watchlist.insertSorted(movieId)) {
+            enqueueRequest {
+                DatabaseClient.apiService.addUserWatchlist(UserWatched(userID, movieId))
+            }
+        }
+    }
+
+    fun removeFromWatchlist(movieId: String) {
+        if (_watchlist.remove(movieId)) {
+            enqueueRequest {
+                DatabaseClient.apiService.deleteUserWatchlist(userID, movieId)
+            }
+        }
+    }
+
+    fun addToWatched(movieId: String) {
+        if (_watched.insertSorted(movieId)) {
+            enqueueRequest {
+                DatabaseClient.apiService.addUserWatched(UserWatched(userID, movieId))
+            }
+        }
+        removeFromWatchlist(movieId)
+    }
+
+    fun removeFromWatched(movieId: String) {
+        if (_watched.remove(movieId)) {
+            enqueueRequest {
+                DatabaseClient.apiService.deleteUserWatched(userID, movieId)
+            }
+        }
+        removeReview(movieId)
+    }
+
+    fun removeReview(movieId: String) {
+        if (_reviews.remove(movieId) != null) {
+            enqueueRequest {
+                val review = reviewMap[movieId]
+                DatabaseClient.apiService.deleteReview(review?.reviewID!!)
+                reviewMap.remove(movieId)
+            }
+        }
+    }
+
+    fun addReview(movieId: String, score: Float, message: String?) {
+        if (!_reviews.containsKey(movieId)) {
+            _reviews[movieId] = PrimaryUserReviewData(movieId, score, message)
+            enqueueRequest {
+                reviewMap[movieId] = DatabaseClient.apiService.createReview(
+                    ReviewCreate(
+                        rating = score.toDouble(),
+                        message = message,
+                        userID = userID,
+                        movieID = movieId
+                    )
+                )
+            }
+        }
+        addToWatched(movieId)
+        removeFromWatchlist(movieId)
+    }
+
+    fun getAllRatings(): List<Rating> {
+        val ratingsList = mutableListOf<Rating>()
+        for((key, value) in _reviews) {
+            ratingsList.add(Rating(key, value.score))
+        }
+        return ratingsList
+    }
+
+    private fun SnapshotStateList<String>.insertSorted(movieId: String) : Boolean {
+        val idx = binarySearch(movieId)
+        if (idx >= 0) return false;
+        val insertIdx = -idx - 1
+        add(insertIdx, movieId)
+        return true
+    }
+
+    private val _isLoaded = MutableStateFlow(false)
+    val isLoaded: StateFlow<Boolean> = _isLoaded.asStateFlow()
+
+    fun loadPrimaryUserLists(context: Context) {
+        if (_isLoaded.value) {
+            return
+        }
+        CoroutineScope(Dispatchers.IO).launch {
+            val sharedPref = context.getSharedPreferences("FlickPick", Context.MODE_PRIVATE)
+            val userIDPref = sharedPref.getString("userID", null)
+            while (!_isLoaded.value) {
+                _reviews.clear()
+                _watchlist.clear()
+                _watched.clear()
+                try {
+                    // For now, create user if it doesn't exist
+                    // TODO: figure out how to hook this up with login
+                    if (userIDPref == null || DatabaseClient.apiService.getUser(userIDPref).body() == null) {
+                        userID = DatabaseClient.apiService.createUser(
+                            UserCreate(
+                                email = "default@uwaterloo.ca",
+                                username = "default",
+                                firstName = "John",
+                                lastName = "Smith"
+                            )
+                        ).userID
+                        val editor = sharedPref.edit()
+                        editor.putString("userID", userID)
+                        editor.apply()
+                    } else {
+                        userID = userIDPref
+                        Log.i("PrimaryUserRepository", "userID: $userID")
+                    }
+                    var page = 0;
+                    while (true) {
+                        val items = DatabaseClient.apiService.getReviewsForUser(
+                            userID = userID,
+                            limit = 100,
+                            offset = page * 100
+                        ).items
+                        if (items.isEmpty()) {
+                            break
+                        }
+                        items.forEach { review ->
+                            reviewMap[review.movieID] = review
+                            _reviews[review.movieID] = PrimaryUserReviewData(
+                                movieId = review.movieID,
+                                score = review.rating.toFloat(),
+                                message = review.message,
+                            )
+                        }
+                        page += 1
+                    }
+                    page = 0
+                    while (true) {
+                        val items = DatabaseClient.apiService.getUserWatched(
+                            userID = userID,
+                            limit = 100,
+                            offset = page * 100
+                        ).items
+                        if (items.isEmpty()) {
+                            break
+                        }
+                        _watched.addAll(items.map {it.movieID})
+                        page += 1
+                    }
+                    page = 0
+                    while (true) {
+                        val items = DatabaseClient.apiService.getUserWatchlist(
+                            userID = userID,
+                            limit = 100,
+                            offset = page * 100
+                        ).items
+                        if (items.isEmpty()) {
+                            break
+                        }
+                        _watched.addAll(items.map {it.movieID})
+                        page += 1
+                    }
+                    _isLoaded.value = true
+                } catch (e: Exception) {
+                    Log.e("PrimaryUserRepository", "Error loading lists: ${e.message}")
+                }
+            }
+        }
+    }
+}

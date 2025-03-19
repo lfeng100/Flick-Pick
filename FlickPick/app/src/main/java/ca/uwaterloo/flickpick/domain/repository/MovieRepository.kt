@@ -49,7 +49,7 @@ object MovieRepository {
 
     fun applyFilters(selectedTags: Map<String, String>) {
         val oldJob = job
-        job = CoroutineScope(Dispatchers.Main).launch {
+        job = CoroutineScope(Dispatchers.IO).launch {
             _selectedFilters.value = selectedTags
             oldJob?.cancelAndJoin()
             page = 0
@@ -60,7 +60,7 @@ object MovieRepository {
 
     fun applyTitleQuery(searchString: String) {
         val oldJob = job
-        job = CoroutineScope(Dispatchers.Main).launch {
+        job = CoroutineScope(Dispatchers.IO).launch {
             _titleQuery.value = searchString
             oldJob?.cancelAndJoin()
             page = 0
@@ -83,7 +83,7 @@ object MovieRepository {
                         limit = 12,
                         offset = page * 12,
                         titleQuery = _titleQuery.value,
-                        selectedTags = _selectedFilters.value.values.toList()
+                        tagIDs = _selectedFilters.value.values.toList()
                     ).items
             _movies.value += movieList
             for (movie in movieList) {

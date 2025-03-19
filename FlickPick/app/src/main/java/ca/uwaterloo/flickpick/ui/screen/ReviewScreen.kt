@@ -24,7 +24,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import ca.uwaterloo.flickpick.dataObjects.Database.Models.Movie
-import ca.uwaterloo.flickpick.domain.manager.PrimaryUserManager
+import ca.uwaterloo.flickpick.domain.repository.PrimaryUserRepository
 import ca.uwaterloo.flickpick.ui.component.BackButtonTopBar
 import ca.uwaterloo.flickpick.ui.component.MovieTitleText
 import ca.uwaterloo.flickpick.ui.component.StarRatingBar
@@ -38,7 +38,7 @@ fun ReviewScreen(navController: NavController, movieId: String) {
     }
     var score by remember {
         mutableFloatStateOf(
-            PrimaryUserManager.reviews.value[movieId]?.score ?: 0f
+            PrimaryUserRepository.reviews.value[movieId]?.score ?: 0f
         )
     }
     var message by remember { mutableStateOf("") }
@@ -51,7 +51,7 @@ fun ReviewScreen(navController: NavController, movieId: String) {
                     TopBarButtonData(
                         Icons.Filled.Check,
                         {
-                            PrimaryUserManager.addReview(movieId, score, message)
+                            PrimaryUserRepository.addReview(movieId, score, message)
                             navController.popBackStack()
                         }
                     )

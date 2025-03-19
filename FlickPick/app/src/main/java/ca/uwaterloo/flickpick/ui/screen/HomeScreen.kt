@@ -21,7 +21,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
 import ca.uwaterloo.flickpick.dataObjects.Database.Models.Movie
-import ca.uwaterloo.flickpick.domain.manager.PrimaryUserManager
+import ca.uwaterloo.flickpick.domain.repository.PrimaryUserRepository
 import ca.uwaterloo.flickpick.ui.component.BrowseMovieReminder
 import ca.uwaterloo.flickpick.ui.component.LogoTopBar
 import ca.uwaterloo.flickpick.ui.component.MovieGrid
@@ -31,13 +31,13 @@ import kotlinx.coroutines.launch
 fun HomeScreen(navController: NavController) {
     val reviewedIds by remember {
         derivedStateOf {
-            PrimaryUserManager.watched.value.filter {
-                PrimaryUserManager.reviews.value.containsKey(it)
+            PrimaryUserRepository.watched.value.filter {
+                PrimaryUserRepository.reviews.value.containsKey(it)
             }
         }
     }
-    val watchedIds by PrimaryUserManager.watched
-    val watchlistIds by PrimaryUserManager.watchlist
+    val watchedIds by PrimaryUserRepository.watched
+    val watchlistIds by PrimaryUserRepository.watchlist
 
     var reviewed by remember { mutableStateOf(emptyList<Movie>()) }
     var watched by remember { mutableStateOf(emptyList<Movie>()) }

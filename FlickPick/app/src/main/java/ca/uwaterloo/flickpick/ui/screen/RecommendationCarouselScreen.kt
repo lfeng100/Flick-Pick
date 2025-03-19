@@ -23,7 +23,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import ca.uwaterloo.flickpick.dataObjects.Database.Models.Movie
-import ca.uwaterloo.flickpick.domain.manager.RecommendationRepository
+import ca.uwaterloo.flickpick.domain.repository.RecommendationRepository
 import ca.uwaterloo.flickpick.ui.component.BackButtonTopBar
 import ca.uwaterloo.flickpick.ui.component.MovieCoverFlowCarousel
 import ca.uwaterloo.flickpick.ui.component.MovieInteractionButtonRow
