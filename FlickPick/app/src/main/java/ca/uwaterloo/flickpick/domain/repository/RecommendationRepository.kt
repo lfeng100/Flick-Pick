@@ -1,4 +1,4 @@
-package ca.uwaterloo.flickpick.domain.manager
+package ca.uwaterloo.flickpick.domain.repository
 
 import MovieRepository
 import android.util.Log
@@ -32,11 +32,11 @@ object RecommendationRepository {
             return;
         }
         CoroutineScope(Dispatchers.IO).launch {
-            val userRatings = PrimaryUserManager.getAllRatings()
+            val userRatings = PrimaryUserRepository.getAllRatings()
             val filters = Filters(
                 includedGenres = _filters.value?.includedGenres,
                 excludedGenres = _filters.value?.excludedGenres,
-                excludedMovieIDs = PrimaryUserManager.watched.value + previouslyRecommendedMovieIds
+                excludedMovieIDs = PrimaryUserRepository.watched.value + previouslyRecommendedMovieIds
             )
             Log.i("Recommender", "included genres " + filters.includedGenres)
             Log.i("Recommender", "excluded genres " + filters.excludedGenres)
@@ -57,7 +57,6 @@ object RecommendationRepository {
                     Log.e("API_ERROR", "Error fetching movies: ${e.message}")
                 }
             }
-
         }
     }
 

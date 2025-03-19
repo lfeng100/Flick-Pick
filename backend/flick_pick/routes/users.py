@@ -30,3 +30,12 @@ def update_user(user_id: str, user_update: schemas.UserCreate, db: Session = Dep
     if updated_user is None:
         raise HTTPException(status_code=404, detail="User not found")
     return updated_user
+
+@router.get("/users/search/", response_model=schemas.PaginatedUsersResponse)
+def search_users(
+    username_query: str = Query(..., description="Search query for usernames"),
+    limit: int = Query(10, description="Number of results per page"),
+    offset: int = Query(0, description="Pagination offset"),
+    db: Session = Depends(database.get_db)
+):
+    return crud.search_users(db, username_query, limit, offset)

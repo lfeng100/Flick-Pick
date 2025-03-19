@@ -1,5 +1,6 @@
 package ca.uwaterloo.flickpick.ui.component
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -35,6 +36,7 @@ fun MovieCard(movie: Movie, width: Dp, onClick: (() -> Unit)? = null) {
         Box() {
             val posterUrl = movie.getPosterUrl()
             posterUrl?.let { url ->
+                Log.i("MovieCard", "Poster URL: $url")
                 AsyncImage(
                     model = url,
                     contentDescription = "Movie Poster",

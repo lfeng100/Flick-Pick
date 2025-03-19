@@ -6,5 +6,7 @@ import com.squareup.moshi.JsonClass
 data class Group(
     val groupID: String,
     val groupName: String,
-    val adminUserID: String?
+    val adminUserID: String?,
+    val adminUsername: String?,
+    val groupSize: Int?
 )

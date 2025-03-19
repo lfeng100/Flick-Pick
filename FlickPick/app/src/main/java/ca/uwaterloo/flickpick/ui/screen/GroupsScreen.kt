@@ -8,17 +8,21 @@ import androidx.compose.material.icons.rounded.AddCircleOutline
 import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
 import ca.uwaterloo.flickpick.ui.component.GroupCardsList
-import ca.uwaterloo.flickpick.ui.component.TopBar
+import ca.uwaterloo.flickpick.ui.component.TitleTopBar
 import ca.uwaterloo.flickpick.ui.component.TopBarButtonData
 
 @Composable
 fun GroupsScreen(navController: NavController) {
+    val groups by GroupRepository.groups.collectAsState()
+
     Scaffold(
         topBar = {
-            TopBar("Groups",
+            TitleTopBar("Groups",
                 listOf(
                     TopBarButtonData(
                         icon = Icons.Rounded.Search,
@@ -37,7 +41,10 @@ fun GroupsScreen(navController: NavController) {
                 .fillMaxSize()
                 .padding(padding)
         ) {
-            GroupCardsList(navController)
+            GroupCardsList(
+                groups,
+                navController
+            )
         }
     }
 }

@@ -54,6 +54,8 @@ dependencies {
     implementation("androidx.compose.material:material-icons-extended:1.7.6")
     implementation(platform("com.google.firebase:firebase-bom:33.3.0"))
     implementation("com.google.firebase:firebase-auth")
+    implementation(libs.androidx.ui.test.android)
+    implementation(libs.androidx.ui.test.android)
     val nav_version = "2.8.7"
     implementation(libs.androidx.core.ktx)
     implementation ("androidx.compose.material3:material3:1.1.2")
