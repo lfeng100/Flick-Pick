@@ -19,7 +19,7 @@ import androidx.navigation.NavController
 import ca.uwaterloo.flickpick.dataObjects.Database.Models.Movie
 
 @Composable
-fun MovieGrid(movies: List<Movie>, navController: NavController, hasTopMargin: Boolean = true) {
+fun MovieGrid(movies: List<Movie>, navController: NavController) {
     var width by remember { mutableIntStateOf(0) }
 
     val movieCardWidth = 122.dp
@@ -31,12 +31,7 @@ fun MovieGrid(movies: List<Movie>, navController: NavController, hasTopMargin: B
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
-            .padding(
-                start=16.dp,
-                end=16.dp,
-                bottom=16.dp,
-                top = if (hasTopMargin) 16.dp else 0.dp
-            )
+            .padding(16.dp)
             .onSizeChanged { size -> width = size.width },
     ) {
         items(rows) { row ->

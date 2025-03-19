@@ -47,7 +47,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import ca.uwaterloo.flickpick.R
 import ca.uwaterloo.flickpick.dataObjects.Database.Models.Movie
-import ca.uwaterloo.flickpick.domain.manager.PrimaryUserManager
+import ca.uwaterloo.flickpick.domain.repository.PrimaryUserRepository
 
 @Composable
 fun MovieDetails(movie: Movie) {
@@ -99,19 +99,19 @@ data class ToggleButtonItem(
 fun MovieInteractionButtonRow(navController: NavController, movie: Movie, showTMDBLink: Boolean = true) {
     val isReviewChecked = remember(movie) {
         derivedStateOf {
-            val ratings by PrimaryUserManager.reviews
+            val ratings by PrimaryUserRepository.reviews
             ratings[movie.movieID] != null
         }
     }
     val isWatchedChecked = remember(movie) {
         derivedStateOf {
-            val watched by PrimaryUserManager.watched
+            val watched by PrimaryUserRepository.watched
             watched.binarySearch(movie.movieID) >= 0
         }
     }
     val isWatchlistChecked = remember(movie) {
         derivedStateOf {
-            val watchlist by PrimaryUserManager.watchlist
+            val watchlist by PrimaryUserRepository.watchlist
             watchlist.binarySearch(movie.movieID) >= 0
         }
     }
@@ -123,21 +123,21 @@ fun MovieInteractionButtonRow(navController: NavController, movie: Movie, showTM
             onChecked = {
                 navController.navigate("review/${movie.movieID}")
             },
-            onUnchecked = { PrimaryUserManager.removeReview(movie.movieID) }
+            onUnchecked = { PrimaryUserRepository.removeReview(movie.movieID) }
         ),
         ToggleButtonItem(
             checkedIcon = Icons.Filled.Visibility,
             uncheckedIcon = Icons.Outlined.Visibility,
             isChecked = isWatchedChecked,
-            onChecked = { PrimaryUserManager.addToWatched(movie.movieID) },
-            onUnchecked = { PrimaryUserManager.removeFromWatched(movie.movieID) }
+            onChecked = { PrimaryUserRepository.addToWatched(movie.movieID) },
+            onUnchecked = { PrimaryUserRepository.removeFromWatched(movie.movieID) }
         ),
         ToggleButtonItem(
             checkedIcon = Icons.Filled.WatchLater,
             uncheckedIcon = Icons.Outlined.WatchLater,
             isChecked = isWatchlistChecked,
-            onChecked = { PrimaryUserManager.addToWatchlist(movie.movieID) },
-            onUnchecked = { PrimaryUserManager.removeFromWatchlist(movie.movieID) }
+            onChecked = { PrimaryUserRepository.addToWatchlist(movie.movieID) },
+            onUnchecked = { PrimaryUserRepository.removeFromWatchlist(movie.movieID) }
         )
     )
     Row (
