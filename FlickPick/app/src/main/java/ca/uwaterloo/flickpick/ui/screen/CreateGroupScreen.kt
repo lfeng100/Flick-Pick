@@ -41,8 +41,11 @@ import ca.uwaterloo.flickpick.ui.component.TopBarButtonData
 import ca.uwaterloo.flickpick.ui.component.UserCard
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.filled.GroupAdd
+import androidx.compose.material.icons.rounded.AddCircleOutline
+import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material3.Button
 import androidx.compose.ui.text.style.TextAlign
+import ca.uwaterloo.flickpick.ui.component.TitleTopBar
 
 
 @Composable
@@ -64,12 +67,22 @@ fun CreateGroupScreen(navController: NavController) {
         }
     }
     Scaffold(
+//        topBar = {
+//            TopBar("Create Group",
+//                listOf(
+//                    TopBarButtonData(
+//                        icon = Icons.AutoMirrored.Filled.ArrowBack,
+//                        onClick = { navController.popBackStack() }
+//                    )
+//                )
+//            )
+//        }
         topBar = {
-            TopBar("Create Group",
+            TitleTopBar("Create Groups",
                 listOf(
                     TopBarButtonData(
                         icon = Icons.AutoMirrored.Filled.ArrowBack,
-                        onClick = { navController.popBackStack() }
+                        onClick = { navController.popBackStack()}
                     )
                 )
             )
