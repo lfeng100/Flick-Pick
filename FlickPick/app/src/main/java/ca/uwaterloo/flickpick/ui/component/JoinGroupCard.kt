@@ -1,5 +1,6 @@
 package ca.uwaterloo.flickpick.ui.component
 
+import GroupRepository.userInGroup
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -13,10 +14,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import ca.uwaterloo.flickpick.dataObjects.Database.DatabaseClient
+import ca.uwaterloo.flickpick.dataObjects.Database.Models.AddUserToGroup
 import ca.uwaterloo.flickpick.ui.theme.Purple40
 
 @Composable
-fun JoinGroupCard(groupName: String, userName: String, adminUsername: String, memberCount: Int, navController: NavController) {
+fun JoinGroupCard(groupName: String, userName: String, adminUsername: String, memberCount: Int, navController: NavController, userId: String, groupId: String) {
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -75,7 +78,10 @@ fun JoinGroupCard(groupName: String, userName: String, adminUsername: String, me
                 )
                 Spacer(modifier = Modifier.height(46.dp))
                 Button(
-                    onClick = { navController.navigate("library") },
+                    onClick = {
+                        userInGroup(userId, groupId)
+                        navController.navigate("library")
+                },
                     colors = ButtonDefaults.buttonColors(containerColor = Color.White),
                     modifier = Modifier.fillMaxWidth()
                 ) {
@@ -94,3 +100,4 @@ fun JoinGroupCard(groupName: String, userName: String, adminUsername: String, me
         }
     }
 }
+

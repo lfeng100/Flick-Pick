@@ -124,7 +124,7 @@ fun MainScreen() {
             composable("group/{groupId}") { navBackStackEntry ->
                 val groupId = navBackStackEntry.arguments?.getString("groupId")
                 if (groupId != null) {
-                    JoinGroupScreen(mainNavController, groupId) // @ARYAN CHANGE SCREEN NAME
+                    JoinGroupScreen(mainNavController, groupId)
                 }
             }
         }

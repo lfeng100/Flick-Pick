@@ -1,6 +1,7 @@
 import android.util.Log
 import ca.uwaterloo.flickpick.dataObjects.Database.Models.Group
 import ca.uwaterloo.flickpick.dataObjects.Database.DatabaseClient
+import ca.uwaterloo.flickpick.dataObjects.Database.Models.AddUserToGroup
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.CoroutineScope
@@ -20,6 +21,17 @@ object GroupRepository {
     init {
         fetchGroups()
     }
+
+    fun userInGroup(userId: String, groupId: String) {
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                DatabaseClient.apiService.addUserToGroup(AddUserToGroup(groupId, userId))
+            } catch (e: Exception) {
+                Log.e("GroupRepository", "Error adding user to group: ${userId}, ${groupId} ${e.message}")
+            }
+        }
+    }
+
     fun fetchGroups() {
         CoroutineScope(Dispatchers.IO).launch {
             try {

@@ -15,13 +15,14 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import ca.uwaterloo.flickpick.dataObjects.Database.DatabaseClient
 import ca.uwaterloo.flickpick.ui.component.JoinGroupCard
+import com.google.firebase.auth.FirebaseAuth
 import kotlin.random.Random
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @Composable
 fun JoinGroupScreen(navController: NavController, groupId: String) {
-    val userId = "05b58228-0a3f-403d-91fe-cab0868ebd68" //TODO: Update this ID to current userID when it is globally stored
+    val userId = "05b58228-0a3f-403d-91fe-cab0868ebd68" //FirebaseAuth.getInstance().currentUser!!.uid
     val groupId = groupId
     var userNameByID by remember { mutableStateOf<String?>(null) }
     var groupCount by remember { mutableStateOf<Int?>(null) }
@@ -61,7 +62,9 @@ fun JoinGroupScreen(navController: NavController, groupId: String) {
             userName = (userNameByID.toString()),
             adminUsername = groupOwner ?: "Unknown",
             memberCount = groupCount ?: 0,
-            navController = navController
+            navController = navController,
+            userId = userId,
+            groupId = groupId
         )
     }
 }
