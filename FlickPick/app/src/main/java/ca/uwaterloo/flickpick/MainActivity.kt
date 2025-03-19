@@ -120,6 +120,12 @@ fun MainScreen() {
             composable("recommend/carousel") {
                 RecommendationCarouselScreen(mainNavController)
             }
+            composable("group/{groupId}") { navBackStackEntry ->
+                val groupId = navBackStackEntry.arguments?.getString("groupId")
+                if (groupId != null) {
+                    //SCREEN NAME(mainNavController, groupId) // @ARYAN CHANGE SCREEN NAME
+                }
+            }
         }
     }
 }

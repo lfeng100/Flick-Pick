@@ -12,13 +12,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Groups
 import androidx.compose.material.icons.outlined.ArrowCircleRight
 import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -26,20 +26,24 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import ca.uwaterloo.flickpick.dataObjects.Database.Models.Group
+import ca.uwaterloo.flickpick.ui.theme.PurpleGrey40
 
 @Composable
-fun GroupCard(groupName: String, onClick: () -> Unit) {
+fun GroupCard(group: Group, onClick: (() -> Unit)) {
     Card(
         modifier = Modifier
             .padding(
                 horizontal = 8.dp,
                 vertical = 2.dp
             )
-            .clickable(onClick = onClick),
-        shape = RoundedCornerShape(10.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.Black.copy(alpha = 0.85f)),
+            .clickable(onClick = onClick)
+            .background(MaterialTheme.colorScheme.surface),
+        shape = RoundedCornerShape(6.dp)
     ) {
         Row(
             modifier = Modifier
@@ -55,7 +59,7 @@ fun GroupCard(groupName: String, onClick: () -> Unit) {
                 modifier = Modifier
                     .size(45.dp)
                     .background(
-                        color = Color.Black,
+                        color = MaterialTheme.colorScheme.primary,
                         shape = CircleShape
                     )
                     .border(
@@ -73,38 +77,37 @@ fun GroupCard(groupName: String, onClick: () -> Unit) {
             }
             Spacer(modifier = Modifier.width(16.dp))
             Text(
-                text = groupName,
-                color = Color.White,
-                style = MaterialTheme.typography.titleLarge
+                text = group.groupName,
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Bold,
+                color = PurpleGrey40
             )
             Spacer(Modifier.weight(1f))
             Icon(
                 imageVector = Icons.Outlined.ArrowCircleRight,
                 contentDescription = "Arrow Icon",
-                tint = Color.White,
-                modifier = Modifier.size(32.dp)
+                tint = PurpleGrey40,
+                modifier = Modifier.size(30.dp)
             )
         }
     }
 }
 
 @Composable
-fun GroupCardsList(navController: NavController) {
+fun GroupCardsList(groups: List<Group>, navController: NavController) {
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
-            .padding(
-                horizontal = 12.dp,
-                vertical = 4.dp
-            )
+            .padding(horizontal = 12.dp, vertical = 4.dp)
     ) {
-        items(6) { index ->
+        items(groups) { group ->
             GroupCard(
-                groupName = "Group #${index + 1}",
+                group = group,
                 onClick = {
-                    navController.navigate("library")
+                    navController.navigate("group/${group.groupID}")
                 }
             )
         }
     }
 }
+
