@@ -1,5 +1,6 @@
 package ca.uwaterloo.flickpick.dataObjects.Database
 
+import ca.uwaterloo.flickpick.dataObjects.Database.Models.AddUserToGroup
 import ca.uwaterloo.flickpick.dataObjects.Database.Models.Group
 import ca.uwaterloo.flickpick.dataObjects.Database.Models.GroupCreate
 import com.squareup.moshi.Moshi
@@ -77,9 +78,15 @@ interface DatabaseApiService {
     @GET("group/{id}")
     suspend fun getGroupById(@Path("id") groupId: String): Group
 
+
     @POST("groups/")
     suspend fun createGroup(@Body group: GroupCreate):Group
 
+    @POST("groupusers/")
+    suspend fun addUserToGroup(
+       @Body addUserToGroup: AddUserToGroup
+    ): AddUserToGroup
+    
     // reviews
     @POST("reviews/")
     suspend fun createReview(@Body review: ReviewCreate): Review
