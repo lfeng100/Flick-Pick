@@ -5,8 +5,9 @@ import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
 data class GroupUsers(
-    val items: List<User>,
-    val total: Int,
-    val page: Int,
-    val pages: Int
+    val groupID: String,
+    val groupName: String,
+    val adminUserID: String,
+    val adminUsername: String,
+    val groupSize: Int
 )

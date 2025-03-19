@@ -44,7 +44,7 @@ interface DatabaseApiService {
     suspend fun getTags(): List<Tag>
 
     //groups
-    @GET("groupusers/{groupID}")
+    @GET("groups/{groupID}")
     suspend fun getGroupsById(@Path("groupID") groupId: String): GroupUsers
 }
 

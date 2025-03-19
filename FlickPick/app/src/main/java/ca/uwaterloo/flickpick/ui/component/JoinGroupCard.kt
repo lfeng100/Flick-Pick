@@ -16,7 +16,7 @@ import androidx.navigation.NavController
 import ca.uwaterloo.flickpick.ui.theme.Purple40
 
 @Composable
-fun JoinGroupCard(groupName: String, userName: String, memberCount: Int, navController: NavController) {
+fun JoinGroupCard(groupName: String, userName: String, adminUsername: String, memberCount: Int, navController: NavController) {
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -53,6 +53,14 @@ fun JoinGroupCard(groupName: String, userName: String, memberCount: Int, navCont
                     text = "$memberCount members",
                     color = Color.Gray,
                     fontSize = 24.sp,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.fillMaxWidth()
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    text = "Group created by $adminUsername",
+                    color = Color.Gray,
+                    fontSize = 16.sp,
                     textAlign = TextAlign.Center,
                     modifier = Modifier.fillMaxWidth()
                 )

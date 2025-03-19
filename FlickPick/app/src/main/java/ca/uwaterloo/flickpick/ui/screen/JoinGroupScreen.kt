@@ -21,10 +21,12 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun JoinGroupScreen(navController: NavController) {
-    val userId = "1" //TODO: Update this ID to current userID when it is globally stored
-    val groupId = "g1"
+    val userId = "05b58228-0a3f-403d-91fe-cab0868ebd68" //TODO: Update this ID to current userID when it is globally stored
+    val groupId = "dedd1f42-c728-4a9d-9798-3662314cafb3"
     var userNameByID by remember { mutableStateOf<String?>(null) }
     var groupCount by remember { mutableStateOf<Int?>(null) }
+    var groupName by remember { mutableStateOf<String?>(null) }
+    var groupOwner by remember { mutableStateOf<String?>(null) }
     val coroutineScope = rememberCoroutineScope()
 
     LaunchedEffect(userId) {
@@ -33,8 +35,9 @@ fun JoinGroupScreen(navController: NavController) {
                 val user = DatabaseClient.apiService.getUserById(userId)
                 userNameByID = user.username
                 val groupResponse = DatabaseClient.apiService.getGroupsById(groupId)
-                groupCount = groupResponse.total
-                val groupName = DatabaseClient.apiService.getGroup(groupId)
+                groupCount = groupResponse.groupSize
+                groupName = groupResponse.groupName
+                groupOwner = groupResponse.adminUsername
                 Log.d("JoinGroupScreen", "User name: $userNameByID, Group count: $groupCount")
             } catch (e: Exception) {
                 Log.e("JoinGroupScreen", "Error fetching user or group", e)
@@ -54,8 +57,9 @@ fun JoinGroupScreen(navController: NavController) {
             style = MaterialTheme.typography.headlineLarge
         )
         JoinGroupCard(
-            groupName = "Movie Lovers Unite Forever",
+            groupName = groupName ?: "Join this Group",
             userName = (userNameByID.toString()),
+            adminUsername = groupOwner ?: "Unknown",
             memberCount = groupCount ?: 0,
             navController = navController
         )
