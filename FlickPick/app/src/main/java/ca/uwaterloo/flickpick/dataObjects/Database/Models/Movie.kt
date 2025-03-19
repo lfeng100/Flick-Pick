@@ -15,13 +15,12 @@ data class Movie(
     @Json(name = "tmdb_id") val tmdbId: String?,
     val runtime: Int?,
     @Json(name = "poster_path") val posterPath: String?
-)
- {
+) {
     fun getPosterUrl(): String? {
         return posterPath?.let { "https://image.tmdb.org/t/p/w200$it.jpg" }
     }
 
-     fun getHighResPosterUrl(): String? {
-         return posterPath?.let { "https://image.tmdb.org/t/p/w780$it.jpg" }
-     }
+    fun getHighResPosterUrl(): String? {
+     return posterPath?.let { "https://image.tmdb.org/t/p/w780$it.jpg" }
+    }
 }

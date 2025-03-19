@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, UUID4
 from typing import Optional, List, Literal
 from datetime import datetime
 
@@ -6,15 +6,23 @@ from datetime import datetime
 class UserBase(BaseModel):
     email: str
     username: str
+    firstName: str
+    lastName: str
 
 class UserCreate(UserBase):
-    userID: str  # Primary key, required when creating a user
+    userID: Optional[UUID4] = None
 
 class UserResponse(UserBase):
     userID: str
 
     class Config:
-        orm_mode = True
+        from_attributes = True
+
+class PaginatedUsersResponse(BaseModel):
+    items: List[UserResponse]
+    total: int
+    page: int
+    pages: int
 
 # --- MOVIES SCHEMA ---
 class MovieBase(BaseModel):
@@ -35,7 +43,13 @@ class MovieResponse(MovieBase):
     movieID: str
 
     class Config:
-        orm_mode = True
+        from_attributes = True
+
+class PaginatedMovieResponse(BaseModel):
+    items: List[MovieResponse]
+    total: int
+    page: int
+    pages: int
 
 # --- GROUPS SCHEMA ---
 class GroupBase(BaseModel):
@@ -43,13 +57,19 @@ class GroupBase(BaseModel):
     adminUserID: Optional[str]
 
 class GroupCreate(GroupBase):
-    groupID: str  # Primary key
+    pass
 
 class GroupResponse(GroupBase):
     groupID: str
 
     class Config:
-        orm_mode = True
+        from_attributes = True
+
+class PaginatedGroupsResponse(BaseModel):
+    items: List[GroupResponse]
+    total: int
+    page: int
+    pages: int
 
 # --- GROUP USERS SCHEMA ---
 class GroupUserBase(BaseModel):
@@ -63,7 +83,7 @@ class GroupUserResponse(GroupUserBase):
     joinedAt: datetime
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 # --- TAGS SCHEMA ---
 class TagBase(BaseModel):
@@ -77,7 +97,7 @@ class TagResponse(TagBase):
     tagID: str
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 # --- MOVIE TAGS SCHEMA ---
 class MovieTagBase(BaseModel):
@@ -89,7 +109,7 @@ class MovieTagCreate(MovieTagBase):
 
 class MovieTagResponse(MovieTagBase):
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 # --- PREFERENCES SCHEMA ---
 class PreferenceBase(BaseModel):
@@ -101,7 +121,7 @@ class PreferenceCreate(PreferenceBase):
 
 class PreferenceResponse(PreferenceBase):
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 # --- REVIEWS SCHEMA ---
 class ReviewBase(BaseModel):
@@ -109,7 +129,6 @@ class ReviewBase(BaseModel):
     message: Optional[str]
 
 class ReviewCreate(ReviewBase):
-    reviewID: str  # Primary key
     userID: str
     movieID: str
 
@@ -120,7 +139,7 @@ class ReviewResponse(ReviewBase):
     movieID: str
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 # --- USER WATCHED SCHEMA ---
 class UserWatchedBase(BaseModel):
@@ -132,7 +151,7 @@ class UserWatchedCreate(UserWatchedBase):
 
 class UserWatchedResponse(UserWatchedBase):
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 # --- USER WATCHLIST SCHEMA ---
 class UserWatchlistBase(BaseModel):
@@ -144,4 +163,4 @@ class UserWatchlistCreate(UserWatchlistBase):
 
 class UserWatchlistResponse(UserWatchlistBase):
     class Config:
-        orm_mode = True
+        from_attributes = True

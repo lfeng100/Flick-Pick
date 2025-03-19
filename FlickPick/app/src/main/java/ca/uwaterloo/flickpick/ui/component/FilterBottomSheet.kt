@@ -19,9 +19,7 @@ fun FilterBottomSheet(
 ) {
     val tags by MovieRepository.tags.collectAsState()
     val selectedTags by MovieRepository.selectedFilters.collectAsState()
-
     val sheetState = rememberModalBottomSheetState()
-
     var expandedTagType by remember { mutableStateOf<String?>(null) }
 
     ModalBottomSheet(

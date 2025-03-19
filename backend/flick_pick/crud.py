@@ -5,7 +5,10 @@ import json
 
 # --- USERS CRUD ---
 def create_user(db: Session, user: schemas.UserCreate):
-    db_user = models.User(**user.dict())
+    user_dict = user.dict()
+    user_dict["userID"] = user_dict["userID"] or str(uuid.uuid4())
+
+    db_user = models.User(**user_dict)
     db.add(db_user)
     db.commit()
     db.refresh(db_user)
@@ -41,15 +44,18 @@ def update_user(db: Session, user_id: str, user_update: schemas.UserCreate):
     db.refresh(db_user)
     return db_user
 
-def update_review(db: Session, review_id: str, review_update: schemas.ReviewCreate):
-    db_review = db.query(models.Review).filter(models.Review.reviewID == review_id).first()
-    if not db_review:
-        return None
-    db_review.rating = review_update.rating
-    db_review.message = review_update.message
-    db.commit()
-    db.refresh(db_review)
-    return db_review
+def search_users(db: Session, username_query: str, limit: int = 10, offset: int = 0):
+    query = db.query(models.User).filter(models.User.username.ilike(f"%{username_query}%"))
+
+    total = query.count()
+    users = query.offset(offset).limit(limit).all()
+
+    return {
+        "items": users,
+        "total": total,
+        "page": (offset // limit) + 1,
+        "pages": (total + limit - 1) // limit
+    }
 
 # --- MOVIES CRUD ---
 def create_movie(db: Session, movie: schemas.MovieCreate):
@@ -124,11 +130,38 @@ def get_groups(db: Session, limit: int = 10, offset: int = 0):
     }
 
 def get_group_by_id(db: Session, group_id: str):
-    """Retrieve a single group by its groupID."""
-    return db.query(models.Group).filter(models.Group.groupID == group_id).first()
+    """Retrieve a single group by its groupID, including group size and admin username."""
+    group = db.query(models.Group).filter(models.Group.groupID == group_id).first()
+    if not group:
+        return None
 
-def search_groups(db: Session, query: str):
-    return db.query(models.Group).filter(models.Group.groupName.ilike(f"%{query}%")).all()
+    # Count members in the group
+    group_size = db.query(models.GroupUser).filter(models.GroupUser.groupID == group_id).count()
+
+    # Fetch admin's username
+    admin_user = db.query(models.User.username).filter(models.User.userID == group.adminUserID).first()
+    admin_username = admin_user.username if admin_user else None
+
+    return {
+        "groupID": group.groupID,
+        "groupName": group.groupName,
+        "adminUserID": group.adminUserID,
+        "adminUsername": admin_username,
+        "groupSize": group_size
+    }
+
+def search_groups(db: Session, query: str, limit: int = 10, offset: int = 0):
+    search_query = db.query(models.Group).filter(models.Group.groupName.ilike(f"%{query}%"))
+
+    total = search_query.count()
+    groups = search_query.offset(offset).limit(limit).all()
+
+    return {
+        "items": groups,
+        "total": total,
+        "page": (offset // limit) + 1,
+        "pages": (total + limit - 1) // limit
+    }
 
 def delete_group(db: Session, group_id: str):
     group = db.query(models.Group).filter(models.Group.groupID == group_id).first()
@@ -260,12 +293,38 @@ def get_reviews_by_movie(db: Session, movie_id: str, limit: int = 10, offset: in
         "pages": (total + limit - 1) // limit
     }
 
+def update_review(db: Session, review_id: str, review_update: schemas.ReviewCreate):
+    db_review = db.query(models.Review).filter(models.Review.reviewID == review_id).first()
+    if not db_review:
+        return None
+    db_review.rating = review_update.rating
+    db_review.message = review_update.message
+    db.commit()
+    db.refresh(db_review)
+    return db_review
+
 # --- USER WATCHED CRUD ---
 def add_user_watched(db: Session, watched: schemas.UserWatchedCreate):
     db_watched = models.UserWatched(**watched.dict())
     db.add(db_watched)
     db.commit()
     return db_watched
+
+def get_user_watched(db: Session, user_id: str, limit: int = 10, offset: int = 0):
+    """Retrieve all movies a user has watched."""
+    query = db.query(models.Movie).join(models.UserWatched).filter(models.UserWatched.userID == user_id)
+
+    total = query.count()
+    movies = query.offset(offset).limit(limit).all()
+
+    movie_responses = [schemas.MovieResponse.from_orm(movie) for movie in movies]
+
+    return {
+        "items": movie_responses,
+        "total": total,
+        "page": (offset // limit) + 1,
+        "pages": (total + limit - 1) // limit
+    }
 
 def delete_user_watched(db: Session, user_id: str, movie_id: str):
     watched = db.query(models.UserWatched).filter(
@@ -283,6 +342,21 @@ def add_user_watchlist(db: Session, watchlist: schemas.UserWatchlistCreate):
     db.commit()
     return db_watchlist
 
+def get_user_watchlist(db: Session, user_id: str, limit: int = 10, offset: int = 0):
+    """Retrieve all movies in a user's watchlist."""
+    query = db.query(models.Movie).join(models.UserWatchlist).filter(models.UserWatchlist.userID == user_id)
+
+    total = query.count()
+    movies = query.offset(offset).limit(limit).all()
+
+    movie_responses = [schemas.MovieResponse.from_orm(movie) for movie in movies]
+
+    return {
+        "items": movie_responses,
+        "total": total,
+        "page": (offset // limit) + 1,
+        "pages": (total + limit - 1) // limit
+    }
 
 def delete_user_watchlist(db: Session, user_id: str, movie_id: str):
     watchlist = db.query(models.UserWatchlist).filter(

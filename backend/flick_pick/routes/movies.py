@@ -16,7 +16,7 @@ def read_movie(movie_id: str, db: Session = Depends(database.get_db)):
         raise HTTPException(status_code=404, detail="Movie not found")
     return movie
 
-@router.get("/movies/")
+@router.get("/movies/", response_model=schemas.PaginatedMovieResponse)
 def read_movies(
     db: Session = Depends(database.get_db),
     limit: int = Query(10, alias="limit", ge=1, le=100),
@@ -28,7 +28,7 @@ def read_movies(
 def delete_movie(movie_id: str, db: Session = Depends(database.get_db)):
     return crud.delete_movie(db, movie_id)
 
-@router.get("/movies/search/")
+@router.get("/movies/search/", response_model=schemas.PaginatedMovieResponse)
 def search_movies(
     db: Session = Depends(database.get_db),
     title_query: Optional[str] = None,

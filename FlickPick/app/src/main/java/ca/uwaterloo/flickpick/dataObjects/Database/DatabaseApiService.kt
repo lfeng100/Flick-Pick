@@ -14,7 +14,7 @@ import retrofit2.http.Query
 
 
 interface DatabaseApiService {
-    // Users
+    // users
     @POST("users/")
     suspend fun createUser(@Body newUser: User)
 
@@ -24,19 +24,22 @@ interface DatabaseApiService {
     // Movies
     @GET("movies/")
     suspend fun getAllMovies(
-        @Query("limit") limit: Int = 10,
+        @Query("limit") limit: Int = 12,
+        @Query("offset") offset: Int = 0
+    ): MovieResponse
+
+    @GET("movies/search/")
+    suspend fun searchMovies(
+        @Query("title_query") titleQuery: String? = null,
+        @Query("tag_ids") selectedTags: List<String>? = null,
+        @Query("limit") limit: Int = 12,
         @Query("offset") offset: Int = 0
     ): MovieResponse
 
     @GET("movie/{id}")
     suspend fun getMovieById(@Path("id") movieId: String): Movie
-    @GET("movies/search/")
-    suspend fun searchMovies(
-        @Query("title_query") titleQuery: String? = null,
-        @Query("tag_ids") selectedTags: List<String>? = null
-    ): MovieResponse
 
-    //tags
+    // tags
     @GET("tags/")
     suspend fun getTags(): List<Tag>
 
