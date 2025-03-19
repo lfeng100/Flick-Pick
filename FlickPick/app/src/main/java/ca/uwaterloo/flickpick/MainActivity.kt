@@ -60,7 +60,7 @@ fun App() {
             val loginFlowNavController = rememberNavController()
             val startDestination =
                 if (FirebaseAuth.getInstance().currentUser != null) {
-                    "home"
+                    "authenticated"
                 } else {
                     "login"
                 }
