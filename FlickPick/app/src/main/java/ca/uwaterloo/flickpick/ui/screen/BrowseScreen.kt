@@ -54,7 +54,6 @@ fun BrowseScreen(navController: NavController) {
                 .fillMaxSize()
                 .padding(padding)
         ) {
-
             // Show Movies Grid
             InfiniteMovieGrid(
                 movies,

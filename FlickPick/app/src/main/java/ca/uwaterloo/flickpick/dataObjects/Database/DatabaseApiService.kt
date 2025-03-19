@@ -8,8 +8,10 @@ import ca.uwaterloo.flickpick.dataObjects.Database.Models.Movie
 import ca.uwaterloo.flickpick.dataObjects.Database.Models.Tag
 import ca.uwaterloo.flickpick.dataObjects.Database.Models.User
 import ca.uwaterloo.flickpick.dataObjects.Database.Responses.MovieResponse
+import ca.uwaterloo.flickpick.dataObjects.Database.Responses.UserResponse
 import ca.uwaterloo.flickpick.dataObjects.Database.Responses.TagResponse
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
+import retrofit2.Response
 import retrofit2.http.Query
 
 
@@ -17,6 +19,13 @@ interface DatabaseApiService {
     // Users
     @POST("users/")
     suspend fun createUser(@Body newUser: User)
+
+    // Get All Users
+    @GET("users/")
+    suspend fun getAllUsers(
+        @Query("limit") limit: Int = 10,
+        @Query("offset") offset: Int = 0
+    ):UserResponse
 
     // Movies
     @GET("movies/")

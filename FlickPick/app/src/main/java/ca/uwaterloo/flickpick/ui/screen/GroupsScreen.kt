@@ -26,7 +26,7 @@ fun GroupsScreen(navController: NavController) {
                     ),
                     TopBarButtonData(
                         icon = Icons.Rounded.AddCircleOutline,
-                        onClick = {}
+                        onClick = {navController.navigate("create_group")}
                     )
                 )
             )

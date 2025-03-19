@@ -27,6 +27,7 @@ import ca.uwaterloo.flickpick.ui.screen.ProfileScreen
 import ca.uwaterloo.flickpick.ui.screen.RecommendationCarouselScreen
 import ca.uwaterloo.flickpick.ui.screen.RecommendationScreen
 import ca.uwaterloo.flickpick.ui.screen.ReviewScreen
+import ca.uwaterloo.flickpick.ui.screen.CreateGroupScreen
 import ca.uwaterloo.flickpick.ui.theme.FlickPickTheme
 import com.google.firebase.auth.FirebaseAuth
 
@@ -96,6 +97,7 @@ fun MainScreen() {
             composable("recommend/carousel") {
                 RecommendationCarouselScreen(mainNavController)
             }
+            composable("create_group") { CreateGroupScreen(mainNavController) }
         }
     }
 }
