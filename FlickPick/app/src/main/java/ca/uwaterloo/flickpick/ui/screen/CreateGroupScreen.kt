@@ -49,6 +49,7 @@ import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material3.Button
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.text.style.TextAlign
+import ca.uwaterloo.flickpick.dataObjects.Database.Models.AddUserToGroup
 import ca.uwaterloo.flickpick.dataObjects.Database.Models.GroupCreate
 import ca.uwaterloo.flickpick.ui.component.TitleTopBar
 import ca.uwaterloo.flickpick.ui.theme.PurpleGrey40
@@ -85,11 +86,23 @@ fun CreateGroupScreen(navController: NavController) {
                     groupName = groupName.value.text,
                     adminUserID = "05b58228-0a3f-403d-91fe-cab0868ebd68",
                     adminUsername = "michael_g",
-                    groupSize = 0
+                    groupSize = selectedUsers.value.size
                 )
                 val response = DatabaseClient.apiService.createGroup(createGroup)
+                val groupID = response.groupID
                 Log.d("CreateGroupScreen", "Group created successfully: $response")
-                Log.d("CreateGroupScreen", "groupSize: ${users.value.size}")
+                Log.d("CreateGroupScreen", "groupID: ${groupID}")
+
+                selectedUsers.value.forEach{userID ->
+                    val addUserToGroup = AddUserToGroup(
+                        groupID = groupID,
+                        userID = userID
+                    )
+                    Log.d("Create Group Screen", "addUserToGroup $addUserToGroup")
+                    val addUserResponse = DatabaseClient.apiService.addUserToGroup(addUserToGroup)
+                    Log.d("Create Group Screen", "User added to group: $addUserResponse")
+                }
+
                 navController.navigate("group")
             }catch (e:Exception){
                 Log.e("CreateGroupScreen","Error creating group: ${e.message}")
