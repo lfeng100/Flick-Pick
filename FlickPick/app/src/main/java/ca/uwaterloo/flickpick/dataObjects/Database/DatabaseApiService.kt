@@ -7,8 +7,8 @@ import retrofit2.converter.moshi.MoshiConverterFactory
 import ca.uwaterloo.flickpick.dataObjects.Database.Models.Movie
 import ca.uwaterloo.flickpick.dataObjects.Database.Models.Tag
 import ca.uwaterloo.flickpick.dataObjects.Database.Models.User
+import ca.uwaterloo.flickpick.dataObjects.Database.Responses.GroupUsers
 import ca.uwaterloo.flickpick.dataObjects.Database.Responses.MovieResponse
-import ca.uwaterloo.flickpick.dataObjects.Database.Responses.TagResponse
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import retrofit2.http.Query
 
@@ -17,6 +17,9 @@ interface DatabaseApiService {
     // Users
     @POST("users/")
     suspend fun createUser(@Body newUser: User)
+
+    @GET("users/{id}")
+    suspend fun getUserById(@Path("id") userId: String): User
 
     // Movies
     @GET("movies/")
@@ -36,6 +39,10 @@ interface DatabaseApiService {
     //tags
     @GET("tags/")
     suspend fun getTags(): List<Tag>
+
+    //groups
+    @GET("groupusers/{groupID}")
+    suspend fun getGroupsById(@Path("groupID") groupId: String): GroupUsers
 }
 
 object DatabaseClient {
