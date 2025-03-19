@@ -2,6 +2,7 @@ package ca.uwaterloo.flickpick.dataObjects.Database
 
 import ca.uwaterloo.flickpick.dataObjects.Database.Models.AddUserToGroup
 import ca.uwaterloo.flickpick.dataObjects.Database.Models.Group
+import ca.uwaterloo.flickpick.dataObjects.Database.Models.GroupCreate
 import com.squareup.moshi.Moshi
 import retrofit2.http.*
 import retrofit2.Retrofit
@@ -13,6 +14,8 @@ import ca.uwaterloo.flickpick.dataObjects.Database.Models.Tag
 import ca.uwaterloo.flickpick.dataObjects.Database.Models.User
 import ca.uwaterloo.flickpick.dataObjects.Database.Responses.GroupUsers
 import ca.uwaterloo.flickpick.dataObjects.Database.Responses.MovieResponse
+import ca.uwaterloo.flickpick.dataObjects.Database.Responses.UserResponse
+import ca.uwaterloo.flickpick.dataObjects.Database.Responses.TagResponse
 import ca.uwaterloo.flickpick.dataObjects.Database.Responses.GroupResponse
 import ca.uwaterloo.flickpick.dataObjects.Database.Models.UserCreate
 import ca.uwaterloo.flickpick.dataObjects.Database.Models.UserWatched
@@ -32,6 +35,13 @@ interface DatabaseApiService {
 
     @GET("users/{id}")
     suspend fun getUserById(@Path("id") userId: String): User
+
+    // Get All Users
+    @GET("users/")
+    suspend fun getAllUsers(
+        @Query("limit") limit: Int = 10,
+        @Query("offset") offset: Int = 0
+    ):UserResponse
 
     // Movies
     @GET("movies/")
@@ -68,6 +78,10 @@ interface DatabaseApiService {
     @GET("group/{id}")
     suspend fun getGroupById(@Path("id") groupId: String): Group
 
+
+    @POST("groups/")
+    suspend fun createGroup(@Body group: GroupCreate):Group
+
     @POST("groupusers/")
     suspend fun addUserToGroup(
        @Body addUserToGroup: AddUserToGroup
@@ -86,6 +100,8 @@ interface DatabaseApiService {
         @Query("limit") limit: Int = 100,
         @Query("offset") offset: Int = 0
     ) : ReviewResponse
+
+
 
     // userwatched
     @POST("userwatched/")
