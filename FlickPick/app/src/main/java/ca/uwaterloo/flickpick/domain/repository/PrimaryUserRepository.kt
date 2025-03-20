@@ -215,7 +215,7 @@ object PrimaryUserRepository {
                         if (items.isEmpty()) {
                             break
                         }
-                        _watched.addAll(items.map {it.movieID})
+                        _watchlist.addAll(items.map {it.movieID})
                         page += 1
                     }
                     _isLoaded.value = true
