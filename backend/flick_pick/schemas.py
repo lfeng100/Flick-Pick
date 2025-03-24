@@ -10,7 +10,7 @@ class UserBase(BaseModel):
     lastName: str
 
 class UserCreate(UserBase):
-    userID: Optional[UUID4] = None
+    userID: Optional[str] = None
 
 class UserResponse(UserBase):
     userID: str

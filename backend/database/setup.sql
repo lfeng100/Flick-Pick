@@ -4,7 +4,7 @@ USE flick_pick;
 
 -- Create Users Table
 CREATE TABLE IF NOT EXISTS Users (
-    userID VARCHAR(36) PRIMARY KEY DEFAULT (UUID()),
+    userID VARCHAR(255) PRIMARY KEY,
     email VARCHAR(255) UNIQUE NOT NULL,
     username VARCHAR(255) UNIQUE NOT NULL,
     firstName VARCHAR(100) NOT NULL,
