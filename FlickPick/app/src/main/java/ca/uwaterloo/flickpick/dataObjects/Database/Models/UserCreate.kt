@@ -7,5 +7,6 @@ data class UserCreate(
     val username: String,
     val email: String,
     val firstName: String,
-    val lastName: String
+    val lastName: String,
+    val userID: String
 )

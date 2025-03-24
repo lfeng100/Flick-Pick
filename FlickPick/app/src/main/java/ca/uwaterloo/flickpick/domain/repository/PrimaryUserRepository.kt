@@ -162,7 +162,8 @@ object PrimaryUserRepository {
                                 email = "default@uwaterloo.ca",
                                 username = "default",
                                 firstName = "John",
-                                lastName = "Smith"
+                                lastName = "Smith",
+                                userID = "default-test-id123"
                             )
                         ).userID
                         val editor = sharedPref.edit()

@@ -4,6 +4,7 @@ package ca.uwaterloo.flickpick
 import JoinGroupScreen
 import android.content.pm.ActivityInfo
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
@@ -59,6 +60,7 @@ fun App() {
             color = MaterialTheme.colorScheme.background
         ) {
             val loginFlowNavController = rememberNavController()
+
             val startDestination =
                 if (FirebaseAuth.getInstance().currentUser != null) {
                     "authenticated"

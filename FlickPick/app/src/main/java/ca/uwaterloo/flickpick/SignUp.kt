@@ -33,10 +33,13 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import ca.uwaterloo.flickpick.ui.theme.Purple40
 import android.widget.Toast
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material.icons.filled.PersonAddAlt1
 import androidx.compose.material3.Icon
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
@@ -50,6 +53,8 @@ import androidx.compose.material3.IconButton
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Signup(navController: NavController) {
+    var firstName = remember { mutableStateOf("") }
+    var lastName = remember { mutableStateOf("") }
     var email = remember { mutableStateOf("") }
     var username = remember { mutableStateOf("") }
     var password = remember { mutableStateOf("") }
@@ -84,8 +89,10 @@ fun Signup(navController: NavController) {
                 modifier = Modifier
                     .fillMaxSize(),
             ) {
+                val scrollState  = rememberScrollState()
                 Column(
                     modifier = Modifier
+                        .verticalScroll(scrollState)
                         .fillMaxSize()
                         .padding(start = 48.dp, end = 48.dp),
                     horizontalAlignment = Alignment.Start,
@@ -96,6 +103,58 @@ fun Signup(navController: NavController) {
                         fontSize = 42.sp,
                         //fontWeight = FontWeight.Bold,
                         color = Color.White,
+                    )
+                    Spacer(modifier = Modifier.height(12.dp))
+                    Text(
+                        text = "First Name",
+                        fontSize = 17.sp,
+                        color = Color.Gray,
+                    )
+                    Spacer(modifier = Modifier.height(10.dp))
+                    OutlinedTextField(
+                        value = firstName.value,
+                        onValueChange = { firstName.value = it },
+                        modifier = Modifier
+                            .height(46.dp)
+                            .fillMaxWidth(),
+                        textStyle = TextStyle(color = Color.White),
+                        leadingIcon = { Icon(painter = painterResource(id = R.drawable.baseline_abc_24), contentDescription = "", tint = Color.Gray) },
+                        singleLine = true,
+                        maxLines = 1,
+                        minLines = 1,
+                        shape = RoundedCornerShape(50.dp),
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedTextColor = Color.White,
+                            unfocusedTextColor = Color.Gray,
+                            focusedBorderColor = Color.Gray,
+                            unfocusedBorderColor = Color.DarkGray,
+                        )
+                    )
+                    Spacer(modifier = Modifier.height(12.dp))
+                    Text(
+                        text = "Last Name",
+                        fontSize = 17.sp,
+                        color = Color.Gray,
+                    )
+                    Spacer(modifier = Modifier.height(10.dp))
+                    OutlinedTextField(
+                        value = lastName.value,
+                        onValueChange = { lastName.value = it },
+                        modifier = Modifier
+                            .height(46.dp)
+                            .fillMaxWidth(),
+                        textStyle = TextStyle(color = Color.White),
+                        leadingIcon = { Icon(imageVector = Icons.Default.PersonAddAlt1 , contentDescription = "", tint = Color.Gray) },
+                        singleLine = true,
+                        maxLines = 1,
+                        minLines = 1,
+                        shape = RoundedCornerShape(50.dp),
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedTextColor = Color.White,
+                            unfocusedTextColor = Color.Gray,
+                            focusedBorderColor = Color.Gray,
+                            unfocusedBorderColor = Color.DarkGray,
+                        )
                     )
                     Spacer(modifier = Modifier.height(12.dp))
                     Text(
@@ -200,11 +259,13 @@ fun Signup(navController: NavController) {
                     Spacer(modifier = Modifier.height(30.dp))
                     Button(
                         onClick = {
-                            if (email.value.isNotBlank() &&
+                            if (firstName.value.isNotBlank() &&
+                                lastName.value.isNotBlank() &&
+                                email.value.isNotBlank() &&
                                 username.value.isNotBlank() &&
                                 password.value.isNotBlank()
                                 ) {
-                                firebaseAuthentication.createAccount(email.value, username.value, password.value, context, navController)
+                                firebaseAuthentication.createAccount(firstName.value, lastName.value, email.value, username.value, password.value, context, navController)
                             } else {
                                 Toast.makeText(context, "Please enter all fields", Toast.LENGTH_SHORT).show()
                             }
