@@ -1,5 +1,6 @@
 package ca.uwaterloo.flickpick.ui.component
 
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -46,12 +47,12 @@ fun InfiniteMovieGrid(movies: List<Movie>,
                 }
             }
     }
-    val movieCardWidth = 122.dp
-    val itemsPerRow =
+    val itemsPerRow = 3
+    val movieCardWidth =
         if (width > 0) {
-            with(LocalDensity.current) { width.toDp() } / (movieCardWidth + 4.dp)
-        } else 1
-    val rows = movies.chunked(itemsPerRow.toInt())
+            with(LocalDensity.current) { (width.toDp() - 12.dp) / itemsPerRow }
+        } else 0.dp
+    val rows = movies.chunked(itemsPerRow)
     if (movies.isEmpty()) {
         Box(
             modifier = Modifier.fillMaxSize(),

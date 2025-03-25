@@ -21,6 +21,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -28,7 +32,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -38,6 +44,7 @@ import coil.imageLoader
 import coil.request.ImageRequest
 import kotlin.math.abs
 import kotlin.math.min
+import kotlin.math.round
 import kotlin.math.sign
 
 @Composable
@@ -67,22 +74,29 @@ fun MovieCoverFlowCarousel(
             }
         }
     }
+    var width by remember { mutableIntStateOf(0) }
+    val cardWidth =
+        if (width > 0) {
+            with(LocalDensity.current) { (width / 2.25).toInt().toDp() }
+        } else 0.dp
     LazyRow(
         state = listState,
         flingBehavior = flingBehavior,
-        modifier = Modifier.width(480.dp)
+        modifier = Modifier
+            .width(480.dp)
+            .onSizeChanged { width = it.width }
     ) {
         item {
             CoverFlowStartItem(listState) {
                 Box(
                     modifier = Modifier
                         .padding(2.dp)
-                        .width(180.dp)
-                        .height(180.dp * 1.5f),
+                        .width(cardWidth)
+                        .height(cardWidth * 1.5f),
                     contentAlignment = Alignment.Center
                 ) {
                     Column (
-                        modifier = Modifier.padding(start = 20.dp),
+                        modifier = Modifier.padding(start = cardWidth / 4),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Box(
@@ -109,7 +123,7 @@ fun MovieCoverFlowCarousel(
             CoverFlowItem(listState, index + 1) {
                 MovieCard(
                     movie = movie,
-                    width = 180.dp,
+                    width = cardWidth,
                     onClick = {
                         navController.navigate("movie/${movie.movieID}")
                     }
@@ -121,12 +135,12 @@ fun MovieCoverFlowCarousel(
                 Box(
                     modifier = Modifier
                         .padding(2.dp)
-                        .width(180.dp)
-                        .height(180.dp * 1.5f),
+                        .width(cardWidth)
+                        .height(cardWidth * 1.5f),
                     contentAlignment = Alignment.Center
                 ) {
                     Column (
-                        modifier = Modifier.padding(end = 20.dp),
+                        modifier = Modifier.padding(end = cardWidth / 4),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Button(

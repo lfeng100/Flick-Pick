@@ -68,7 +68,8 @@ fun RecommendationCarouselScreen(navController: NavController) {
                     navController = navController,
                     movies = recommendations,
                     onIndexChanged = { index ->
-                        targetMovie = recommendations[index]
+                        val i = index.coerceIn(0, 11);
+                        targetMovie = recommendations[i]
                     },
                     onRefreshClicked = {
                         // Refresh personal recommendations by clearing and re-fetching
