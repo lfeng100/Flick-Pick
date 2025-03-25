@@ -39,7 +39,7 @@ object ReviewRepository {
                 val movieList = mutableListOf<Movie>()
                 var page = 0
                 while (true) {
-                    val items = DatabaseClient.apiService.getUserWatched(
+                    val items = DatabaseClient.apiService.getUserWatchlist(
                         userID = userID,
                         limit = 100,
                         offset = page * 100
@@ -65,7 +65,7 @@ object ReviewRepository {
                 val movieList = mutableListOf<Movie>()
                 var page = 0
                 while (true) {
-                    val items = DatabaseClient.apiService.getUserWatchlist(
+                    val items = DatabaseClient.apiService.getUserWatched(
                         userID = userID,
                         limit = 100,
                         offset = page * 100

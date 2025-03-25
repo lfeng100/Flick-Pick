@@ -175,6 +175,7 @@ object PrimaryUserRepository {
                     }
                     val reviews = ReviewRepository.getReviewForUser(userID)
                     reviews!!.forEach { review ->
+                        Log.i("TEMP", review.movieID)
                         reviewMap[review.movieID] = review
                         _reviews[review.movieID] = PrimaryUserReviewData(
                             movieId = review.movieID,
