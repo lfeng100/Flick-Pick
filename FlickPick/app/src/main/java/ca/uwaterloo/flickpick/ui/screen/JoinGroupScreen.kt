@@ -23,7 +23,7 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun JoinGroupScreen(navController: NavController, groupId: String) {
-    val userId = PrimaryUserRepository.getPrimaryUserID()
+    val userId = PrimaryUserRepository.getPrimaryUserID()!!
     var userNameByID by remember { mutableStateOf<String?>(null) }
     var groupCount by remember { mutableStateOf<Int?>(null) }
     var groupName by remember { mutableStateOf<String?>(null) }

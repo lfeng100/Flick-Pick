@@ -86,7 +86,7 @@ fun MainScreen() {
         }
     }
     LaunchedEffect(Unit) {
-        PrimaryUserRepository.loadPrimaryUserLists(context)
+        PrimaryUserRepository.loadPrimaryUserLists()
     }
     val primaryUserIsLoaded by PrimaryUserRepository.isLoaded.collectAsState()
     if (!primaryUserIsLoaded) {

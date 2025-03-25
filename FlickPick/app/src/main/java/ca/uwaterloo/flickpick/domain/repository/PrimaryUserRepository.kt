@@ -14,6 +14,7 @@ import ca.uwaterloo.flickpick.dataObjects.Database.Models.ReviewCreate
 import ca.uwaterloo.flickpick.dataObjects.Database.Models.UserCreate
 import ca.uwaterloo.flickpick.dataObjects.Database.Models.UserWatched
 import ca.uwaterloo.flickpick.dataObjects.recommender.model.Rating
+import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
@@ -29,7 +30,8 @@ object PrimaryUserRepository {
         val message: String?
     )
 
-    private var userID = ""
+    val userID: String
+        get() = getPrimaryUserID()!!
 
     private val _reviews = mutableStateMapOf<String, PrimaryUserReviewData>()
     private val _watchlist = mutableStateListOf<String>()
@@ -57,8 +59,8 @@ object PrimaryUserRepository {
         }
     }
 
-    fun getPrimaryUserID(): String {
-        return userID
+    fun getPrimaryUserID(): String? {
+        return FirebaseAuth.getInstance().currentUser?.uid
     }
 
     fun addToWatchlist(movieId: String) {
@@ -142,40 +144,18 @@ object PrimaryUserRepository {
     private val _isLoaded = MutableStateFlow(false)
     val isLoaded: StateFlow<Boolean> = _isLoaded.asStateFlow()
 
-    fun loadPrimaryUserLists(context: Context) {
+    fun loadPrimaryUserLists() {
         if (_isLoaded.value) {
             return
         }
         CoroutineScope(Dispatchers.IO).launch {
-            val sharedPref = context.getSharedPreferences("FlickPick", Context.MODE_PRIVATE)
-            val userIDPref = sharedPref.getString("userID", null)
             while (!_isLoaded.value) {
                 _reviews.clear()
                 _watchlist.clear()
                 _watched.clear()
                 try {
-                    // For now, create user if it doesn't exist
-                    // TODO: figure out how to hook this up with login
-                    if (userIDPref == null || DatabaseClient.apiService.getUser(userIDPref).body() == null) {
-                        userID = DatabaseClient.apiService.createUser(
-                            UserCreate(
-                                email = "default@uwaterloo.ca",
-                                username = "default",
-                                firstName = "John",
-                                lastName = "Smith",
-                                userID = "default-test-id123"
-                            )
-                        ).userID
-                        val editor = sharedPref.edit()
-                        editor.putString("userID", userID)
-                        editor.apply()
-                    } else {
-                        userID = userIDPref
-                        Log.i("PrimaryUserRepository", "userID: $userID")
-                    }
                     val reviews = ReviewRepository.getReviewForUser(userID)
                     reviews!!.forEach { review ->
-                        Log.i("TEMP", review.movieID)
                         reviewMap[review.movieID] = review
                         _reviews[review.movieID] = PrimaryUserReviewData(
                             movieId = review.movieID,
