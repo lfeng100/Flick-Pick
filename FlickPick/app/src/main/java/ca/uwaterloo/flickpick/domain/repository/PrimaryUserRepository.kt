@@ -22,13 +22,13 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-data class PrimaryUserReviewData(
-    val movieId: String,
-    val score: Float,
-    val message: String?
-)
-
 object PrimaryUserRepository {
+    data class PrimaryUserReviewData(
+        val movieId: String,
+        val score: Float,
+        val message: String?
+    )
+
     private var userID = ""
 
     private val _reviews = mutableStateMapOf<String, PrimaryUserReviewData>()
@@ -173,52 +173,17 @@ object PrimaryUserRepository {
                         userID = userIDPref
                         Log.i("PrimaryUserRepository", "userID: $userID")
                     }
-                    var page = 0;
-                    while (true) {
-                        val items = DatabaseClient.apiService.getReviewsForUser(
-                            userID = userID,
-                            limit = 100,
-                            offset = page * 100
-                        ).items
-                        if (items.isEmpty()) {
-                            break
-                        }
-                        items.forEach { review ->
-                            reviewMap[review.movieID] = review
-                            _reviews[review.movieID] = PrimaryUserReviewData(
-                                movieId = review.movieID,
-                                score = review.rating.toFloat(),
-                                message = review.message,
-                            )
-                        }
-                        page += 1
+                    val reviews = ReviewRepository.getReviewForUser(userID)
+                    reviews!!.forEach { review ->
+                        reviewMap[review.movieID] = review
+                        _reviews[review.movieID] = PrimaryUserReviewData(
+                            movieId = review.movieID,
+                            score = review.rating.toFloat(),
+                            message = review.message,
+                        )
                     }
-                    page = 0
-                    while (true) {
-                        val items = DatabaseClient.apiService.getUserWatched(
-                            userID = userID,
-                            limit = 100,
-                            offset = page * 100
-                        ).items
-                        if (items.isEmpty()) {
-                            break
-                        }
-                        _watched.addAll(items.map {it.movieID})
-                        page += 1
-                    }
-                    page = 0
-                    while (true) {
-                        val items = DatabaseClient.apiService.getUserWatchlist(
-                            userID = userID,
-                            limit = 100,
-                            offset = page * 100
-                        ).items
-                        if (items.isEmpty()) {
-                            break
-                        }
-                        _watchlist.addAll(items.map {it.movieID})
-                        page += 1
-                    }
+                    _watched.addAll(ReviewRepository.getWatchedForUser(userID)!!.map {it.movieID})
+                    _watchlist.addAll(ReviewRepository.getWatchlistForUser(userID)!!.map {it.movieID})
                     _isLoaded.value = true
                 } catch (e: Exception) {
                     Log.e("PrimaryUserRepository", "Error loading lists: ${e.message}")
