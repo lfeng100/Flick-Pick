@@ -32,19 +32,19 @@ object RecommendationRepository {
             return;
         }
         CoroutineScope(Dispatchers.IO).launch {
-            val userRatings = PrimaryUserRepository.getAllRatings()
-            val filters = Filters(
-                includedGenres = _filters.value?.includedGenres,
-                excludedGenres = _filters.value?.excludedGenres,
-                excludedMovieIDs = PrimaryUserRepository.watched.value + previouslyRecommendedMovieIds
-            )
-            Log.i("Recommender", "included genres " + filters.includedGenres)
-            Log.i("Recommender", "excluded genres " + filters.excludedGenres)
-            val query = RecommendationQuery(userRatings, filters)
-            val response = RecommenderClient.apiService.getRecommendations(query)
-            val recommendations = response.recommendations
-            if (recommendations.isNotEmpty()) {
-                try {
+            try {
+                val userRatings = PrimaryUserRepository.getAllRatings()
+                val filters = Filters(
+                    includedGenres = _filters.value?.includedGenres,
+                    excludedGenres = _filters.value?.excludedGenres,
+                    excludedMovieIDs = PrimaryUserRepository.watched.value + previouslyRecommendedMovieIds
+                )
+                Log.i("Recommender", "included genres " + filters.includedGenres)
+                Log.i("Recommender", "excluded genres " + filters.excludedGenres)
+                val query = RecommendationQuery(userRatings, filters)
+                val response = RecommenderClient.apiService.getRecommendations(query)
+                val recommendations = response.recommendations
+                if (recommendations.isNotEmpty()) {
                     for (movieId in recommendations) {
                         val movieResponse = MovieRepository.getMovieForId(movieId)
                         if (movieResponse != null) {
@@ -53,9 +53,9 @@ object RecommendationRepository {
                             Log.e("API_ERROR", "Error fetching movie with id $movieId")
                         }
                     }
-                } catch (e: Exception) {
-                    Log.e("API_ERROR", "Error fetching movies: ${e.message}")
                 }
+            } catch (e: Exception) {
+                Log.e("API_ERROR", "Error getting recommendations: ${e.message}")
             }
         }
     }

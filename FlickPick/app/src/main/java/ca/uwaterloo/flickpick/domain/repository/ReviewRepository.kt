@@ -9,7 +9,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 object ReviewRepository {
-    suspend fun getReviewForUser(userID: String): List<Review>? {
+    suspend fun getReviewsForUser(userID: String): List<Review>? {
         return withContext(Dispatchers.IO) {
             try {
                 val reviewList = mutableListOf<Review>()

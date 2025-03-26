@@ -1,7 +1,5 @@
 package ca.uwaterloo.flickpick.domain.repository
 
-import android.content.Context
-import android.provider.ContactsContract.Data
 import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.derivedStateOf
@@ -11,7 +9,6 @@ import androidx.compose.runtime.snapshots.SnapshotStateList
 import ca.uwaterloo.flickpick.dataObjects.Database.DatabaseClient
 import ca.uwaterloo.flickpick.dataObjects.Database.Models.Review
 import ca.uwaterloo.flickpick.dataObjects.Database.Models.ReviewCreate
-import ca.uwaterloo.flickpick.dataObjects.Database.Models.UserCreate
 import ca.uwaterloo.flickpick.dataObjects.Database.Models.UserWatched
 import ca.uwaterloo.flickpick.dataObjects.recommender.model.Rating
 import com.google.firebase.auth.FirebaseAuth
@@ -154,7 +151,7 @@ object PrimaryUserRepository {
                 _watchlist.clear()
                 _watched.clear()
                 try {
-                    val reviews = ReviewRepository.getReviewForUser(userID)
+                    val reviews = ReviewRepository.getReviewsForUser(userID)
                     reviews!!.forEach { review ->
                         reviewMap[review.movieID] = review
                         _reviews[review.movieID] = PrimaryUserReviewData(

@@ -7,7 +7,7 @@ import ca.uwaterloo.flickpick.dataObjects.Database.Models.Movie
 import ca.uwaterloo.flickpick.dataObjects.recommender.RecommenderClient
 import ca.uwaterloo.flickpick.dataObjects.recommender.model.Filters
 import ca.uwaterloo.flickpick.dataObjects.recommender.model.Rating
-import ca.uwaterloo.flickpick.dataObjects.recommender.query.RecommendationQuery
+import ca.uwaterloo.flickpick.dataObjects.recommender.query.GroupRecommendationQuery
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -16,7 +16,6 @@ import kotlinx.coroutines.launch
 
 object GroupRecommendationRepository {
     private val previouslyRecommendedMovieIds = mutableListOf<String>()
-    private val groupRatings: List<List<Rating>>? = null
 
     private val _recommendations = MutableStateFlow(emptyList<Movie>())
     val recommendations = _recommendations.asStateFlow()
@@ -33,19 +32,26 @@ object GroupRecommendationRepository {
             return;
         }
         CoroutineScope(Dispatchers.IO).launch {
-            val userRatings = PrimaryUserRepository.getAllRatings()
-            val filters = Filters(
-                includedGenres = _filters.value?.includedGenres,
-                excludedGenres = _filters.value?.excludedGenres,
-                excludedMovieIDs = PrimaryUserRepository.watched.value + previouslyRecommendedMovieIds
-            )
-            Log.i("Recommender", "included genres " + filters.includedGenres)
-            Log.i("Recommender", "excluded genres " + filters.excludedGenres)
-            val query = RecommendationQuery(userRatings, filters)
-            val response = RecommenderClient.apiService.getRecommendations(query)
-            val recommendations = response.recommendations
-            if (recommendations.isNotEmpty()) {
-                try {
+            try {
+                val users = GroupRepository.getAllUsersInGroup(groupID)
+                val watchedMovies = mutableSetOf<String>()
+                val groupRatings = mutableListOf<List<Rating>>()
+                for (user in users) {
+                    val userRatings = ReviewRepository.getReviewsForUser(user.userID)!!
+                        .map { Rating(it.movieID, it.rating.toFloat()) }
+                    groupRatings.add(userRatings)
+                    watchedMovies.addAll(
+                        ReviewRepository.getWatchedForUser(user.userID)!!.map { it.movieID })
+                }
+                val filters = Filters(
+                    includedGenres = _filters.value?.includedGenres,
+                    excludedGenres = _filters.value?.excludedGenres,
+                    excludedMovieIDs = PrimaryUserRepository.watched.value + previouslyRecommendedMovieIds
+                )
+                val query = GroupRecommendationQuery(groupRatings, filters)
+                val response = RecommenderClient.apiService.getGroupRecommendations(query)
+                val recommendations = response.recommendations
+                if (recommendations.isNotEmpty()) {
                     for (movieId in recommendations) {
                         val movieResponse = MovieRepository.getMovieForId(movieId)
                         if (movieResponse != null) {
@@ -54,9 +60,9 @@ object GroupRecommendationRepository {
                             Log.e("API_ERROR", "Error fetching movie with id $movieId")
                         }
                     }
-                } catch (e: Exception) {
-                    Log.e("API_ERROR", "Error fetching movies: ${e.message}")
                 }
+            } catch (e: Exception) {
+                Log.e("API_ERROR", "Error getting group recommendations: ${e.message}")
             }
         }
     }
@@ -68,7 +74,7 @@ object GroupRecommendationRepository {
         _recommendations.value = emptyList()
     }
 
-    fun clearGroup() {
+    fun clearPreviouslyRecommended() {
         previouslyRecommendedMovieIds.clear()
     }
 }

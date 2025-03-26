@@ -1,6 +1,6 @@
 package ca.uwaterloo.flickpick.ui.component
 
-import ca.uwaterloo.flickpick.domain.repository.GroupRepository.userInGroup
+import ca.uwaterloo.flickpick.domain.repository.GroupRepository.addUserToGroup
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -89,7 +89,7 @@ fun JoinGroupCard(groupName: String, userName: String, adminUsername: String, me
                 Spacer(modifier = Modifier.height(46.dp))
                 Button(
                     onClick = {
-                        userInGroup(userId, groupId)
+                        addUserToGroup(userId, groupId)
                         navController.navigate("groupmain/${groupId}")
                 },
                     colors = ButtonDefaults.buttonColors(containerColor = Color.White),
