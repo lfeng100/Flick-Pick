@@ -9,7 +9,7 @@ router = APIRouter()
 def add_user_watchlist(watchlist: schemas.UserWatchlistCreate, db: Session = Depends(database.get_db)):
     return crud.add_user_watchlist(db, watchlist)
 
-@router.get("/userwatchlist/{user_id}", response_model=Dict)
+@router.get("/userwatchlist/{user_id}", response_model=schemas.PaginatedUserWatchlistResponse)
 def get_user_watchlist(user_id: str, db: Session = Depends(database.get_db), limit: int = 10, offset: int = 0):
     """Retrieve all movies in a user's watchlist."""
     result = crud.get_user_watchlist(db, user_id, limit, offset)

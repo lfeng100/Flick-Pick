@@ -26,7 +26,7 @@ def delete_review(review_id: str, db: Session = Depends(database.get_db)):
         raise HTTPException(status_code=404, detail="Review not found")
     return deleted_review
 
-@router.get("/reviews/user/{user_id}")
+@router.get("/reviews/user/{user_id}", response_model=schemas.PaginatedReviewsWithMovies)
 def get_reviews_by_user(
     user_id: str,
     db: Session = Depends(database.get_db),

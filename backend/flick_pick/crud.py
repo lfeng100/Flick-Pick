@@ -1,8 +1,10 @@
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 from sqlalchemy.sql import func
+from sqlalchemy import desc
 import models, schemas
 import json
 import uuid
+from fastapi import HTTPException
 
 # --- USERS CRUD ---
 def create_user(db: Session, user: schemas.UserCreate):
@@ -171,6 +173,79 @@ def delete_group(db: Session, group_id: str):
         db.commit()
     return group
 
+def get_group_activity(db: Session, group_id: str):
+    # Get all users in the group
+    users = db.query(models.GroupUser.userID).filter(models.GroupUser.groupID == group_id).all()
+    user_ids = [u.userID for u in users]
+
+    # Get group name
+    group = db.query(models.Group).filter(models.Group.groupID == group_id).first()
+
+    # Get reviews
+    reviews = (
+        db.query(models.Review, models.Movie.title)
+        .join(models.Movie, models.Review.movieID == models.Movie.movieID)
+        .filter(models.Review.userID.in_(user_ids))
+        .all()
+    )
+
+    # Get watched
+    watched = (
+        db.query(models.UserWatched, models.Movie.title)
+        .join(models.Movie, models.UserWatched.movieID == models.Movie.movieID)
+        .filter(models.UserWatched.userID.in_(user_ids))
+        .all()
+    )
+
+    # Get watchlist
+    watchlist = (
+        db.query(models.UserWatchlist, models.Movie.title)
+        .join(models.Movie, models.UserWatchlist.movieID == models.Movie.movieID)
+        .filter(models.UserWatchlist.userID.in_(user_ids))
+        .all()
+    )
+
+    # Combine and normalize
+    activity = []
+
+    for r, title in reviews:
+        activity.append({
+            "type": "review",
+            "timestamp": r.timestamp,
+            "userID": r.userID,
+            "movieID": r.movieID,
+            "movieTitle": title,
+            "rating": r.rating,
+            "message": r.message
+        })
+
+    for w, title in watched:
+        activity.append({
+            "type": "watched",
+            "timestamp": w.timestamp,
+            "userID": w.userID,
+            "movieID": w.movieID,
+            "movieTitle": title
+        })
+
+    for wl, title in watchlist:
+        activity.append({
+            "type": "watchlist",
+            "timestamp": wl.timestamp,
+            "userID": wl.userID,
+            "movieID": wl.movieID,
+            "movieTitle": title
+        })
+
+    # Sort by timestamp (newest first)
+    activity.sort(key=lambda x: x["timestamp"], reverse=True)
+
+    return {
+        "groupID": group_id,
+        "groupName": group.groupName if group else None,
+        "activity": activity
+    }
+
 # --- GROUP USERS CRUD ---
 def add_user_to_group(db: Session, group_user: schemas.GroupUserCreate):
     db_group_user = models.GroupUser(**group_user.dict())
@@ -253,10 +328,29 @@ def get_tags_for_user(db: Session, user_id: str):
 
 # --- REVIEWS CRUD ---
 def create_review(db: Session, review: schemas.ReviewCreate):
+    existing = db.query(models.Review).filter_by(
+        userID=review.userID,
+        movieID=review.movieID
+    ).first()
+    if existing:
+        raise HTTPException(status_code=400, detail="User has already reviewed this movie.")
+
     db_review = models.Review(**review.dict())
     db.add(db_review)
+
+    # Check if the user already has this movie in UserWatched
+    watched_exists = db.query(models.UserWatched).filter_by(
+        userID=review.userID,
+        movieID=review.movieID
+    ).first()
+
+    # If not, add it to UserWatched
+    if not watched_exists:
+        db_watched = models.UserWatched(userID=review.userID, movieID=review.movieID)
+        db.add(db_watched)
+
     db.commit()
-    db.refresh(db_review) # Need this or the json is empty when returned
+    db.refresh(db_review)
     return db_review
 
 def get_reviews(db: Session):
@@ -271,10 +365,8 @@ def delete_review(db: Session, review_id: str):
 
 def get_reviews_by_user(db: Session, user_id: str, limit: int = 10, offset: int = 0):
     query = db.query(models.Review).filter(models.Review.userID == user_id)
-
     total = query.count()
-    reviews = query.offset(offset).limit(limit).all()
-
+    reviews = query.options(joinedload(models.Review.movie)).offset(offset).limit(limit).all()
     return {
         "items": reviews,
         "total": total,
@@ -313,16 +405,11 @@ def add_user_watched(db: Session, watched: schemas.UserWatchedCreate):
     return db_watched
 
 def get_user_watched(db: Session, user_id: str, limit: int = 10, offset: int = 0):
-    """Retrieve all movies a user has watched."""
-    query = db.query(models.Movie).join(models.UserWatched).filter(models.UserWatched.userID == user_id)
-
+    query = db.query(models.UserWatched).filter(models.UserWatched.userID == user_id)
     total = query.count()
-    movies = query.offset(offset).limit(limit).all()
-
-    movie_responses = [schemas.MovieResponse.from_orm(movie) for movie in movies]
-
+    entries = query.options(joinedload(models.UserWatched.movie)).offset(offset).limit(limit).all()
     return {
-        "items": movie_responses,
+        "items": entries,
         "total": total,
         "page": (offset // limit) + 1,
         "pages": (total + limit - 1) // limit
@@ -345,16 +432,11 @@ def add_user_watchlist(db: Session, watchlist: schemas.UserWatchlistCreate):
     return db_watchlist
 
 def get_user_watchlist(db: Session, user_id: str, limit: int = 10, offset: int = 0):
-    """Retrieve all movies in a user's watchlist."""
-    query = db.query(models.Movie).join(models.UserWatchlist).filter(models.UserWatchlist.userID == user_id)
-
+    query = db.query(models.UserWatchlist).filter(models.UserWatchlist.userID == user_id)
     total = query.count()
-    movies = query.offset(offset).limit(limit).all()
-
-    movie_responses = [schemas.MovieResponse.from_orm(movie) for movie in movies]
-
+    entries = query.options(joinedload(models.UserWatchlist.movie)).offset(offset).limit(limit).all()
     return {
-        "items": movie_responses,
+        "items": entries,
         "total": total,
         "page": (offset // limit) + 1,
         "pages": (total + limit - 1) // limit

@@ -1,6 +1,7 @@
 from sqlalchemy import Column, String, Integer, Float, ForeignKey, TIMESTAMP, Text, Enum
 from sqlalchemy.orm import relationship
 from sqlalchemy.dialects.mysql import JSON
+from sqlalchemy.sql import func
 from database import Base
 import uuid
 
@@ -62,12 +63,20 @@ class Review(Base):
     userID = Column(String(36), ForeignKey("Users.userID", ondelete="CASCADE"))
     movieID = Column(String(255), ForeignKey("Movies.movieID", ondelete="CASCADE"))
 
+    movie = relationship("Movie", backref="reviews")
+
 class UserWatched(Base):
     __tablename__ = "UserWatched"
     userID = Column(String(36), ForeignKey("Users.userID", ondelete="CASCADE"), primary_key=True)
     movieID = Column(String(255), ForeignKey("Movies.movieID", ondelete="CASCADE"), primary_key=True)
+    timestamp = Column(TIMESTAMP, server_default=func.now())
+
+    movie = relationship("Movie")
 
 class UserWatchlist(Base):
     __tablename__ = "UserWatchlist"
     userID = Column(String(36), ForeignKey("Users.userID", ondelete="CASCADE"), primary_key=True)
     movieID = Column(String(255), ForeignKey("Movies.movieID", ondelete="CASCADE"), primary_key=True)
+    timestamp = Column(TIMESTAMP, server_default=func.now())
+
+    movie = relationship("Movie")

@@ -141,6 +141,25 @@ class ReviewResponse(ReviewBase):
     class Config:
         from_attributes = True
 
+class ReviewResponseWithMovie(ReviewBase):
+    reviewID: str
+    timestamp: datetime
+    userID: str
+    movieID: str
+    movie: MovieResponse
+
+    class Config:
+        from_attributes = True
+
+class PaginatedReviewsWithMovies(BaseModel):
+    items: List[ReviewResponseWithMovie]
+    total: int
+    page: int
+    pages: int
+
+    class Config:
+        from_attributes = True
+
 # --- USER WATCHED SCHEMA ---
 class UserWatchedBase(BaseModel):
     userID: str
@@ -150,8 +169,17 @@ class UserWatchedCreate(UserWatchedBase):
     pass
 
 class UserWatchedResponse(UserWatchedBase):
+    timestamp: datetime
+    movie: MovieResponse
+
     class Config:
         from_attributes = True
+
+class PaginatedUserWatchedResponse(BaseModel):
+    items: List[UserWatchedResponse]
+    total: int
+    page: int
+    pages: int
 
 # --- USER WATCHLIST SCHEMA ---
 class UserWatchlistBase(BaseModel):
@@ -162,5 +190,14 @@ class UserWatchlistCreate(UserWatchlistBase):
     pass
 
 class UserWatchlistResponse(UserWatchlistBase):
+    timestamp: datetime
+    movie: MovieResponse
+
     class Config:
         from_attributes = True
+
+class PaginatedUserWatchlistResponse(BaseModel):
+    items: List[UserWatchlistResponse]
+    total: int
+    page: int
+    pages: int

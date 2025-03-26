@@ -38,3 +38,10 @@ def delete_group(group_id: str, db: Session = Depends(database.get_db)):
     if not deleted_group:
         raise HTTPException(status_code=404, detail="Group not found")
     return deleted_group
+
+@router.get("/groups/{group_id}/activity")
+def get_group_activity(group_id: str, db: Session = Depends(database.get_db)):
+    result = crud.get_group_activity(db, group_id)
+    if not result["activity"]:
+        raise HTTPException(status_code=404, detail="No activity found for this group")
+    return result

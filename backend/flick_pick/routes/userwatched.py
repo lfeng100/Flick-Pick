@@ -9,7 +9,7 @@ router = APIRouter()
 def add_user_watched(watched: schemas.UserWatchedCreate, db: Session = Depends(database.get_db)):
     return crud.add_user_watched(db, watched)
 
-@router.get("/userwatched/{user_id}", response_model=Dict)
+@router.get("/userwatched/{user_id}", response_model=schemas.PaginatedUserWatchedResponse)
 def get_user_watched(user_id: str, db: Session = Depends(database.get_db), limit: int = 10, offset: int = 0):
     """Retrieve all movies a user has watched."""
     result = crud.get_user_watched(db, user_id, limit, offset)
