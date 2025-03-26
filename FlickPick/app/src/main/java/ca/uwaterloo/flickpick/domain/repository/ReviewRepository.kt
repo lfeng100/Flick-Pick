@@ -1,5 +1,6 @@
 package ca.uwaterloo.flickpick.domain.repository
 
+import MovieRepository
 import android.util.Log
 import ca.uwaterloo.flickpick.dataObjects.Database.DatabaseClient
 import ca.uwaterloo.flickpick.dataObjects.Database.Models.Movie
@@ -22,7 +23,8 @@ object ReviewRepository {
                     if (items.isEmpty()) {
                         break
                     }
-                    reviewList.addAll(items)
+                    reviewList.addAll(items.map{it.toReview()})
+                    MovieRepository.addMovies(items.map{it.movie})
                     page += 1
                 }
                 reviewList
@@ -47,7 +49,8 @@ object ReviewRepository {
                     if (items.isEmpty()) {
                         break
                     }
-                    movieList.addAll(items)
+                    movieList.addAll(items.map{it.movie})
+                    MovieRepository.addMovies(items.map{it.movie})
                     page += 1
                 }
                 movieList
@@ -73,7 +76,8 @@ object ReviewRepository {
                     if (items.isEmpty()) {
                         break
                     }
-                    movieList.addAll(items)
+                    movieList.addAll(items.map{it.movie})
+                    MovieRepository.addMovies(items.map{it.movie})
                     page += 1
                 }
                 movieList

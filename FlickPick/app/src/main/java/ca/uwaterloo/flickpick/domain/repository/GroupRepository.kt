@@ -1,3 +1,5 @@
+package ca.uwaterloo.flickpick.domain.repository
+
 import android.util.Log
 import ca.uwaterloo.flickpick.dataObjects.Database.Models.Group
 import ca.uwaterloo.flickpick.dataObjects.Database.DatabaseClient
@@ -27,12 +29,12 @@ object GroupRepository {
             try {
                 DatabaseClient.apiService.addUserToGroup(AddUserToGroup(groupId, userId))
             } catch (e: Exception) {
-                Log.e("GroupRepository", "Error adding user to group: ${userId}, ${groupId} ${e.message}")
+                Log.e("GroupRepository", "Error adding user to group: ${userId}, $groupId ${e.message}")
             }
         }
     }
 
-    fun fetchGroups() {
+    private fun fetchGroups() {
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 val groupList = DatabaseClient.apiService.getAllGroups().items

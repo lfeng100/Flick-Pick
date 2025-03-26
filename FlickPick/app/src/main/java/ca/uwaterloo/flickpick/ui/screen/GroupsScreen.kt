@@ -12,6 +12,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
+import ca.uwaterloo.flickpick.domain.repository.GroupRepository
 import ca.uwaterloo.flickpick.ui.component.GroupCardsList
 import ca.uwaterloo.flickpick.ui.component.TitleTopBar
 import ca.uwaterloo.flickpick.ui.component.TopBarButtonData

@@ -15,11 +15,12 @@ import ca.uwaterloo.flickpick.dataObjects.Database.Models.User
 import ca.uwaterloo.flickpick.dataObjects.Database.Responses.GroupUsers
 import ca.uwaterloo.flickpick.dataObjects.Database.Responses.MovieResponse
 import ca.uwaterloo.flickpick.dataObjects.Database.Responses.UserResponse
-import ca.uwaterloo.flickpick.dataObjects.Database.Responses.TagResponse
 import ca.uwaterloo.flickpick.dataObjects.Database.Responses.GroupResponse
 import ca.uwaterloo.flickpick.dataObjects.Database.Models.UserCreate
 import ca.uwaterloo.flickpick.dataObjects.Database.Models.UserWatched
 import ca.uwaterloo.flickpick.dataObjects.Database.Responses.ReviewResponse
+import ca.uwaterloo.flickpick.dataObjects.Database.Responses.ReviewWithMovieResponse
+import ca.uwaterloo.flickpick.dataObjects.Database.Responses.UserWatchedWithMovieResponse
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import retrofit2.Response
 import retrofit2.http.Query
@@ -28,13 +29,19 @@ import retrofit2.http.Query
 interface DatabaseApiService {
     // users
     @POST("users/")
-    suspend fun createUser(@Body userCreate: UserCreate): User
+    suspend fun createUser(
+        @Body userCreate: UserCreate
+    ): User
 
     @GET("users/{user_id}")
-    suspend fun getUser(@Path("user_id") userID: String): Response<User?>
+    suspend fun getUser(
+        @Path("user_id") userID: String
+    ): Response<User?>
 
     @GET("users/{id}")
-    suspend fun getUserById(@Path("id") userId: String): User
+    suspend fun getUserById(
+        @Path("id") userId: String
+    ): User
 
     // Get All Users
     @GET("users/")
@@ -59,15 +66,20 @@ interface DatabaseApiService {
     ): MovieResponse
 
     @GET("movie/{id}")
-    suspend fun getMovieById(@Path("id") movieID: String): Movie
+    suspend fun getMovieById(
+        @Path("id") movieID: String
+    ): Movie
 
     // tags
     @GET("tags/")
-    suspend fun getTags(): List<Tag>
+    suspend fun getTags(
+    ): List<Tag>
 
     // Groups
     @GET("groups/{groupID}")
-    suspend fun getGroupsById(@Path("groupID") groupId: String): GroupUsers
+    suspend fun getGroupsById(
+        @Path("groupID") groupId: String
+    ): GroupUsers
  
     @GET("groups/")
     suspend fun getAllGroups(
@@ -76,10 +88,14 @@ interface DatabaseApiService {
     ): GroupResponse
 
     @GET("group/{id}")
-    suspend fun getGroupById(@Path("id") groupId: String): Group
+    suspend fun getGroupById(
+        @Path("id") groupId: String
+    ): Group
 
     @POST("groups/")
-    suspend fun createGroup(@Body group: GroupCreate):Group
+    suspend fun createGroup(
+        @Body group: GroupCreate
+    ):Group
 
     @POST("groupusers/")
     suspend fun addUserToGroup(
@@ -95,23 +111,34 @@ interface DatabaseApiService {
 
     // reviews
     @POST("reviews/")
-    suspend fun createReview(@Body review: ReviewCreate): Review
+    suspend fun createReview(
+        @Body review: ReviewCreate
+    ): Review
 
     @DELETE("reviews/{review_id}")
-    suspend fun deleteReview(@Path("review_id") reviewID: String): Review
+    suspend fun deleteReview(
+        @Path("review_id") reviewID: String
+    ): Review
 
     @GET("reviews/user/{user_id}")
     suspend fun getReviewsForUser(
         @Path("user_id") userID: String,
         @Query("limit") limit: Int = 100,
         @Query("offset") offset: Int = 0
+    ) : ReviewWithMovieResponse
+
+    @GET("reviews/movie/{movie_id}")
+    suspend fun getReviewsForMovie(
+        @Path("movie_id") userID: String,
+        @Query("limit") limit: Int = 100,
+        @Query("offset") offset: Int = 0
     ) : ReviewResponse
-
-
 
     // userwatched
     @POST("userwatched/")
-    suspend fun addUserWatched(@Body userWatched: UserWatched)
+    suspend fun addUserWatched(
+        @Body userWatched: UserWatched
+    )
 
     @DELETE("userwatched/{user_id}/{movie_id}")
     suspend fun deleteUserWatched(
@@ -124,11 +151,13 @@ interface DatabaseApiService {
         @Path("user_id") userID: String,
         @Query("limit") limit: Int = 100,
         @Query("offset") offset: Int = 0
-    ): MovieResponse
+    ): UserWatchedWithMovieResponse
 
     // userwatchlist
     @POST("userwatchlist/")
-    suspend fun addUserWatchlist(@Body userWatched: UserWatched)
+    suspend fun addUserWatchlist(
+        @Body userWatched: UserWatched
+    )
 
     @DELETE("userwatchlist/{user_id}/{movie_id}")
     suspend fun deleteUserWatchlist(
@@ -141,7 +170,7 @@ interface DatabaseApiService {
         @Path("user_id") userID: String,
         @Query("limit") limit: Int = 100,
         @Query("offset") offset: Int = 0
-    ): MovieResponse
+    ): UserWatchedWithMovieResponse
 }
 
 object DatabaseClient {

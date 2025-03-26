@@ -81,9 +81,21 @@ class Query(BaseModel):
     ratings: List[Rating]
     filters: Optional[Filters] = None
 
+class GroupRecQuery(BaseModel):
+    groupRatings: List[List[Rating]]
+    filters: Optional[Filters] = None
+
 @app.post('/recommend')
 async def recommend(query: Query):
     query_dict = query.model_dump()
     recommendations = recommender.get_k_recommendations(query_dict['ratings'], query_dict['filters'], 12)
+    result = [recomendation[0] for recomendation in recommendations]
+    return {"recommendations": result}
+
+@app.post('/grouprec')
+async def grouprec(query: GroupRecQuery):
+    query_dict = query.model_dump()
+    combined_ratings = recommender.combine_group_rating_weights(query_dict['groupRatings'])
+    recommendations = recommender.get_k_recommendations(combined_ratings, query_dict['filters'], 12)
     result = [recomendation[0] for recomendation in recommendations]
     return {"recommendations": result}

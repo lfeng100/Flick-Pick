@@ -1,6 +1,6 @@
 package ca.uwaterloo.flickpick.ui.component
 
-import GroupRepository.userInGroup
+import ca.uwaterloo.flickpick.domain.repository.GroupRepository.userInGroup
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box

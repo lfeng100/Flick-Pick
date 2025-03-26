@@ -5,5 +5,5 @@ import com.squareup.moshi.JsonClass
 @JsonClass(generateAdapter = true)
 data class UserWatched(
     val userID: String,
-    val movieID: String
+    val movieID: String,
 )

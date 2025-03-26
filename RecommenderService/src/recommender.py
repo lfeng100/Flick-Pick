@@ -29,6 +29,23 @@ class Recommender:
     def has_movie_id(self, movie_id: str):
         return movie_id in self.movie_info_map.keys()
 
+    def combine_group_rating_weights(self, group_ratings: list):
+        # Harmonic mean of group ratings
+        movie_weights = {}
+        for user_ratings in group_ratings:
+            for rating in user_ratings:
+                movie_id = rating['movieID']
+                score = rating['score']
+                if movie_id not in movie_weights:
+                    movie_weights[movie_id] = []
+                movie_weights[movie_id].append(score)
+        epsilon = 1e-9
+        combined_ratings = []
+        for movie_id, weights in movie_weights.items():
+            combined_score = len(weights) / sum(1 / (w + epsilon) for w in weights)
+            combined_ratings.append({'movieID': movie_id, 'score': combined_score})
+        return combined_ratings
+
     def get_k_nearest_neightbours(self, movie_id: str, k: int):
         inner_id = self.to_inner_id(movie_id)
         neighbors_inner_ids = self.model.get_neighbors(inner_id, k=k)

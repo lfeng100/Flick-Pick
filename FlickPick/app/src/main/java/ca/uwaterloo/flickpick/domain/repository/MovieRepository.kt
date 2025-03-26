@@ -124,4 +124,10 @@ object MovieRepository {
             }
         }
     }
+
+    fun addMovies(movies: List<Movie>) {
+        for (movie in movies) {
+            movieCache.put(movie.movieID, movie)
+        }
+    }
 }

@@ -198,7 +198,7 @@ fun Login(navController: NavController) {
                             fontSize = 20.sp,
                             //fontWeight = FontWeight.Bold,
                             color = Color.White,
-                            modifier = Modifier.fillMaxWidth().clickable { navController.navigate("authenticated") },
+                            modifier = Modifier.fillMaxWidth(),
                             textAlign = TextAlign.Center
                         )
                     }

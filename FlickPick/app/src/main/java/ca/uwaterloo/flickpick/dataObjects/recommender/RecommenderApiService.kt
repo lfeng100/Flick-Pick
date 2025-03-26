@@ -1,5 +1,6 @@
 package ca.uwaterloo.flickpick.dataObjects.recommender
 
+import ca.uwaterloo.flickpick.dataObjects.recommender.query.GroupRecommendationQuery
 import ca.uwaterloo.flickpick.dataObjects.recommender.query.RecommendationQuery
 import com.squareup.moshi.Moshi
 import retrofit2.http.*
@@ -12,6 +13,9 @@ import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 interface RecommenderApiService {
     @POST("/recommend")
     suspend fun getRecommendations(@Body query: RecommendationQuery): RecommendationResponse
+
+    @POST("/grouprec")
+    suspend fun getGroupRecommendations(@Body query: GroupRecommendationQuery): RecommendationResponse
 }
 
 object RecommenderClient {
