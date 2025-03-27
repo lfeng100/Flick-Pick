@@ -29,7 +29,7 @@ object GroupRecommendationRepository {
 
     fun fetchGroupRecommendations(groupID: String) {
         if (_recommendations.value.isNotEmpty()) {
-            return;
+            return
         }
         CoroutineScope(Dispatchers.IO).launch {
             try {
@@ -67,14 +67,15 @@ object GroupRecommendationRepository {
         }
     }
 
-    fun clearGroupRecommendation() {
+    fun clearGroupRecommendations() {
         // Add recommended movies to previously recommended movie IDs so that the same movie
         // isn't recommended again in the same session
         previouslyRecommendedMovieIds.addAll(_recommendations.value.map { it.movieID })
         _recommendations.value = emptyList()
     }
 
-    fun clearPreviouslyRecommended() {
+    fun clearPreviousRecommendations() {
         previouslyRecommendedMovieIds.clear()
+        _recommendations.value = emptyList()
     }
 }

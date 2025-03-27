@@ -73,7 +73,7 @@ fun RecommendationCarouselScreen(navController: NavController) {
                     },
                     onRefreshClicked = {
                         // Refresh personal recommendations by clearing and re-fetching
-                        RecommendationRepository.clearPersonalRecommendation()
+                        RecommendationRepository.clearPersonalRecommendations()
                         RecommendationRepository.fetchPersonalRecommendations()
                     }
                 )

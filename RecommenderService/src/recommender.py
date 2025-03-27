@@ -30,7 +30,7 @@ class Recommender:
         return movie_id in self.movie_info_map.keys()
 
     def combine_group_rating_weights(self, group_ratings: list):
-        # Harmonic mean of group ratings
+        # Harmonic mean of group ratings with smoothing
         movie_weights = {}
         for user_ratings in group_ratings:
             for rating in user_ratings:
@@ -40,9 +40,11 @@ class Recommender:
                     movie_weights[movie_id] = []
                 movie_weights[movie_id].append(score)
         epsilon = 1e-9
+        alpha = 5 # smoothing
+        benchmark = 3
         combined_ratings = []
         for movie_id, weights in movie_weights.items():
-            combined_score = len(weights) / sum(1 / (w + epsilon) for w in weights)
+            combined_score = (len(weights) + alpha) / sum(1 / (w + epsilon) + alpha / benchmark for w in weights)
             combined_ratings.append({'movieID': movie_id, 'score': combined_score})
         return combined_ratings
 

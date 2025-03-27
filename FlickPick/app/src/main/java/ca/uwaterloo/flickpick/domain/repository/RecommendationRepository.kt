@@ -60,7 +60,7 @@ object RecommendationRepository {
         }
     }
 
-    fun clearPersonalRecommendation() {
+    fun clearPersonalRecommendations() {
         // Add recommended movies to previously recommended movie IDs so that the same movie
         // isn't recommended again in the same session
         previouslyRecommendedMovieIds.addAll(_recommendations.value.map { it.movieID })

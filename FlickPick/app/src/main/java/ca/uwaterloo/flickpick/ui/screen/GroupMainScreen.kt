@@ -34,6 +34,7 @@ import ca.uwaterloo.flickpick.dataObjects.Database.DatabaseClient
 import ca.uwaterloo.flickpick.dataObjects.Database.Models.Movie
 import ca.uwaterloo.flickpick.dataObjects.Database.Models.User
 import ca.uwaterloo.flickpick.ui.component.BrowseMovieReminder
+import ca.uwaterloo.flickpick.ui.component.GroupRecCarouselDisplay
 import ca.uwaterloo.flickpick.ui.component.LogoTopBar
 import ca.uwaterloo.flickpick.ui.component.MovieGrid
 import ca.uwaterloo.flickpick.ui.component.UserCard
@@ -45,7 +46,6 @@ fun GroupMainScreen(navController: NavController, groupId: String) {
 
     val members = remember { mutableStateOf(emptyList<User>()) }
     val isLoading = remember { mutableStateOf(true) }
-    var recommendation by remember { mutableStateOf(emptyList<Movie>()) }
 
     LaunchedEffect(Unit) {
         try {
@@ -126,11 +126,7 @@ fun GroupMainScreen(navController: NavController, groupId: String) {
                 }
                     }
                     1 -> {
-                        if (recommendation.isEmpty()) {
-                            BrowseMovieReminder(navController, "You don't have any recommendations yet!");
-                            return@HorizontalPager;
-                        }
-                        MovieGrid(recommendation, navController)
+                        GroupRecCarouselDisplay(groupId, navController);
                     }
                 }
             }

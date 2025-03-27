@@ -17,17 +17,6 @@ class Rating(BaseModel):
             raise ValueError("invalid movieID")
         return movieID
 
-    @field_validator("score")
-    @classmethod
-    def check_score(cls, score):
-        if score < 0.5:
-            raise ValueError("rating scores must be >= 0.5")
-        if score > 5.0:
-            raise ValueError("rating scores must be <= 5.0")
-        if score % 0.5 != 0:
-            raise ValueError("rating scores must be a multiple of 0.5")
-        return score
-
 class Filters(BaseModel):
     includedGenres: Optional[List[str]] = None
     excludedGenres: Optional[List[str]] = None
@@ -57,15 +46,6 @@ class Filters(BaseModel):
             if not recommender.has_language_code(language):
                 raise ValueError('invalid language code')
         return languages
-
-    @field_validator("minScore")
-    @classmethod
-    def check_score(cls, score):
-        if score < 0:
-            raise ValueError("minimum score must be >= 0.0")
-        if score > 5.0:
-            raise ValueError("minimum score must be <= 5.0")
-        return score
 
     @field_validator("excludedMovieIDs")
     @classmethod

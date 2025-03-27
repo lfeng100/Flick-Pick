@@ -63,6 +63,7 @@ object PrimaryUserRepository {
     fun addToWatchlist(movieId: String) {
         if (_watchlist.insertSorted(movieId)) {
             enqueueRequest {
+                Log.d("PrimaryUserRepository", "$movieId add to watchlist")
                 DatabaseClient.apiService.addUserWatchlist(UserWatched(userID, movieId))
             }
         }
@@ -71,6 +72,7 @@ object PrimaryUserRepository {
     fun removeFromWatchlist(movieId: String) {
         if (_watchlist.remove(movieId)) {
             enqueueRequest {
+                Log.d("PrimaryUserRepository", "$movieId removed from watchlist")
                 DatabaseClient.apiService.deleteUserWatchlist(userID, movieId)
             }
         }
@@ -79,6 +81,7 @@ object PrimaryUserRepository {
     fun addToWatched(movieId: String) {
         if (_watched.insertSorted(movieId)) {
             enqueueRequest {
+                Log.d("PrimaryUserRepository", "$movieId added to watched")
                 DatabaseClient.apiService.addUserWatched(UserWatched(userID, movieId))
             }
         }
@@ -88,6 +91,7 @@ object PrimaryUserRepository {
     fun removeFromWatched(movieId: String) {
         if (_watched.remove(movieId)) {
             enqueueRequest {
+                Log.d("PrimaryUserRepository", "$movieId removed from watched")
                 DatabaseClient.apiService.deleteUserWatched(userID, movieId)
             }
         }
@@ -97,6 +101,7 @@ object PrimaryUserRepository {
     fun removeReview(movieId: String) {
         if (_reviews.remove(movieId) != null) {
             enqueueRequest {
+                Log.d("PrimaryUserRepository", "Review removed for $movieId")
                 val review = reviewMap[movieId]
                 DatabaseClient.apiService.deleteReview(review?.reviewID!!)
                 reviewMap.remove(movieId)
@@ -108,6 +113,7 @@ object PrimaryUserRepository {
         if (!_reviews.containsKey(movieId)) {
             _reviews[movieId] = PrimaryUserReviewData(movieId, score, message)
             enqueueRequest {
+                Log.d("PrimaryUserRepository", "Review added for $movieId")
                 reviewMap[movieId] = DatabaseClient.apiService.createReview(
                     ReviewCreate(
                         rating = score.toDouble(),
@@ -118,7 +124,8 @@ object PrimaryUserRepository {
                 )
             }
         }
-        addToWatched(movieId)
+        // The watched list will update automatically in the backend when a review is added
+        _watched.insertSorted(movieId)
         removeFromWatchlist(movieId)
     }
 
@@ -132,7 +139,7 @@ object PrimaryUserRepository {
 
     private fun SnapshotStateList<String>.insertSorted(movieId: String) : Boolean {
         val idx = binarySearch(movieId)
-        if (idx >= 0) return false;
+        if (idx >= 0) return false
         val insertIdx = -idx - 1
         add(insertIdx, movieId)
         return true

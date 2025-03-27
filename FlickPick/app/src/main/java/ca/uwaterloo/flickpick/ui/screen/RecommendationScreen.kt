@@ -102,7 +102,7 @@ fun RecommendationScreen(navController: NavController) {
             FiltersCustomizer(initial = filters) { f ->
                 showFilterCustomizer = false
                 RecommendationRepository.setFilters(f)
-                RecommendationRepository.clearPersonalRecommendation()
+                RecommendationRepository.clearPersonalRecommendations()
             }
         }
     }
