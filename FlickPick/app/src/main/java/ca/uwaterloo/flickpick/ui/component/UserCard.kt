@@ -14,9 +14,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.outlined.AddCircle
 import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -28,15 +26,15 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import ca.uwaterloo.flickpick.ui.theme.PurpleGrey40
 
 @Composable
 fun UserCard(userName: String, onClick: () -> Unit, rightIcon : ImageVector, rightIconColor: Color){
     Card(
         modifier = Modifier
             .padding(2.dp)
-            .clickable(onClick = onClick),
-        shape = RoundedCornerShape(10.dp),
+            .clickable(onClick = onClick)
+            .background(MaterialTheme.colorScheme.surface),
+        shape = RoundedCornerShape(6.dp),
     ) {
         Row(
             modifier = Modifier
@@ -79,7 +77,7 @@ fun UserCard(userName: String, onClick: () -> Unit, rightIcon : ImageVector, rig
             Box(
                 contentAlignment = Alignment.Center,
                 modifier = Modifier
-                    .size(45.dp)
+                    .size(34.dp)
                     .background(
                         color = Color.White,
                         shape = CircleShape
@@ -94,7 +92,7 @@ fun UserCard(userName: String, onClick: () -> Unit, rightIcon : ImageVector, rig
                     imageVector = rightIcon,
                     contentDescription = "right Icon",
                     tint = rightIconColor,
-                    modifier = Modifier.size(46.dp)
+                    modifier = Modifier.size(35.dp)
                 )
             }
         }

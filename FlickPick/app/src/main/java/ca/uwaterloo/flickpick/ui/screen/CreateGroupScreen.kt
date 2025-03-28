@@ -29,6 +29,7 @@ import ca.uwaterloo.flickpick.ui.component.TitleTopBar
 import ca.uwaterloo.flickpick.ui.component.TopBarButtonData
 import ca.uwaterloo.flickpick.ui.component.UserCard
 import ca.uwaterloo.flickpick.ui.theme.PurpleGrey40
+import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.launch
 
 @Composable
@@ -54,14 +55,27 @@ fun CreateGroupScreen(navController: NavController) {
     fun createGroup() {
         coroutineScope.launch {
             try {
+                val adminUserID = FirebaseAuth.getInstance().currentUser?.uid
                 val createGroup = GroupCreate(
                     groupName = groupName.value.text,
-                    adminUserID = "05b58228-0a3f-403d-91fe-cab0868ebd68",
+                    adminUserID = adminUserID,
                     adminUsername = "michael_g",
-                    groupSize = selectedUsers.value.size
+                    groupSize = selectedUsers.value.size + 1
                 )
                 val response = DatabaseClient.apiService.createGroup(createGroup)
                 val groupID = response.groupID
+
+                if (adminUserID != null) {
+                    val addUserToGroup = AddUserToGroup(
+                        groupID = groupID,
+                        userID = adminUserID
+                    )
+                    try {
+                        DatabaseClient.apiService.addUserToGroup(addUserToGroup)
+                    } catch (e: Exception) {
+                        Log.e("CreateGroupScreen", "Error adding admin to group: ${e.message}")
+                    }
+                }
 
                 selectedUsers.value.forEach { userID ->
                     try {
@@ -111,7 +125,7 @@ fun CreateGroupScreen(navController: NavController) {
                     placeHolderText = "Enter group name (optional)"
                 )
                 LazyColumn(
-                    modifier = Modifier.weight(1f) // Takes up available space above the button
+                    modifier = Modifier.weight(1f)
                 ) {
                     items(users.value) { user ->
                         val isSelected = selectedUsers.value.contains(user.userID)
@@ -145,7 +159,6 @@ fun CreateGroupScreen(navController: NavController) {
                     .padding(24.dp),
                 contentAlignment = Alignment.Center,
             ) {
-                // Create group button
                 Button(
                     onClick = { createGroup() },
                     modifier = Modifier
