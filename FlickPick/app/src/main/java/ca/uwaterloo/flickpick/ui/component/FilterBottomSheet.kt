@@ -33,8 +33,19 @@ fun FilterBottomSheet(
                 .padding(16.dp)
                 .verticalScroll(rememberScrollState())
         ) {
-            Text("Select Filters", style = MaterialTheme.typography.headlineSmall)
-            Spacer(modifier = Modifier.height(8.dp))
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text("Select Filters", style = MaterialTheme.typography.headlineSmall)
+
+                TextButton(
+                    onClick = { onFiltersChanged(emptyMap()) }
+                ) {
+                    Text("Clear All")
+                }
+            }
 
             val tagTypes = mapOf(
                 "Genre" to tags.filter { it.tagType == "genre" },
