@@ -13,14 +13,13 @@ import kotlinx.coroutines.launch
 import java.util.concurrent.ConcurrentHashMap
 
 object GroupRepository {
-    private val _groups = MutableStateFlow(emptyList<Group>())
-    val groups = _groups.asStateFlow()
+    private val _joinGroups = MutableStateFlow(emptyList<Group>())
+    private val _yourGroups = MutableStateFlow(emptyList<Group>())
+    val joinGroups = _joinGroups.asStateFlow()
+    val yourGroups = _yourGroups.asStateFlow()
 
-    private val groupCache: MutableMap<String, Group> = ConcurrentHashMap()
-
-    init {
-        fetchGroups()
-    }
+    private val joinGroupCache: MutableMap<String, Group> = ConcurrentHashMap()
+    private val yourGroupCache: MutableMap<String, Group> = ConcurrentHashMap()
 
     fun addUserToGroup(userID: String, groupID: String) {
         CoroutineScope(Dispatchers.IO).launch {
@@ -32,16 +31,46 @@ object GroupRepository {
         }
     }
 
-    private fun fetchGroups() {
+    fun fetchYourGroups(userID: String) {
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 val groupList = DatabaseClient.apiService.getAllGroups().items
-                _groups.value += groupList
-                for (group in groupList) {
-                    groupCache[group.groupID] = group
+                val yourGroupList = mutableListOf<Group>()
+
+                groupList.forEach { group ->
+                    val usersInGroup = DatabaseClient.apiService.getGroupUsersById(group.groupID).items
+
+                    if (userID in usersInGroup.map { it.userID }) {
+                        yourGroupList.add(group)
+                        yourGroupCache[group.groupID] = group
+                    }
                 }
+                _yourGroups.value = yourGroupList
+
             } catch (e: Exception) {
-                Log.e("GroupRepository", "Error fetching groups: ${e.message}")
+                Log.e("GroupRepository", "Error fetching joinable groups: ${e.message}")
+            }
+        }
+    }
+
+    fun fetchJoinGroups(userID: String) {
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                val groupList = DatabaseClient.apiService.getAllGroups().items
+                val joinGroupList = mutableListOf<Group>()
+
+                groupList.forEach { group ->
+                    val usersInGroup = DatabaseClient.apiService.getGroupUsersById(group.groupID).items
+
+                    if (userID !in usersInGroup.map { it.userID }) {
+                        joinGroupList.add(group)
+                        joinGroupCache[group.groupID] = group
+                    }
+                }
+                _joinGroups.value = joinGroupList
+
+            } catch (e: Exception) {
+                Log.e("GroupRepository", "Error fetching joinable groups: ${e.message}")
             }
         }
     }

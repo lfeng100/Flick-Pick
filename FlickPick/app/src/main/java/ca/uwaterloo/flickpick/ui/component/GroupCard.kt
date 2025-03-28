@@ -31,7 +31,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import ca.uwaterloo.flickpick.dataObjects.Database.Models.Group
-import ca.uwaterloo.flickpick.ui.theme.PurpleGrey40
 
 @Composable
 fun GroupCard(group: Group, onClick: (() -> Unit)) {
@@ -91,17 +90,33 @@ fun GroupCard(group: Group, onClick: (() -> Unit)) {
 }
 
 @Composable
-fun GroupCardsList(groups: List<Group>, navController: NavController) {
+fun JoinGroupCardsList(groups: List<Group>, navController: NavController) {
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
-            .padding(horizontal = 12.dp, vertical = 4.dp)
     ) {
         items(groups) { group ->
             GroupCard(
                 group = group,
                 onClick = {
                     navController.navigate("group/${group.groupID}")
+                }
+            )
+        }
+    }
+}
+
+@Composable
+fun YourGroupCardsList(groups: List<Group>, navController: NavController) {
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxSize()
+    ) {
+        items(groups) { group ->
+            GroupCard(
+                group = group,
+                onClick = {
+                    navController.navigate("groupmain/${group.groupID}")
                 }
             )
         }
