@@ -26,18 +26,19 @@ date,Leo,Sajeen,Aryan,Ashvin,Alex,Jerry,task,,
 2025-03-03,0,0,8,0,0,0,Add in Movie Pop-up view page with details,,
 2025-03-03,0,0,5,0,0,0,Add in Profile Page UI,,
 2025-03-04,0,0,0,2.5,0,0,Integrate CreateUser API endpoint upon sign up,,
-2025-03-04,0,0,0,0,0,12,Set up recommender UI, navigation bar, and rework/refactor some UI elements,,
+2025-03-04,0,0,0,0,0,12,Set up recommender UI, navigation bar, and rework/refactor some UI elements
 2025-03-05,0,0,0,0,10,0,Add APIManager,Poster images,
 2025-03-06,0,0,0,0,0,1.5,Add infinite scrolling to browse screen,,
 2025-03-06,0,0,0,0,0,10,Revamp movie info screen and add flow for creating reviews,,
-2025-03-11,0,0,0,0,0,2.5,Hook up home screen to user reviews, watched, and watchlist,,
+2025-03-11,0,0,0,0,0,2.5,Hook up home screen to user reviews, watched, and watchlist
 2025-03-13,0,0,0,0,0,8,Revamp recommendation screen,,
 2025-03-16,0,0,0,0,0,6,Add initial recommender filters,,
 2025-03-16,0,0,0,0,0,2,Add reminder in library/recommender screen for when you have no reviews,,
 2025-03-16,0,0,0,0,8,0,Add search and filtering to catalog,,
 2025-03-16,0,0,0,0,0,3,Fix infinite scrolling with search,,
-2025-03-16,0,0,12,0,0,0,Add in join group page UI, create reusabale join group card component, bubble animation background implemented,,
+2025-03-16,0,0,12,0,0,0,Add in join group page UI, create reusabale join group card component, bubble animation background implemented
 2025-03-17,0,0,5,0,0,0,Integrate API to display details into join group page,,
 2025-03-18,0,0,2,0,0,0,Fix navigation between groups page and join groups page,,
-2025-03-18,0,0,5,0,0,0,API connections for adding user to group when joined, displaying members list, fix for adding user group creation,,
+2025-03-18,0,0,5,0,0,0,API connections for adding user to group when joined, displaying members list, fix for adding user group creation
 2025-03-18,0,0,7,0,0,0,Create groups main page and display list of members within group,,
+2025-03-28,0,0,0,0,4,0,Fixes to bottomsheet,,
