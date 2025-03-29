@@ -87,9 +87,9 @@ interface DatabaseApiService {
         @Query("offset") offset: Int = 0
     ): GroupResponse
 
-    @GET("group/{id}")
+    @GET("groups/{group_id}")
     suspend fun getGroupById(
-        @Path("id") groupId: String
+        @Path("group_id") groupId: String
     ): Group
 
     @POST("groups/")

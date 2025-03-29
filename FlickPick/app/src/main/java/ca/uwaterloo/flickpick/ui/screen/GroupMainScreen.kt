@@ -10,18 +10,21 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.outlined.CheckCircle
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -31,28 +34,34 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import ca.uwaterloo.flickpick.dataObjects.Database.DatabaseClient
-import ca.uwaterloo.flickpick.dataObjects.Database.Models.Movie
+import ca.uwaterloo.flickpick.dataObjects.Database.Models.Group
 import ca.uwaterloo.flickpick.dataObjects.Database.Models.User
 import ca.uwaterloo.flickpick.ui.component.BrowseMovieReminder
 import ca.uwaterloo.flickpick.ui.component.GroupRecCarouselDisplay
-import ca.uwaterloo.flickpick.ui.component.LogoTopBar
-import ca.uwaterloo.flickpick.ui.component.MovieGrid
 import ca.uwaterloo.flickpick.ui.component.UserCard
 import ca.uwaterloo.flickpick.ui.theme.Purple40
 import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun GroupMainScreen(navController: NavController, groupId: String) {
 
+    val group = remember { mutableStateOf<Group?>(null) }
     val members = remember { mutableStateOf(emptyList<User>()) }
     val isLoading = remember { mutableStateOf(true) }
 
     LaunchedEffect(Unit) {
         try {
-            val response = DatabaseClient.apiService.getGroupUsersById(groupId).items
-            Log.d("CreateGroupScreen", "API Response: $response")
-            members.value = response
+            val groupResponse = DatabaseClient.apiService.getGroupById(groupId)
+            Log.d("CreateGroupScreen", "API Response: $groupResponse")
+            group.value = groupResponse
+
+            val userResponse = DatabaseClient.apiService.getGroupUsersById(groupId).items
+            Log.d("CreateGroupScreen", "API Response: $userResponse")
+            members.value = userResponse
         } catch (e: Exception) {
+
+            Log.e("CreateGroupScreen", groupId)
             Log.e("CreateGroupScreen", "Error fetching users: ${e.message}")
         } finally {
             isLoading.value = false
@@ -60,7 +69,15 @@ fun GroupMainScreen(navController: NavController, groupId: String) {
     }
 
     Scaffold(
-        topBar = { LogoTopBar() }
+        topBar = {
+            TopAppBar(title = { Text(group.value?.groupName ?: "Group") },
+                navigationIcon = {
+                    IconButton(onClick = { navController.popBackStack() }) {
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "")
+                    }
+                }
+            )
+        }
     ) { padding ->
         val tabTitles = listOf("Members", "Recommendations")
         val pagerState = rememberPagerState(pageCount = { tabTitles.size })
