@@ -40,6 +40,7 @@ import ca.uwaterloo.flickpick.dataObjects.Database.DatabaseClient
 import ca.uwaterloo.flickpick.dataObjects.Database.Models.Group
 import ca.uwaterloo.flickpick.dataObjects.Database.Models.User
 import ca.uwaterloo.flickpick.ui.component.BrowseMovieReminder
+import ca.uwaterloo.flickpick.ui.component.GroupActivityList
 import ca.uwaterloo.flickpick.ui.component.GroupRecCarouselDisplay
 import ca.uwaterloo.flickpick.ui.component.UserCard
 import ca.uwaterloo.flickpick.ui.theme.Purple40
@@ -51,27 +52,22 @@ fun GroupMainScreen(navController: NavController, groupId: String) {
 
     val group = remember { mutableStateOf<Group?>(null) }
     val members = remember { mutableStateOf(emptyList<User>()) }
+    val activities = remember { mutableStateOf<List<Map<String, Any>>>(emptyList()) }
     val isLoading = remember { mutableStateOf(true) }
-    val activityList = remember { mutableStateOf(emptyList<Map<String, Any>>()) }
 
     LaunchedEffect(Unit) {
         try {
-
-            val activityResponse = DatabaseClient.apiService.getGroupActivity(groupId)
-            Log.d("CreateGroupScreen", "API Activity Response: $activityResponse")
-            activityList.value = activityResponse["activity"] as List<Map<String, Any>>
-
             val groupResponse = DatabaseClient.apiService.getGroupById(groupId)
-            Log.d("CreateGroupScreen", "API Group Response: $groupResponse")
             group.value = groupResponse
 
             val userResponse = DatabaseClient.apiService.getGroupUsersById(groupId).items
-            Log.d("CreateGroupScreen", "API Users Response: $userResponse")
             members.value = userResponse
-        } catch (e: Exception) {
 
-            Log.e("CreateGroupScreen", groupId)
-            Log.e("CreateGroupScreen", "Error fetching: ${e.message}")
+            val activityResponse = DatabaseClient.apiService.getGroupActivity(groupId)
+            activities.value = activityResponse["activity"] as? List<Map<String, Any>> ?: emptyList()
+
+        } catch (e: Exception) {
+            Log.e("GroupMainScreen", "Error: ${e.message}")
         } finally {
             isLoading.value = false
         }
@@ -79,39 +75,38 @@ fun GroupMainScreen(navController: NavController, groupId: String) {
 
     Scaffold(
         topBar = {
-            TopAppBar(title = { Text(group.value?.groupName ?: "Group") },
+            TopAppBar(
+                title = { Text(group.value?.groupName ?: "Group") },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "")
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
                     }
                 }
             )
         }
     ) { padding ->
+
         val tabTitles = listOf("Members", "Recommendations", "Activities")
         val pagerState = rememberPagerState(pageCount = { tabTitles.size })
         val coroutineScope = rememberCoroutineScope()
 
-        Column (Modifier.padding(padding)) {
+        Column(Modifier.padding(padding)) {
             TabRow(
                 selectedTabIndex = pagerState.currentPage,
             ) {
                 tabTitles.forEachIndexed { index, title ->
                     Tab(
+                        text = { Text(title, maxLines = 1) },
                         selected = pagerState.currentPage == index,
                         onClick = {
-                            coroutineScope.launch { pagerState.scrollToPage(index) }
-                        },
-                        text = {
-                            Text(
-                                text = title,
-                                fontSize = 11.sp,
-                                maxLines = 1,
-                            )
+                            coroutineScope.launch {
+                                pagerState.scrollToPage(index)
+                            }
                         }
                     )
                 }
             }
+
             HorizontalPager(
                 state = pagerState,
                 modifier = Modifier.fillMaxSize()
@@ -119,76 +114,52 @@ fun GroupMainScreen(navController: NavController, groupId: String) {
                 when (page) {
                     0 -> {
                         if (members.value.isEmpty()) {
-                            BrowseMovieReminder(navController, "No members here! Come back soon");
-                            return@HorizontalPager;
-                        }
-                        LazyColumn(
-                            modifier = Modifier
-                            .fillMaxSize()
-                            .padding(16.dp)
-                ) {
-                    item {
-                        Column(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .padding(16.dp),
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            Text(
-                                text = "List of Members in Group",
-                                color = Color.Gray,
-                                fontSize = 26.sp,
-                                fontWeight = FontWeight.Bold,
-                                textAlign = TextAlign.Center,
-                                lineHeight = 50.sp,
-                                modifier = Modifier.fillMaxWidth()
-                            )
-                        }
-                    }
-                    items(members.value) { user ->
-                        UserCard(
-                            userName = user.username,
-                            rightIcon = Icons.Outlined.CheckCircle,
-                            onClick = {},
-                            rightIconColor = Purple40
-                        )
-                    }
-                }
-                    }
-                    1 -> {
-                        GroupRecCarouselDisplay(groupId, navController);
-                    }
-                    2 -> {
-                        if (activityList.value.isEmpty()) {
-                            BrowseMovieReminder(navController, "No activity found in this group.")
+                            BrowseMovieReminder(navController, "No members here! Come back soon")
                         } else {
-                            GroupActivityList(activityList.value)
+                            LazyColumn(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .padding(16.dp)
+                            ) {
+                                item {
+                                    Column(
+                                        modifier = Modifier
+                                            .fillMaxSize()
+                                            .padding(16.dp),
+                                        horizontalAlignment = Alignment.CenterHorizontally
+                                    ) {
+                                        Text(
+                                            text = "List of Members in Group",
+                                            color = Color.Gray,
+                                            fontSize = 26.sp,
+                                            fontWeight = FontWeight.Bold,
+                                            textAlign = TextAlign.Center,
+                                            lineHeight = 50.sp,
+                                            modifier = Modifier.fillMaxWidth()
+                                        )
+                                    }
+                                }
+                                items(members.value) { user ->
+                                    UserCard(
+                                        userName = user.username,
+                                        rightIcon = Icons.Outlined.CheckCircle,
+                                        onClick = {},
+                                        rightIconColor = Purple40
+                                    )
+                                }
+                            }
                         }
                     }
 
+                    1 -> {
+                        GroupRecCarouselDisplay(groupId, navController)
+                    }
+
+                    2 -> {
+                        GroupActivityList(activities.value, navController)
+                    }
                 }
             }
-        }
-    }
-}
-
-@Composable
-fun GroupActivityList(activityList: List<Map<String, Any>>) {
-    LazyColumn(modifier = Modifier.padding(16.dp)) {
-        items(activityList) { activity ->
-            val type = activity["type"] as? String ?: return@items
-            val movieTitle = activity["movieTitle"] as? String ?: "Unknown"
-            val timestamp = activity["timestamp"] as? String ?: "?"
-
-            val content = when (type) {
-                "review" -> "Reviewed \"$movieTitle\": ${activity["message"]}"
-                "watched" -> "Watched \"$movieTitle\""
-                "watchlist" -> "Added \"$movieTitle\" to watchlist"
-                else -> "Did something with \"$movieTitle\""
-            }
-
-            Text(text = content, modifier = Modifier.padding(vertical = 8.dp))
-            Divider()
         }
     }
 }
