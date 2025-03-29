@@ -92,6 +92,10 @@ interface DatabaseApiService {
         @Path("group_id") groupId: String
     ): Group
 
+    @GET("groups/{group_id}/activity")
+    suspend fun getGroupActivity(@Path("group_id") groupId: String): Map<String, Any>
+
+
     @POST("groups/")
     suspend fun createGroup(
         @Body group: GroupCreate

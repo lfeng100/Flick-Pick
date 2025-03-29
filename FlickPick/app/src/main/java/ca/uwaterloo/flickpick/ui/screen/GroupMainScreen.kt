@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.pager.HorizontalPager
@@ -12,12 +13,14 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.outlined.CheckCircle
+import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
+import androidx.compose.material3.TabRowDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
@@ -49,20 +52,26 @@ fun GroupMainScreen(navController: NavController, groupId: String) {
     val group = remember { mutableStateOf<Group?>(null) }
     val members = remember { mutableStateOf(emptyList<User>()) }
     val isLoading = remember { mutableStateOf(true) }
+    val activityList = remember { mutableStateOf(emptyList<Map<String, Any>>()) }
 
     LaunchedEffect(Unit) {
         try {
+
+            val activityResponse = DatabaseClient.apiService.getGroupActivity(groupId)
+            Log.d("CreateGroupScreen", "API Activity Response: $activityResponse")
+            activityList.value = activityResponse["activity"] as List<Map<String, Any>>
+
             val groupResponse = DatabaseClient.apiService.getGroupById(groupId)
-            Log.d("CreateGroupScreen", "API Response: $groupResponse")
+            Log.d("CreateGroupScreen", "API Group Response: $groupResponse")
             group.value = groupResponse
 
             val userResponse = DatabaseClient.apiService.getGroupUsersById(groupId).items
-            Log.d("CreateGroupScreen", "API Response: $userResponse")
+            Log.d("CreateGroupScreen", "API Users Response: $userResponse")
             members.value = userResponse
         } catch (e: Exception) {
 
             Log.e("CreateGroupScreen", groupId)
-            Log.e("CreateGroupScreen", "Error fetching users: ${e.message}")
+            Log.e("CreateGroupScreen", "Error fetching: ${e.message}")
         } finally {
             isLoading.value = false
         }
@@ -79,7 +88,7 @@ fun GroupMainScreen(navController: NavController, groupId: String) {
             )
         }
     ) { padding ->
-        val tabTitles = listOf("Members", "Recommendations")
+        val tabTitles = listOf("Members", "Recommendations", "Activities")
         val pagerState = rememberPagerState(pageCount = { tabTitles.size })
         val coroutineScope = rememberCoroutineScope()
 
@@ -89,12 +98,16 @@ fun GroupMainScreen(navController: NavController, groupId: String) {
             ) {
                 tabTitles.forEachIndexed { index, title ->
                     Tab(
-                        text = { Text(title) },
                         selected = pagerState.currentPage == index,
                         onClick = {
-                            coroutineScope.launch {
-                                pagerState.scrollToPage(index)
-                            }
+                            coroutineScope.launch { pagerState.scrollToPage(index) }
+                        },
+                        text = {
+                            Text(
+                                text = title,
+                                fontSize = 11.sp,
+                                maxLines = 1,
+                            )
                         }
                     )
                 }
@@ -145,8 +158,37 @@ fun GroupMainScreen(navController: NavController, groupId: String) {
                     1 -> {
                         GroupRecCarouselDisplay(groupId, navController);
                     }
+                    2 -> {
+                        if (activityList.value.isEmpty()) {
+                            BrowseMovieReminder(navController, "No activity found in this group.")
+                        } else {
+                            GroupActivityList(activityList.value)
+                        }
+                    }
+
                 }
             }
+        }
+    }
+}
+
+@Composable
+fun GroupActivityList(activityList: List<Map<String, Any>>) {
+    LazyColumn(modifier = Modifier.padding(16.dp)) {
+        items(activityList) { activity ->
+            val type = activity["type"] as? String ?: return@items
+            val movieTitle = activity["movieTitle"] as? String ?: "Unknown"
+            val timestamp = activity["timestamp"] as? String ?: "?"
+
+            val content = when (type) {
+                "review" -> "Reviewed \"$movieTitle\": ${activity["message"]}"
+                "watched" -> "Watched \"$movieTitle\""
+                "watchlist" -> "Added \"$movieTitle\" to watchlist"
+                else -> "Did something with \"$movieTitle\""
+            }
+
+            Text(text = content, modifier = Modifier.padding(vertical = 8.dp))
+            Divider()
         }
     }
 }
