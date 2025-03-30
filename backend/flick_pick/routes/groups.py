@@ -1,11 +1,20 @@
 from fastapi import APIRouter, Depends, Query, HTTPException
 from sqlalchemy.orm import Session
 import schemas, database, crud
+from models import Group
 
 router = APIRouter()
 
 @router.post("/groups/")
 def create_group(group: schemas.GroupCreate, db: Session = Depends(database.get_db)):
+    if not group.groupName or group.groupName.strip() == "":
+        raise HTTPException(status_code=400, detail="Group name cannot be empty")
+
+    existing = db.query(Group).filter(Group.groupName == group.groupName).first()
+
+    if existing:
+        raise HTTPException(status_code=409, detail="Group name already exists")
+
     return crud.create_group(db, group)
 
 @router.get("/groups/", response_model=schemas.PaginatedGroupsResponse)
