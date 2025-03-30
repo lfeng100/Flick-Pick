@@ -5,6 +5,7 @@ import models, schemas
 import json
 import uuid
 from fastapi import HTTPException
+from typing import Optional
 
 # --- USERS CRUD ---
 def create_user(db: Session, user: schemas.UserCreate):
@@ -451,7 +452,7 @@ def delete_user_watchlist(db: Session, user_id: str, movie_id: str):
         db.commit()
     return watchlist
 
-def search_movies(db: Session, title_query: str = None, tag_ids: list = None, limit: int = 10, offset: int = 0):
+def search_movies(db: Session, title_query: str = None, tag_ids: list = None, limit: int = 10, offset: int = 0, sort_by: Optional[str] = None, sort_order: str = "asc"):
     query = db.query(models.Movie)
 
     # Filter by title if provided
@@ -469,6 +470,10 @@ def search_movies(db: Session, title_query: str = None, tag_ids: list = None, li
             .subquery()
         )
         query = query.filter(models.Movie.movieID.in_(subquery))
+    
+    if sort_by:
+        sort_column = getattr(models.Movie, sort_by)
+        query = query.order_by(sort_column.desc() if sort_order == "desc" else sort_column.asc())
 
     total = query.count()  # Count total results before applying limit/offset
     movies = query.offset(offset).limit(limit).all()

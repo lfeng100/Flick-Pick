@@ -32,8 +32,10 @@ def delete_movie(movie_id: str, db: Session = Depends(database.get_db)):
 def search_movies(
     db: Session = Depends(database.get_db),
     title_query: Optional[str] = None,
-    tag_ids: Optional[List[str]] = Query(None),  # Ensure tag_ids is treated as a list
+    tag_ids: Optional[List[str]] = Query(None),
+    sort_by: Optional[str] = Query(None, regex="^(title|rating|releaseYear)$"),
+    sort_order: Optional[str] = Query("asc", regex="^(asc|desc)$"),
     limit: int = Query(10, ge=1, le=100),
     offset: int = Query(0, ge=0)
 ):
-    return crud.search_movies(db, title_query, tag_ids, limit=limit, offset=offset)
+    return crud.search_movies(db, title_query, tag_ids, limit=limit, offset=offset, sort_by=sort_by, sort_order=sort_order)
