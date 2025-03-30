@@ -293,8 +293,8 @@ fun ProfileScreen(mainNavController: NavController, loginNavController: NavContr
                                 } else {
                                     coroutineScope.launch {
                                         try {
+                                            firebaseAuthentication.deleteAccount(loginNavController, context)
                                             DatabaseClient.apiService.deleteUser(userId)
-                                            //navController.navigate("/login")
                                         } catch (e: Exception) {
                                             Log.e("ProfileScreen", "Delete failed", e)
                                         }
