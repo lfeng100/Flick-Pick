@@ -3,7 +3,6 @@ package ca.uwaterloo.flickpick
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -18,17 +17,11 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Email
-import androidx.compose.material.icons.filled.Lock
-import androidx.compose.material.icons.filled.Visibility
-import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
@@ -38,14 +31,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -73,7 +62,8 @@ fun ForgotPassword(navController: NavController) {
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .fillMaxWidth()
             ) {
                 IconButton(
                     onClick = { navController.popBackStack() },
@@ -87,7 +77,7 @@ fun ForgotPassword(navController: NavController) {
                 }
                 Spacer(modifier = Modifier.weight(1f))
             }
-            Spacer(modifier = Modifier.height(42.dp))
+            Spacer(modifier = Modifier.height(45.dp))
             Image(
                 painter = painterResource(id = ca.uwaterloo.flickpick.R.drawable.lock_icon),
                 contentDescription = "Lock Icon Image",
@@ -102,7 +92,8 @@ fun ForgotPassword(navController: NavController) {
                 color = Color.White,
                 fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Center,
-                modifier = Modifier.align(Alignment.CenterHorizontally)
+                modifier = Modifier
+                    .align(Alignment.CenterHorizontally)
             )
             Spacer(modifier = Modifier.height(24.dp))
             Text(
@@ -110,15 +101,16 @@ fun ForgotPassword(navController: NavController) {
                 fontSize = 17.sp,
                 color = Color.Gray,
                 textAlign = TextAlign.Center,
-                modifier = Modifier.align(Alignment.CenterHorizontally)
+                modifier = Modifier
+                    .align(Alignment.CenterHorizontally)
             )
             Spacer(modifier = Modifier.height(54.dp))
             Text(
                 text = "Email",
                 fontSize = 18.sp,
                 color = Color.Gray,
-                modifier = Modifier.padding(start = 5.dp)
-
+                modifier = Modifier
+                    .padding(start = 10.dp)
             )
             Spacer(modifier = Modifier.height(9.dp))
             OutlinedTextField(
@@ -127,7 +119,7 @@ fun ForgotPassword(navController: NavController) {
                 modifier = Modifier
                     .height(50.dp)
                     .fillMaxWidth()
-                    .padding(horizontal = 5.dp),
+                    .padding(horizontal = 6.dp),
                 textStyle = TextStyle(color = Color.White),
                 leadingIcon = { Icon(imageVector = Icons.Default.Email, contentDescription = "", tint = Color.Gray) },
                 singleLine = true,
@@ -141,7 +133,7 @@ fun ForgotPassword(navController: NavController) {
                     unfocusedBorderColor = Color.DarkGray,
                 )
             )
-            Spacer(modifier = Modifier.height(35.dp))
+            Spacer(modifier = Modifier.height(38.dp))
             Button(
                 onClick = {
                     if (email.value.isNotBlank()) {
@@ -153,7 +145,7 @@ fun ForgotPassword(navController: NavController) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(46.dp)
-                    .padding(horizontal = 5.dp),
+                    .padding(horizontal = 6.dp),
                 shape = RoundedCornerShape(50.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = Purple40)
             ) {
@@ -162,7 +154,8 @@ fun ForgotPassword(navController: NavController) {
                     fontSize = 20.sp,
                     //fontWeight = FontWeight.Bold,
                     color = Color.White,
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .fillMaxWidth(),
                     textAlign = TextAlign.Center
                 )
             }
