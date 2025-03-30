@@ -90,7 +90,11 @@ fun JoinGroupCard(groupName: String, userName: String, adminUsername: String, me
                 Button(
                     onClick = {
                         addUserToGroup(userId, groupId)
-                        navController.navigate("groupmain/${groupId}")
+                        navController.navigate("groupmain/${groupId}") {
+                            popUpTo(navController.currentBackStackEntry?.destination?.route ?: return@navigate) {
+                                inclusive = true
+                            }
+                        }
                 },
                     colors = ButtonDefaults.buttonColors(containerColor = Color.White),
                     modifier = Modifier.fillMaxWidth()

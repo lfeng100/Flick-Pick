@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -37,6 +38,7 @@ import ca.uwaterloo.flickpick.dataObjects.Database.DatabaseClient
 import ca.uwaterloo.flickpick.dataObjects.Database.Models.ActivityItem
 import ca.uwaterloo.flickpick.dataObjects.Database.Models.Group
 import ca.uwaterloo.flickpick.dataObjects.Database.Models.User
+import ca.uwaterloo.flickpick.ui.component.BackButtonTopBarWithText
 import ca.uwaterloo.flickpick.ui.component.BrowseMovieReminder
 import ca.uwaterloo.flickpick.ui.component.GroupActivityList
 import ca.uwaterloo.flickpick.ui.component.GroupRecCarouselDisplay
@@ -71,21 +73,16 @@ fun GroupMainScreen(navController: NavController, groupId: String) {
             isLoading.value = false
         }
     }
-
     Scaffold(
         topBar = {
-            TopAppBar(
-                title = { Text(group.value?.groupName ?: "Group") },
-                navigationIcon = {
-                    IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
-                    }
-                }
+            BackButtonTopBarWithText(
+                navController = navController,
+                text = group.value?.groupName ?: "Group",
             )
         }
     ) { padding ->
 
-        val tabTitles = listOf("Members", "Recommendations", "Activities")
+        val tabTitles = listOf("Members", "Picks", "Activity")
         val pagerState = rememberPagerState(pageCount = { tabTitles.size })
         val coroutineScope = rememberCoroutineScope()
 
@@ -95,9 +92,7 @@ fun GroupMainScreen(navController: NavController, groupId: String) {
             ) {
                 tabTitles.forEachIndexed { index, title ->
                     Tab(
-                        text = { Text(title,
-                            maxLines = 1,
-                            fontSize = 11.sp) },
+                        text = { Text(title) },
                         selected = pagerState.currentPage == index,
                         onClick = {
                             coroutineScope.launch {

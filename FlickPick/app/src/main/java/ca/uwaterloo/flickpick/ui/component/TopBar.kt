@@ -4,9 +4,11 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Icon
@@ -86,6 +88,34 @@ fun BackButtonTopBar(navController: NavController,
             Icon(
                 imageVector = backButtonIcon,
                 contentDescription = "Back",
+            )
+        }
+    }
+}
+
+@Composable
+fun BackButtonTopBarWithText(navController: NavController,
+                             text: String,
+                             backButtonIcon: ImageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                             buttons: List<TopBarButtonData>? = null) {
+    TopBar (buttons) {
+        Row (
+            Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            IconButton(
+                onClick = { navController.popBackStack() },
+                modifier = Modifier
+            ) {
+                Icon(
+                    imageVector = backButtonIcon,
+                    contentDescription = "Back",
+                )
+            }
+            Spacer(Modifier.width(16.dp));
+            Text(
+                text = text,
+                style = MaterialTheme.typography.headlineSmall
             )
         }
     }
