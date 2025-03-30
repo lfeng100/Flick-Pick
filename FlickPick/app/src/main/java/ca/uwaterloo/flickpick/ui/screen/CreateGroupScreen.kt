@@ -39,6 +39,7 @@ fun CreateGroupScreen(navController: NavController) {
     val isLoading = remember { mutableStateOf(true) }
     val coroutineScope = rememberCoroutineScope()
     val selectedUsers = remember { mutableStateOf(mutableSetOf<String>()) }
+    val showAlert = remember {mutableStateOf(false)}
 
     LaunchedEffect(Unit) {
         try {
@@ -53,6 +54,11 @@ fun CreateGroupScreen(navController: NavController) {
     }
 
     fun createGroup() {
+        if (groupName.value.text.isBlank()){
+            showAlert.value = true
+            return
+        }
+
         coroutineScope.launch {
             try {
                 val adminUserID = FirebaseAuth.getInstance().currentUser?.uid
@@ -122,7 +128,7 @@ fun CreateGroupScreen(navController: NavController) {
             ) {
                 CreateGroupNameField(
                     value = groupName,
-                    placeHolderText = "Enter group name (optional)"
+                    placeHolderText = "Enter group name"
                 )
                 LazyColumn(
                     modifier = Modifier.weight(1f)
@@ -183,7 +189,20 @@ fun CreateGroupScreen(navController: NavController) {
                         )
                     }
                 }
+
             }
         }
+    }
+    if (showAlert.value) {
+        AlertDialog(
+            onDismissRequest = { showAlert.value = false },
+            confirmButton = {
+                TextButton(onClick = { showAlert.value = false }) {
+                    Text("OK")
+                }
+            },
+            title = { Text("Missing Group Name") },
+            text = { Text("Please enter a group name before creating the group.") }
+        )
     }
 }
