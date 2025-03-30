@@ -24,6 +24,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -70,14 +71,15 @@ fun App() {
             NavHost(navController = loginFlowNavController, startDestination = startDestination) {
                 composable("login") { Login(loginFlowNavController) }
                 composable("signup") { Signup(loginFlowNavController) }
-                composable("authenticated") { MainScreen() }
+                composable("reset") { ForgotPassword(loginFlowNavController) }
+                composable("authenticated") { MainScreen(loginFlowNavController) }
             }
         }
     }
 }
 
 @Composable
-fun MainScreen() {
+fun MainScreen(loginFlowNavController: NavController) {
     val mainNavController = rememberNavController()
     val context = LocalContext.current
     BackHandler {
@@ -108,7 +110,7 @@ fun MainScreen() {
             composable("browse") { BrowseScreen(mainNavController) }
             composable("recommend") { RecommendationScreen(mainNavController) }
             composable("group") { GroupsScreen(mainNavController) }
-            composable("profile") { ProfileScreen(mainNavController) }
+            composable("profile") { ProfileScreen(mainNavController, loginFlowNavController) }
             composable("movie/{movieId}") { navBackStackEntry ->
                 val movieId = navBackStackEntry.arguments?.getString("movieId")
                 if (movieId != null) {

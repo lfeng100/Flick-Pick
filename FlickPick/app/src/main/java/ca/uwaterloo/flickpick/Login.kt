@@ -107,7 +107,7 @@ fun Login(navController: NavController) {
                         value = email.value,
                         onValueChange = { email.value = it },
                         modifier = Modifier
-                            .height(46.dp)
+                            .height(48.dp)
                             .fillMaxWidth(),
                         textStyle = TextStyle(color = Color.White),
                         leadingIcon = { Icon(imageVector = Icons.Default.Email, contentDescription = "", tint = Color.Gray) },
@@ -139,7 +139,7 @@ fun Login(navController: NavController) {
                             PasswordVisualTransformation()
                         },
                         modifier = Modifier
-                            .height(46.dp)
+                            .height(48.dp)
                             .fillMaxWidth(),
                         textStyle = TextStyle(color = Color.White),
                         leadingIcon = { Icon(imageVector = Icons.Default.Lock, contentDescription = "", tint = Color.Gray) },
@@ -170,15 +170,17 @@ fun Login(navController: NavController) {
                             unfocusedBorderColor = Color.DarkGray,
                         )
                     )
-                    Spacer(modifier = Modifier.height(12.dp))
+                    Spacer(modifier = Modifier.height(14.dp))
                     Text(
                         text = "Forgot Password?",
                         fontSize = 14.sp,
                         color = Color.Gray,
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable { navController.navigate("reset") },
                         textAlign = TextAlign.Right
                     )
-                    Spacer(modifier = Modifier.height(12.dp))
+                    Spacer(modifier = Modifier.height(14.dp))
                     Button(
                         onClick = {
                             if (email.value.isNotBlank() && password.value.isNotBlank()) {
@@ -229,7 +231,7 @@ fun Login(navController: NavController) {
                             textAlign = TextAlign.Center
                         )
                     }
-                    Spacer(modifier = Modifier.height(65.dp))
+                    Spacer(modifier = Modifier.height(62.dp))
                     Text(
                         text = "Don't Have an Account?",
                         fontSize = 14.sp,
@@ -237,7 +239,7 @@ fun Login(navController: NavController) {
                         modifier = Modifier.fillMaxWidth(),
                         textAlign = TextAlign.Center
                     )
-                    Spacer(modifier = Modifier.height(2.dp))
+                    Spacer(modifier = Modifier.height(3.dp))
                     Text(
                         text = "Sign Up",
                         fontSize = 14.sp,

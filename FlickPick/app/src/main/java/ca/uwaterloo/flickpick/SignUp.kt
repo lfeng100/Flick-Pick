@@ -1,6 +1,5 @@
 package ca.uwaterloo.flickpick
 
-
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -50,7 +49,6 @@ import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.IconButton
-
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -120,7 +118,7 @@ fun Signup(navController: NavController) {
                         value = firstName.value,
                         onValueChange = { firstName.value = it },
                         modifier = Modifier
-                            .height(46.dp)
+                            .height(48.dp)
                             .fillMaxWidth(),
                         textStyle = TextStyle(color = Color.White),
                         leadingIcon = { Icon(painter = painterResource(id = R.drawable.baseline_abc_24), contentDescription = "", tint = Color.Gray) },
@@ -146,7 +144,7 @@ fun Signup(navController: NavController) {
                         value = lastName.value,
                         onValueChange = { lastName.value = it },
                         modifier = Modifier
-                            .height(46.dp)
+                            .height(48.dp)
                             .fillMaxWidth(),
                         textStyle = TextStyle(color = Color.White),
                         leadingIcon = { Icon(painter = painterResource(id = R.drawable.baseline_abc_24), contentDescription = "", tint = Color.Gray) },
@@ -172,7 +170,7 @@ fun Signup(navController: NavController) {
                         value = email.value,
                         onValueChange = { email.value = it },
                         modifier = Modifier
-                            .height(46.dp)
+                            .height(48.dp)
                             .fillMaxWidth(),
                         textStyle = TextStyle(color = Color.White),
                         leadingIcon = { Icon(imageVector = Icons.Default.Email, contentDescription = "", tint = Color.Gray) },
@@ -198,7 +196,7 @@ fun Signup(navController: NavController) {
                         value = username.value,
                         onValueChange = { username.value = it },
                         modifier = Modifier
-                            .height(46.dp)
+                            .height(48.dp)
                             .fillMaxWidth(),
                         textStyle = TextStyle(color = Color.White),
                         leadingIcon = { Icon(imageVector = Icons.Default.AccountCircle , contentDescription = "", tint = Color.Gray) },
@@ -230,7 +228,7 @@ fun Signup(navController: NavController) {
                             PasswordVisualTransformation()
                         },
                         modifier = Modifier
-                            .height(46.dp)
+                            .height(48.dp)
                             .fillMaxWidth(),
                         textStyle = TextStyle(color = Color.White),
                         leadingIcon = { Icon(imageVector = Icons.Default.Lock, contentDescription = "", tint = Color.Gray) },
@@ -296,7 +294,7 @@ fun Signup(navController: NavController) {
                             )
                         }
                     }
-                    Spacer(modifier = Modifier.height(65.dp))
+                    Spacer(modifier = Modifier.height(58.dp))
                     Text(
                         text = "Already Have an Account?",
                         fontSize = 14.sp,
@@ -304,7 +302,7 @@ fun Signup(navController: NavController) {
                         modifier = Modifier.fillMaxWidth(),
                         textAlign = TextAlign.Center
                     )
-                    Spacer(modifier = Modifier.height(2.dp))
+                    Spacer(modifier = Modifier.height(3.dp))
                     Text(
                         text = "Login",
                         fontSize = 14.sp,
