@@ -40,7 +40,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Logout
-import androidx.compose.material.icons.filled.Logout
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -64,6 +63,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun ProfileScreen(mainNavController: NavController, loginNavController: NavController) {
     val firebaseAuthentication = FirebaseAuthentication()
+    val context = LocalContext.current
     var showDialog by remember { mutableStateOf(false) }
 
     var originalFirstName by remember { mutableStateOf("") }
@@ -240,24 +240,25 @@ fun ProfileScreen(mainNavController: NavController, loginNavController: NavContr
                     Button(
                         onClick = {
                             showDialog = true
-                            // Firebase Change Password
                         },
                         modifier = Modifier.fillMaxWidth()
                     ) {
                         Text("Change Password")
                     }
-
                     if (showDialog) {
                         ChangePasswordDialog(
                             showDialog = showDialog,
                             onDismissRequest = { showDialog = false },
-                            onChangePassword = {
-                                //firebaseAuthentication.signOut(navController)
-                                showDialog = false
+                            onChangePassword = { password ->
+                                if (password.isNotBlank()) {
+                                    firebaseAuthentication.updatePassword(password, context)
+                                    showDialog = false
+                                } else {
+                                    Toast.makeText(context, "Password is missing", Toast.LENGTH_SHORT).show()
+                                }
                             }
                         )
                     }
-
                     passwordMessage?.let {
                         Spacer(modifier = Modifier.height(8.dp))
                         Text(text = it, color = if (it.contains("Failed")) Color.Red else Color.Green)
@@ -382,8 +383,6 @@ fun UserInfoCard(
 @Composable
 fun ChangePasswordDialog(showDialog: Boolean, onDismissRequest: () -> Unit, onChangePassword: (String) -> Unit) {
     var password = remember { mutableStateOf("") }
-    val firebaseAuthentication = FirebaseAuthentication()
-    val context = LocalContext.current
 
     if (showDialog) {
         Dialog(onDismissRequest = onDismissRequest) {
@@ -409,10 +408,8 @@ fun ChangePasswordDialog(showDialog: Boolean, onDismissRequest: () -> Unit, onCh
                     Spacer(modifier = Modifier.height(14.dp))
                     Text(
                         text = "Enter a new, unique password below, different from any used before",
-                        //text = "Enter a new password below, making sure it's different from any previous passwords",
                         fontSize = 16.sp,
                         color = Color.Black,
-                        //fontWeight = FontWeight.Bold,
                         textAlign = TextAlign.Center,
                     )
                     Spacer(modifier = Modifier.height(15.dp))
@@ -426,7 +423,6 @@ fun ChangePasswordDialog(showDialog: Boolean, onDismissRequest: () -> Unit, onCh
                     Button(
                         onClick = {
                             onChangePassword(password.value)
-                            onDismissRequest()
                         },
                         modifier = Modifier
                             .fillMaxWidth()
@@ -437,7 +433,6 @@ fun ChangePasswordDialog(showDialog: Boolean, onDismissRequest: () -> Unit, onCh
                         Text(
                             text = "Update Password",
                             fontSize = 16.sp,
-                            //fontWeight = FontWeight.Bold,
                             color = Color.White,
                             modifier = Modifier
                                 .fillMaxWidth(),
@@ -445,9 +440,6 @@ fun ChangePasswordDialog(showDialog: Boolean, onDismissRequest: () -> Unit, onCh
                         )
                     }
                     Spacer(modifier = Modifier.height(6.dp))
-
-
-
                 }
             }
         }

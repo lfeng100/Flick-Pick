@@ -81,4 +81,19 @@ class FirebaseAuthentication {
                 }
             }
     }
+
+    fun updatePassword(password: String, context: Context) {
+        val user = auth.currentUser
+        val newPassword = password
+
+        user!!.updatePassword(newPassword)
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    Toast.makeText(context, "Your password has been updated!", Toast.LENGTH_SHORT).show()
+                } else {
+                    val errorMessage = task.exception?.message ?: "Password Update Failed"
+                    Toast.makeText(context, "Failed: $errorMessage", Toast.LENGTH_LONG).show()
+                }
+            }
+    }
 }
