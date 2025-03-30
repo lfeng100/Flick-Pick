@@ -11,11 +11,13 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -36,21 +38,27 @@ import androidx.navigation.NavController
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Logout
+import androidx.compose.material.icons.filled.Logout
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
+import ca.uwaterloo.flickpick.FirebaseAuthentication
 import ca.uwaterloo.flickpick.dataObjects.Database.DatabaseClient
 import ca.uwaterloo.flickpick.dataObjects.Database.Models.UserUpdate
 import ca.uwaterloo.flickpick.domain.repository.PrimaryUserRepository
 import kotlinx.coroutines.launch
 
 @Composable
-fun ProfileScreen(navController: NavController) {
+fun ProfileScreen(mainNavController: NavController, loginNavController: NavController) {
+    val firebaseAuthentication = FirebaseAuthentication()
+
     var originalFirstName by remember { mutableStateOf("") }
     var originalLastName by remember { mutableStateOf("") }
     var originalUsername by remember { mutableStateOf("") }
@@ -60,8 +68,17 @@ fun ProfileScreen(navController: NavController) {
     var email by remember { mutableStateOf<String>("") }
 //    var password = remember { mutableStateOf("mypassword") }
 
-    val userId = PrimaryUserRepository.getPrimaryUserID()!!
+    val userId = PrimaryUserRepository.getPrimaryUserID()
     val coroutineScope = rememberCoroutineScope()
+
+    if (userId == null) {
+        LaunchedEffect(Unit) {
+            loginNavController.navigate("login") {
+                popUpTo("profile") { inclusive = true }
+            }
+        }
+        return
+    }
 
     var updateMessage by remember { mutableStateOf<String?>(null) }
     var passwordMessage by remember { mutableStateOf<String?>(null) }
@@ -112,11 +129,35 @@ fun ProfileScreen(navController: NavController) {
                     horizontalAlignment = Alignment.Start,
                 ) {
                     Spacer(modifier = Modifier.height(20.dp))
-                    Text(
-                        text = "My Profile",
-                        fontSize = 42.sp,
-                        color = Color.White,
-                    )
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = "My Profile",
+                            fontSize = 42.sp,
+                            color = Color.White,
+                            modifier = Modifier
+                                .weight(1f)
+                        )
+                        IconButton(
+                            onClick = {
+                                firebaseAuthentication.signOut(mainNavController, loginNavController)
+                                      },
+                            modifier = Modifier
+                                .size(40.dp)
+                        ) {
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Filled.Logout,
+                                contentDescription = "Logout",
+                                tint = Color.White,
+                                modifier = Modifier
+                                    .size(40.dp)
+                            )
+                        }
+                    }
+
                     UserInfoCard(
                         firstName = originalFirstName,
                         lastName = originalLastName,
@@ -233,7 +274,7 @@ fun ProfileScreen(navController: NavController) {
                                     coroutineScope.launch {
                                         try {
                                             DatabaseClient.apiService.deleteUser(userId)
-                                            navController.navigate("/login")
+                                            //navController.navigate("/login")
                                         } catch (e: Exception) {
                                             Log.e("ProfileScreen", "Delete failed", e)
                                         }

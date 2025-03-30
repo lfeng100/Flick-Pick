@@ -6,6 +6,7 @@ import androidx.navigation.NavController
 import ca.uwaterloo.flickpick.dataObjects.Database.DatabaseClient
 import ca.uwaterloo.flickpick.dataObjects.Database.Models.User
 import ca.uwaterloo.flickpick.dataObjects.Database.Models.UserCreate
+import ca.uwaterloo.flickpick.domain.repository.PrimaryUserRepository
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -60,10 +61,11 @@ class FirebaseAuthentication {
             }
     }
 
-    fun signOut(navController: NavController) {
+    fun signOut(navController: NavController, loginNavController: NavController) {
         auth.signOut()
-        navController.navigate("login") {
-            popUpTo("authenticated") { inclusive = true }
+        navController.popBackStack(navController.graph.startDestinationId, inclusive = false)
+        loginNavController.navigate("login") {
+            popUpTo("login") { inclusive = true }
         }
     }
 
@@ -79,5 +81,4 @@ class FirebaseAuthentication {
                 }
             }
     }
-
 }
