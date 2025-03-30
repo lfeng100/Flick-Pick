@@ -52,6 +52,29 @@ fun StarRatingBar(
     }
 }
 
+@Composable
+fun ReadOnlyStarRatingBar(rating: Float, modifier: Modifier = Modifier) {
+    Row(modifier = modifier.padding(top = 4.dp)) {
+        repeat(5) { index ->
+            val starPosition = index + 1
+            val icon = when {
+                rating >= starPosition -> Icons.Rounded.Star
+                rating >= starPosition - 0.5 -> Icons.AutoMirrored.Rounded.StarHalf
+                else -> Icons.Rounded.StarBorder
+            }
+
+            Icon(
+                imageVector = icon,
+                contentDescription = null,
+                tint = Color(0xFFFFC107),
+                modifier = Modifier
+                    .padding(horizontal = 2.dp)
+                    .size(20.dp)
+            )
+        }
+    }
+}
+
 @Preview
 @Composable
 fun PreviewStarRatingBar() {

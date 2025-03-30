@@ -143,7 +143,7 @@ interface DatabaseApiService {
 
     @GET("reviews/movie/{movie_id}")
     suspend fun getReviewsForMovie(
-        @Path("movie_id") userID: String,
+        @Path("movie_id") movieID: String,
         @Query("limit") limit: Int = 100,
         @Query("offset") offset: Int = 0
     ) : ReviewResponse

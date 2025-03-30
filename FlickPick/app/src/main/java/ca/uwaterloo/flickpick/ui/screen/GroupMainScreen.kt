@@ -82,7 +82,7 @@ fun GroupMainScreen(navController: NavController, groupId: String) {
         }
     ) { padding ->
 
-        val tabTitles = listOf("Members", "Picks", "Activity")
+        val tabTitles = listOf("Activity", "Members", "Picks")
         val pagerState = rememberPagerState(pageCount = { tabTitles.size })
         val coroutineScope = rememberCoroutineScope()
 
@@ -102,13 +102,12 @@ fun GroupMainScreen(navController: NavController, groupId: String) {
                     )
                 }
             }
-
             HorizontalPager(
                 state = pagerState,
                 modifier = Modifier.fillMaxSize()
             ) { page ->
                 when (page) {
-                    0 -> {
+                    1 -> {
                         if (members.value.isEmpty()) {
                             BrowseMovieReminder(navController, "No members here! Come back soon")
                         } else {
@@ -147,11 +146,11 @@ fun GroupMainScreen(navController: NavController, groupId: String) {
                         }
                     }
 
-                    1 -> {
+                    2 -> {
                         GroupRecCarouselDisplay(groupId, navController)
                     }
 
-                    2 -> {
+                    0 -> {
                         GroupActivityList(activities.value, userMap, navController)
                     }
                 }

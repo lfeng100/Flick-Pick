@@ -36,7 +36,6 @@ fun MovieCard(movie: Movie, width: Dp, onClick: (() -> Unit)? = null) {
         Box() {
             val posterUrl = movie.getPosterUrl()
             posterUrl?.let { url ->
-                Log.i("MovieCard", "Poster URL: $url")
                 AsyncImage(
                     model = url,
                     contentDescription = "Movie Poster",
