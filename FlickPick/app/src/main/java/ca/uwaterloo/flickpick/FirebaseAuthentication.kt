@@ -74,7 +74,7 @@ class FirebaseAuthentication {
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     Toast.makeText(context, "Password Reset Link Sent!", Toast.LENGTH_SHORT).show()
-                    navController.navigate("authenticated")
+                    navController.navigate("login")
                 } else {
                     val errorMessage = task.exception?.message ?: "Password Reset Failed"
                     Toast.makeText(context, "Failed: $errorMessage", Toast.LENGTH_LONG).show()

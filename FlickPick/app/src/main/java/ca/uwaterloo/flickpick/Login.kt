@@ -175,7 +175,9 @@ fun Login(navController: NavController) {
                         text = "Forgot Password?",
                         fontSize = 14.sp,
                         color = Color.Gray,
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable { navController.navigate("reset") },
                         textAlign = TextAlign.Right
                     )
                     Spacer(modifier = Modifier.height(12.dp))

@@ -71,6 +71,7 @@ fun App() {
             NavHost(navController = loginFlowNavController, startDestination = startDestination) {
                 composable("login") { Login(loginFlowNavController) }
                 composable("signup") { Signup(loginFlowNavController) }
+                composable("reset") { ForgotPassword(loginFlowNavController) }
                 composable("authenticated") { MainScreen(loginFlowNavController) }
             }
         }
