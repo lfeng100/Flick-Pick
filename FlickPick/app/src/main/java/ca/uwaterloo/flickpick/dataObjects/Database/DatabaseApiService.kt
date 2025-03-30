@@ -18,6 +18,7 @@ import ca.uwaterloo.flickpick.dataObjects.Database.Responses.UserResponse
 import ca.uwaterloo.flickpick.dataObjects.Database.Responses.GroupResponse
 import ca.uwaterloo.flickpick.dataObjects.Database.Models.UserCreate
 import ca.uwaterloo.flickpick.dataObjects.Database.Models.UserWatched
+import ca.uwaterloo.flickpick.dataObjects.Database.Responses.GroupActivityResponse
 import ca.uwaterloo.flickpick.dataObjects.Database.Responses.ReviewResponse
 import ca.uwaterloo.flickpick.dataObjects.Database.Responses.ReviewWithMovieResponse
 import ca.uwaterloo.flickpick.dataObjects.Database.Responses.UserWatchedWithMovieResponse
@@ -93,7 +94,7 @@ interface DatabaseApiService {
     ): Group
 
     @GET("groups/{group_id}/activity")
-    suspend fun getGroupActivity(@Path("group_id") groupId: String): Map<String, Any>
+    suspend fun getGroupActivity(@Path("group_id") groupId: String): GroupActivityResponse
 
 
     @POST("groups/")

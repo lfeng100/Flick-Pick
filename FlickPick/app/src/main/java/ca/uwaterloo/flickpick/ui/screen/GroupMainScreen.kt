@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.pager.HorizontalPager
@@ -13,14 +12,12 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.outlined.CheckCircle
-import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
-import androidx.compose.material3.TabRowDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
@@ -37,6 +34,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import ca.uwaterloo.flickpick.dataObjects.Database.DatabaseClient
+import ca.uwaterloo.flickpick.dataObjects.Database.Models.ActivityItem
 import ca.uwaterloo.flickpick.dataObjects.Database.Models.Group
 import ca.uwaterloo.flickpick.dataObjects.Database.Models.User
 import ca.uwaterloo.flickpick.ui.component.BrowseMovieReminder
@@ -52,8 +50,9 @@ fun GroupMainScreen(navController: NavController, groupId: String) {
 
     val group = remember { mutableStateOf<Group?>(null) }
     val members = remember { mutableStateOf(emptyList<User>()) }
-    val activities = remember { mutableStateOf<List<Map<String, Any>>>(emptyList()) }
+    val activities = remember { mutableStateOf<List<ActivityItem>>(emptyList()) }
     val isLoading = remember { mutableStateOf(true) }
+    val userMap = remember(members.value) { members.value.associate { it.userID to it.username }}
 
     LaunchedEffect(Unit) {
         try {
@@ -64,7 +63,7 @@ fun GroupMainScreen(navController: NavController, groupId: String) {
             members.value = userResponse
 
             val activityResponse = DatabaseClient.apiService.getGroupActivity(groupId)
-            activities.value = activityResponse["activity"] as? List<Map<String, Any>> ?: emptyList()
+            activities.value = activityResponse.activity
 
         } catch (e: Exception) {
             Log.e("GroupMainScreen", "Error: ${e.message}")
@@ -96,7 +95,9 @@ fun GroupMainScreen(navController: NavController, groupId: String) {
             ) {
                 tabTitles.forEachIndexed { index, title ->
                     Tab(
-                        text = { Text(title, maxLines = 1) },
+                        text = { Text(title,
+                            maxLines = 1,
+                            fontSize = 11.sp) },
                         selected = pagerState.currentPage == index,
                         onClick = {
                             coroutineScope.launch {
@@ -156,7 +157,7 @@ fun GroupMainScreen(navController: NavController, groupId: String) {
                     }
 
                     2 -> {
-                        GroupActivityList(activities.value, navController)
+                        GroupActivityList(activities.value, userMap, navController)
                     }
                 }
             }

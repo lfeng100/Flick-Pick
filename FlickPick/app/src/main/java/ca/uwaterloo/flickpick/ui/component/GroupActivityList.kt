@@ -1,143 +1,158 @@
 package ca.uwaterloo.flickpick.ui.component
 
-
-import android.app.Activity
 import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.rounded.StarHalf
+import androidx.compose.material.icons.rounded.Star
+import androidx.compose.material.icons.rounded.StarBorder
 import androidx.compose.material3.Divider
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import coil.compose.AsyncImage
 import androidx.navigation.NavController
 import ca.uwaterloo.flickpick.dataObjects.Database.DatabaseClient
 import ca.uwaterloo.flickpick.dataObjects.Database.Models.Movie
-import java.time.LocalDateTime
 import androidx.compose.runtime.LaunchedEffect
-import java.time.format.DateTimeFormatter
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
+import androidx.compose.ui.Alignment
+import ca.uwaterloo.flickpick.dataObjects.Database.Models.ActivityItem
 
 @Composable
 fun GroupActivityList(
-    activityList: List<Map<String, Any>>,
+    activityList: List<ActivityItem>,
+    userMap: Map<String, String>,
     navController: NavController
-) {
-    val movieCache = remember { mutableStateMapOf<String, Movie>() }
+){
+    val listState = rememberLazyListState()
+    var visibleCount by remember { mutableStateOf(5) }
+    val movieCache = remember { mutableStateMapOf<String, Movie?>() }
 
-    LazyColumn(modifier = Modifier.padding(16.dp)) {
-        items(activityList) { activity ->
-            val movieID = activity["movieID"] as? String ?: return@items
-            val type = activity["type"] as? String ?: return@items
-            val movieTitle = activity["movieTitle"] as? String ?: "Unknown"
+    LaunchedEffect(listState) {
+        snapshotFlow { listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index }
+            .collect { lastVisibleIndex ->
+                lastVisibleIndex?.let { index ->
+                    if (index >= visibleCount - 2 && visibleCount < activityList.size) {
+                        visibleCount += 5
+                    }
+                }
+            }
+    }
 
-            val cachedMovie = movieCache[movieID]
-            val movieState = remember { mutableStateOf<Movie?>(cachedMovie) }
+    LazyColumn(
+        state = listState,
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(horizontal = 16.dp, vertical = 8.dp)
+    ) {
+        items(activityList.take(visibleCount)) { activity ->
+            val movie = movieCache[activity.movieID]
 
-            LaunchedEffect(movieID) {
-                if (cachedMovie == null) {
+            if (movie == null && !movieCache.containsKey(activity.movieID)) {
+                LaunchedEffect(activity.movieID) {
                     try {
-                        val movie = DatabaseClient.apiService.getMovieById(movieID)
-                        movieCache[movieID] = movie
-                        movieState.value = movie
+                        val fetched = DatabaseClient.apiService.getMovieById(activity.movieID)
+                        movieCache[activity.movieID] = fetched
                     } catch (e: Exception) {
-                        Log.e("GroupActivityList", "Error loading movie $movieID: ${e.message}")
+                        Log.e("GroupActivityList", "Failed to fetch movie ${activity.movieID}: ${e.message}")
+                        movieCache[activity.movieID] = null
                     }
                 }
             }
 
-            Column(modifier = Modifier.padding(vertical = 8.dp)) {
-                movieState.value?.let { movie ->
+            movie?.let {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 12.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
                     MovieCard(
-                        movie = movie,
-                        width = 120.dp,
-                        onClick = { navController.navigate("movie/${movie.movieID}") }
+                        movie = it,
+                        width = 100.dp,
+                        onClick = { navController.navigate("movie/${it.movieID}") }
                     )
-                }
 
-                val message = when (type) {
-                    "review" -> {
-                        val review = activity["message"] as? String ?: ""
-                        "Reviewed \"$movieTitle\": $review"
+                    Spacer(modifier = Modifier.width(12.dp))
+                    Column(modifier = Modifier.weight(1f)) {
+
+
+                        // activity description
+                        val username = userMap[activity.userID] ?: "Someone"
+                        val activityDescription = when (activity.type) {
+                            "review" -> "$username reviewed ${activity.movieTitle}\n\n${activity.message}"
+                            "watched" -> "$username watched ${activity.movieTitle}"
+                            "watchlist" -> "$username added ${activity.movieTitle} to watchlist"
+                            else -> "$username did some activity with “${activity.movieTitle}”"
+                        }
+
+                        Text(
+                            text = activityDescription ,
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurface
+                        )
+
+                        // starts
+                        if (activity.type == "review") {
+                            activity.rating?.let { rating ->
+                                ReadOnlyStarRatingBar(
+                                    rating = rating,
+                                )
+                            }
+                        }
+
+                        Text(
+                            text = activity.formatTimestamp(),
+                            style = MaterialTheme.typography.labelSmall,
+                            color = Color.Gray
+                        )
                     }
-                    "watched" -> "Watched \"$movieTitle\""
-                    "watchlist" -> "Added \"$movieTitle\" to watchlist"
-                    else -> "Did something with \"$movieTitle\""
                 }
-
-                Text(
-                    text = message,
-                    modifier = Modifier.padding(top = 8.dp)
-                )
-                Divider(modifier = Modifier.padding(top = 8.dp))
+                Divider()
             }
         }
     }
 }
-
-
 
 @Composable
-fun GroupActivityCard(
-    title: String,
-    timestamp: String,
-    posterPath: String? = null
-) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 6.dp),
-        elevation = CardDefaults.cardElevation(2.dp)
-    ) {
-        Row(modifier = Modifier.padding(12.dp)) {
-            if (posterPath != null) {
-                AsyncImage(
-                    model = "https://image.tmdb.org/t/p/w200/$posterPath",
-                    contentDescription = null,
-                    modifier = Modifier
-                        .size(64.dp)
-                        .clip(RoundedCornerShape(8.dp))
-                )
-                Spacer(modifier = Modifier.width(12.dp))
+fun ReadOnlyStarRatingBar(rating: Float, modifier: Modifier = Modifier) {
+
+    Row(modifier = modifier.padding(top = 4.dp)) {
+        repeat(5) { index ->
+            val starPosition = index + 1
+            val icon = when {
+                rating >= starPosition -> Icons.Rounded.Star
+                rating >= starPosition - 0.5 -> Icons.AutoMirrored.Rounded.StarHalf
+                else -> Icons.Rounded.StarBorder
             }
 
-            Column {
-                Text(
-                    text = title,
-                    style = MaterialTheme.typography.bodyMedium
-                )
-                Text(
-                    text = formatTimestamp(timestamp),
-                    style = MaterialTheme.typography.labelSmall,
-                    color = Color.Gray
-                )
-            }
+            Icon(
+                imageVector = icon,
+                contentDescription = null,
+                tint = Color(0xFFFFC107),
+                modifier = Modifier
+                    .padding(horizontal = 2.dp)
+                    .size(20.dp)
+            )
         }
-    }
-}
-
-fun formatTimestamp(raw: String): String {
-    return try {
-        val parsed = LocalDateTime.parse(raw)
-        parsed.format(DateTimeFormatter.ofPattern("MMM dd, yyyy"))
-    } catch (e: Exception) {
-        raw
     }
 }
