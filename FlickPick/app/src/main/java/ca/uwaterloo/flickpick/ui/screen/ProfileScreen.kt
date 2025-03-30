@@ -1,6 +1,7 @@
 package ca.uwaterloo.flickpick.ui.screen
 
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
@@ -39,7 +40,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Logout
-import androidx.compose.material.icons.filled.Logout
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -49,15 +49,22 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.window.Dialog
 import ca.uwaterloo.flickpick.FirebaseAuthentication
 import ca.uwaterloo.flickpick.dataObjects.Database.DatabaseClient
 import ca.uwaterloo.flickpick.dataObjects.Database.Models.UserUpdate
 import ca.uwaterloo.flickpick.domain.repository.PrimaryUserRepository
+import ca.uwaterloo.flickpick.ui.theme.Purple40
 import kotlinx.coroutines.launch
 
 @Composable
 fun ProfileScreen(mainNavController: NavController, loginNavController: NavController) {
     val firebaseAuthentication = FirebaseAuthentication()
+    val context = LocalContext.current
+    var showDialog by remember { mutableStateOf(false) }
 
     var originalFirstName by remember { mutableStateOf("") }
     var originalLastName by remember { mutableStateOf("") }
@@ -232,13 +239,26 @@ fun ProfileScreen(mainNavController: NavController, loginNavController: NavContr
 
                     Button(
                         onClick = {
-                            // Firebase Change Password
+                            showDialog = true
                         },
                         modifier = Modifier.fillMaxWidth()
                     ) {
                         Text("Change Password")
                     }
-
+                    if (showDialog) {
+                        ChangePasswordDialog(
+                            showDialog = showDialog,
+                            onDismissRequest = { showDialog = false },
+                            onChangePassword = { password ->
+                                if (password.isNotBlank()) {
+                                    firebaseAuthentication.updatePassword(password, context)
+                                    showDialog = false
+                                } else {
+                                    Toast.makeText(context, "Password is missing", Toast.LENGTH_SHORT).show()
+                                }
+                            }
+                        )
+                    }
                     passwordMessage?.let {
                         Spacer(modifier = Modifier.height(8.dp))
                         Text(text = it, color = if (it.contains("Failed")) Color.Red else Color.Green)
@@ -359,3 +379,98 @@ fun UserInfoCard(
     }
     Spacer(modifier = Modifier.height(12.dp))
 }
+
+@Composable
+fun ChangePasswordDialog(showDialog: Boolean, onDismissRequest: () -> Unit, onChangePassword: (String) -> Unit) {
+    var password = remember { mutableStateOf("") }
+
+    if (showDialog) {
+        Dialog(onDismissRequest = onDismissRequest) {
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(color = Color.Black),
+                shape = RoundedCornerShape(8.dp)
+            ) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(14.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(
+                        text = "Update Your Password",
+                        fontSize = 22.sp,
+                        color = Color.Black,
+                        fontWeight = FontWeight.Bold,
+                        textAlign = TextAlign.Center,
+                    )
+                    Spacer(modifier = Modifier.height(14.dp))
+                    Text(
+                        text = "Enter a new, unique password below, different from any used before",
+                        fontSize = 16.sp,
+                        color = Color.Black,
+                        textAlign = TextAlign.Center,
+                    )
+                    Spacer(modifier = Modifier.height(15.dp))
+                    OutlinedTextField(
+                        value = password.value,
+                        onValueChange = { password.value = it },
+                        label = { Text("Enter New Password") },
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                    Spacer(modifier = Modifier.height(20.dp))
+                    Button(
+                        onClick = {
+                            onChangePassword(password.value)
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(40.dp),
+                        shape = RoundedCornerShape(50.dp),
+                        colors = ButtonDefaults.buttonColors(containerColor = Purple40)
+                    ) {
+                        Text(
+                            text = "Update Password",
+                            fontSize = 16.sp,
+                            color = Color.White,
+                            modifier = Modifier
+                                .fillMaxWidth(),
+                            textAlign = TextAlign.Center
+                        )
+                    }
+                    Spacer(modifier = Modifier.height(6.dp))
+                }
+            }
+        }
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
