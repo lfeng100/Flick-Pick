@@ -28,6 +28,12 @@ object MovieRepository {
     private val _titleQuery = MutableStateFlow("")
     val titleQuery = _titleQuery.asStateFlow()
 
+    private val _sortBy = MutableStateFlow("title")
+    val sortBy = _sortBy.asStateFlow()
+
+    private val _sortOrder = MutableStateFlow("asc")
+    val sortOrder = _sortOrder.asStateFlow()
+
     private val movieCache: MutableMap<String, Movie> = ConcurrentHashMap()
     private var job: Job? = null
     private var page = 0
@@ -37,31 +43,35 @@ object MovieRepository {
     }
 
     fun fetchMoreMovies() {
-        Log.i("MovieCatalog", "Fetching page $page from backend")
-        if (job?.isActive == true) {
-            Log.i("MovieCatalog", "Already fetching page $page, skipping")
-            return
-        }
+        if (_isFetching.value || job?.isActive == true) return
+
         job = CoroutineScope(Dispatchers.IO).launch {
             fetchMoviesHelper()
         }
     }
 
     fun applyFilters(selectedTags: Map<String, String>) {
-        val oldJob = job
-        job = CoroutineScope(Dispatchers.IO).launch {
+        resetAndFetchMovies {
             _selectedFilters.value = selectedTags
-            oldJob?.cancelAndJoin()
-            page = 0
-            _movies.value = emptyList()
-            fetchMoviesHelper()
+        }
+    }
+
+    fun applySort(sortBy: String, sortOrder: String) {
+        resetAndFetchMovies {
+            _sortBy.value = sortBy
+            _sortOrder.value = sortOrder
         }
     }
 
     fun applyTitleQuery(searchString: String) {
+        resetAndFetchMovies {
+            _titleQuery.value = searchString
+        }
+    }
+    private fun resetAndFetchMovies(updateState: () -> Unit) {
         val oldJob = job
         job = CoroutineScope(Dispatchers.IO).launch {
-            _titleQuery.value = searchString
+            updateState()
             oldJob?.cancelAndJoin()
             page = 0
             _movies.value = emptyList()
@@ -72,19 +82,15 @@ object MovieRepository {
     private suspend fun fetchMoviesHelper() {
         _isFetching.value = true
         try {
-            val movieList =
-                if (_titleQuery.value == "" && _selectedFilters.value.isEmpty())
-                    DatabaseClient.apiService.getAllMovies(
-                        limit = 12,
-                        offset = page * 12
-                    ).items
-                else
-                    DatabaseClient.apiService.searchMovies(
-                        limit = 12,
-                        offset = page * 12,
-                        titleQuery = _titleQuery.value,
-                        tagIDs = _selectedFilters.value.values.toList()
-                    ).items
+            val movieList = DatabaseClient.apiService.searchMovies(
+                titleQuery = _titleQuery.value.ifBlank { null },
+                tagIDs = _selectedFilters.value.values.toList().takeIf { it.isNotEmpty() },
+                sortBy = _sortBy.value,
+                sortOrder = _sortOrder.value,
+                limit = 12,
+                offset = page * 12
+            ).items
+
             _movies.value += movieList
             for (movie in movieList) {
                 movieCache[movie.movieID] = movie

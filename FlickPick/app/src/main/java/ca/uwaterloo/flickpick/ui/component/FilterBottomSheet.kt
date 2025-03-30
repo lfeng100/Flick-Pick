@@ -24,6 +24,9 @@ fun FilterBottomSheet(
 ) {
     val tags by MovieRepository.tags.collectAsState()
     val selectedTags by MovieRepository.selectedFilters.collectAsState()
+    val selectedSortBy by MovieRepository.sortBy.collectAsState()
+    val selectedSortOrder by MovieRepository.sortOrder.collectAsState()
+
     val sheetState = rememberModalBottomSheetState()
     var expandedTagType by remember { mutableStateOf<String?>(null) }
 
@@ -39,66 +42,83 @@ fun FilterBottomSheet(
         sheetState = sheetState,
         modifier = Modifier.fillMaxHeight(0.9f)
     ) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp)
-                .verticalScroll(rememberScrollState())
-        ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
+        Box {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(16.dp)
+                    .verticalScroll(rememberScrollState())
             ) {
-                Text("Select Filters", style = MaterialTheme.typography.headlineSmall)
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text("Select Filters", style = MaterialTheme.typography.headlineSmall)
 
-                TextButton(onClick = { onFiltersChanged(emptyMap()) }) {
-                    Text("Clear All")
+                    TextButton(onClick = { onFiltersChanged(emptyMap()) }) {
+                        Text("Clear All")
+                    }
                 }
-            }
 
-            val tagTypes = mapOf(
-                "Genre" to tags.filter { it.tagType == "genre" },
-                "Language" to tags.filter { it.tagType == "language" },
-                "Year" to tags.filter { it.tagType == "year" }
-            )
+                val tagTypes = mapOf(
+                    "Genre" to tags.filter { it.tagType == "genre" },
+                    "Language" to tags.filter { it.tagType == "language" },
+                    "Year" to tags.filter { it.tagType == "year" }
+                )
 
-            tagTypes.forEach { (tagType, tagsWithType) ->
-                if (tagsWithType.isNotEmpty()) {
-                    val selectedTag = tagsWithType.firstOrNull { it.tagID == selectedTags[tagType] }
+                Text(
+                    text = "Sort Options",
+                    style = MaterialTheme.typography.titleMedium,
+                    modifier = Modifier.padding(top = 16.dp, bottom = 8.dp)
+                )
 
-                    FilterRow(
-                        tagType = tagType,
-                        selectedTagName = selectedTag?.displayName(),
-                        isExpanded = expandedTagType == tagType,
-                        onToggleExpand = {
-                            expandedTagType = if (expandedTagType == tagType) null else tagType
-                        },
-                        onClear = {
-                            val newFilters = selectedTags.toMutableMap()
-                            newFilters.remove(tagType)
-                            onFiltersChanged(newFilters)
-                        }
-                    )
+                SortOptionsDropdowns(
+                    selectedSortBy = selectedSortBy,
+                    selectedSortOrder = selectedSortOrder,
+                    onSortChanged = { sortBy, sortOrder ->
+                        MovieRepository.applySort(sortBy, sortOrder)
+                    },
+                    updateSortBy = { MovieRepository.applySort(it, selectedSortOrder) },
+                    updateSortOrder = { MovieRepository.applySort(selectedSortBy, it) }
+                )
 
-                    if (expandedTagType == tagType) {
-                        // scrollable picker for year and languages
-                        if (tagType == "Year" || tagType == "Language") {
-                            FilterScrollablePicker(
-                                tags = tagsWithType,
-                                selectedTagId = selectedTags[tagType],
-                                onSelectionChanged = { newTag ->
-                                    onSelectionChangedFor(tagType, newTag)
-                                }
-                            )
-                        } else {
-                            FilterPillSelection(
-                                tags = tagsWithType,
-                                selectedTagId = selectedTags[tagType],
-                                onSelectionChanged = { newTag ->
-                                    onSelectionChangedFor(tagType, newTag)
-                                }
-                            )
+                tagTypes.forEach { (tagType, tagsWithType) ->
+                    if (tagsWithType.isNotEmpty()) {
+                        val selectedTag = tagsWithType.firstOrNull { it.tagID == selectedTags[tagType] }
+
+                        FilterRow(
+                            tagType = tagType,
+                            selectedTagName = selectedTag?.displayName(),
+                            isExpanded = expandedTagType == tagType,
+                            onToggleExpand = {
+                                expandedTagType = if (expandedTagType == tagType) null else tagType
+                            },
+                            onClear = {
+                                val newFilters = selectedTags.toMutableMap()
+                                newFilters.remove(tagType)
+                                onFiltersChanged(newFilters)
+                            }
+                        )
+
+                        if (expandedTagType == tagType) {
+                            if (tagType == "Year" || tagType == "Language") {
+                                FilterScrollablePicker(
+                                    tags = tagsWithType,
+                                    selectedTagId = selectedTags[tagType],
+                                    onSelectionChanged = { newTag ->
+                                        onSelectionChangedFor(tagType, newTag)
+                                    }
+                                )
+                            } else {
+                                FilterPillSelection(
+                                    tags = tagsWithType,
+                                    selectedTagId = selectedTags[tagType],
+                                    onSelectionChanged = { newTag ->
+                                        onSelectionChangedFor(tagType, newTag)
+                                    }
+                                )
+                            }
                         }
                     }
                 }
@@ -106,6 +126,7 @@ fun FilterBottomSheet(
         }
     }
 }
+
 
 @Composable
 fun FilterRow(
