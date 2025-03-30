@@ -37,12 +37,12 @@ def delete_user(db: Session, user_id: str):
         db.commit()
     return user
 
-def update_user(db: Session, user_id: str, user_update: schemas.UserCreate):
+def update_user(db: Session, user_id: str, user_update: schemas.UserUpdate):
     db_user = db.query(models.User).filter(models.User.userID == user_id).first()
     if not db_user:
         return None
-    db_user.email = user_update.email
-    db_user.username = user_update.username
+    for field, value in user_update.dict(exclude_unset=True).items():
+        setattr(db_user, field, value)
     db.commit()
     db.refresh(db_user)
     return db_user

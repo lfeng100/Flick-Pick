@@ -239,7 +239,7 @@ fun Login(navController: NavController) {
                     )
                     Spacer(modifier = Modifier.height(2.dp))
                     Text(
-                        text = "Signup",
+                        text = "Sign Up",
                         fontSize = 14.sp,
                         color = Purple40,
                         modifier = Modifier

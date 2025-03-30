@@ -1,5 +1,6 @@
 package ca.uwaterloo.flickpick.ui.screen
 
+import android.util.Log
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
@@ -8,17 +9,13 @@ import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -27,31 +24,72 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import ca.uwaterloo.flickpick.ui.theme.Purple40
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Warning
+import androidx.compose.material3.Icon
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
+import ca.uwaterloo.flickpick.dataObjects.Database.DatabaseClient
+import ca.uwaterloo.flickpick.dataObjects.Database.Models.UserUpdate
+import ca.uwaterloo.flickpick.domain.repository.PrimaryUserRepository
+import kotlinx.coroutines.launch
 
 @Composable
 fun ProfileScreen(navController: NavController) {
-    var firstName = remember { mutableStateOf("Paul") }
-    var lastName = remember { mutableStateOf("Smith") }
-    var username = remember { mutableStateOf("paulthegoat") }
-    var email = remember { mutableStateOf("paulsmith@gmail.com") }
-    var password = remember { mutableStateOf("mypassword") }
+    var originalFirstName by remember { mutableStateOf("") }
+    var originalLastName by remember { mutableStateOf("") }
+    var originalUsername by remember { mutableStateOf("") }
+    var firstName by remember { mutableStateOf<String>("") }
+    var lastName by remember { mutableStateOf<String>("") }
+    var username by remember { mutableStateOf<String>("") }
+    var email by remember { mutableStateOf<String>("") }
+//    var password = remember { mutableStateOf("mypassword") }
+
+    val userId = PrimaryUserRepository.getPrimaryUserID()!!
+    val coroutineScope = rememberCoroutineScope()
+
+    var updateMessage by remember { mutableStateOf<String?>(null) }
+    var passwordMessage by remember { mutableStateOf<String?>(null) }
+    var deleteConfirmText by remember { mutableStateOf("") }
+    var showDeleteButton by remember { mutableStateOf(false) }
+    var deleteClickedOnce by remember { mutableStateOf(false) }
+
+    LaunchedEffect(userId) {
+        coroutineScope.launch {
+            try {
+                Log.d("ProfileScreen", "user id: $userId")
+                val user = DatabaseClient.apiService.getUserById(userId)
+                if (user != null) {
+
+                    originalFirstName = user.firstName
+                    originalLastName = user.lastName
+                    originalUsername = user.username
+                    firstName = user.firstName
+                    lastName = user.lastName
+                    username = user.username
+                    email = user.email
+                    Log.d("ProfileScreen", "User name: $username")
+                }
+            } catch (e: Exception) {
+                Log.e("JoinGroupScreen", "Error fetching user", e)
+            }
+        }
+    }
 
     Box(
         modifier = Modifier.fillMaxSize()
@@ -80,149 +118,148 @@ fun ProfileScreen(navController: NavController) {
                         color = Color.White,
                     )
                     UserInfoCard(
-                        firstName = firstName.value,
-                        lastName = lastName.value,
-                        username = username.value,
-                        email = email.value
-                    )
-                    Spacer(modifier = Modifier.height(12.dp))
-                    Text(
-                        text = "First Name",
-                        fontSize = 17.sp,
-                        color = Color.Gray,
-                    )
-                    Spacer(modifier = Modifier.height(10.dp))
-                    OutlinedTextField(
-                        value = firstName.value,
-                        onValueChange = { firstName.value = it },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(52.dp),
-                        singleLine = true,
-                        shape = RoundedCornerShape(50.dp),
-                        colors = OutlinedTextFieldDefaults.colors(
-                            focusedBorderColor = Color.Gray,
-                            unfocusedBorderColor = Color.Gray,
-                        )
-                    )
-                    Spacer(modifier = Modifier.height(12.dp))
-                    Text(
-                        text = "Last Name",
-                        fontSize = 17.sp,
-                        color = Color.Gray,
-                    )
-                    Spacer(modifier = Modifier.height(10.dp))
-                    OutlinedTextField(
-                        value = lastName.value,
-                        onValueChange = { lastName.value = it },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(52.dp),
-                        singleLine = true,
-                        shape = RoundedCornerShape(50.dp),
-                        colors = OutlinedTextFieldDefaults.colors(
-                            focusedBorderColor = Color.Gray,
-                            unfocusedBorderColor = Color.Gray,
-                        )
-                    )
-                    Spacer(modifier = Modifier.height(12.dp))
-                    Text(
-                        text = "Username",
-                        fontSize = 17.sp,
-                        color = Color.Gray,
-                    )
-                    Spacer(modifier = Modifier.height(10.dp))
-                    OutlinedTextField(
-                        value = username.value,
-                        onValueChange = { username.value = it },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(52.dp),
-                        singleLine = true,
-                        shape = RoundedCornerShape(50.dp),
-                        colors = OutlinedTextFieldDefaults.colors(
-                            focusedBorderColor = Color.Gray,
-                            unfocusedBorderColor = Color.Gray,
-                        )
-                    )
-                    Spacer(modifier = Modifier.height(12.dp))
-                    Text(
-                        text = "Email",
-                        fontSize = 17.sp,
-                        color = Color.Gray,
-                    )
-                    Spacer(modifier = Modifier.height(10.dp))
-                    OutlinedTextField(
-                        value = email.value,
-                        onValueChange = { email.value = it },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(52.dp),
-                        singleLine = true,
-                        shape = RoundedCornerShape(50.dp),
-                        colors = OutlinedTextFieldDefaults.colors(
-                            focusedBorderColor = Color.Gray,
-                            unfocusedBorderColor = Color.Gray,
-                        )
-                    )
-                    Spacer(modifier = Modifier.height(12.dp))
-                    Text(
-                        text = "Password",
-                        fontSize = 17.sp,
-                        color = Color.Gray,
-                    )
-                    Spacer(modifier = Modifier.height(10.dp))
-                    OutlinedTextField(
-                        value = password.value,
-                        onValueChange = { email.value = it },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(52.dp),
-                        singleLine = true,
-                        shape = RoundedCornerShape(50.dp),
-                        colors = OutlinedTextFieldDefaults.colors(
-                            focusedBorderColor = Color.Gray,
-                            unfocusedBorderColor = Color.Gray,
-                        )
+                        firstName = originalFirstName,
+                        lastName = originalLastName,
+                        username = originalUsername,
+                        email = email
                     )
                     Spacer(modifier = Modifier.height(30.dp))
-                    Row(
-                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+
+                    Text(text = "Update Info", fontSize = 20.sp, color = Color.White)
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    OutlinedTextField(
+                        value = firstName,
+                        onValueChange = { firstName = it },
+                        label = { Text("First Name") },
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    OutlinedTextField(
+                        value = lastName,
+                        onValueChange = { lastName = it },
+                        label = { Text("Last Name") },
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    OutlinedTextField(
+                        value = username,
+                        onValueChange = { username = it },
+                        label = { Text("Username") },
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    Button(
+                        onClick = {
+                            coroutineScope.launch {
+                                try {
+                                    DatabaseClient.apiService.updateUser(
+                                        userId,
+                                        UserUpdate(
+                                            firstName = firstName,
+                                            lastName = lastName,
+                                            username = username)
+                                    )
+                                    updateMessage = "Changes saved successfully"
+
+                                    originalFirstName = firstName
+                                    originalLastName = lastName
+                                    originalUsername = username
+                                } catch (e: Exception) {
+                                    updateMessage = "Failed to update profile, username may already exist"
+
+                                    firstName = originalFirstName
+                                    lastName = originalLastName
+                                    username = originalUsername
+                                }
+                            }
+                        },
+                        modifier = Modifier.fillMaxWidth()
                     ) {
+                        Text("Save Changes")
+                    }
+
+                    updateMessage?.let {
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text(text = it, color = if (it.contains("Failed")) Color.Red else Color.Green)
+                    }
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    Button(
+                        onClick = {
+                            // Firebase Change Password
+                        },
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text("Change Password")
+                    }
+
+                    passwordMessage?.let {
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text(text = it, color = if (it.contains("Failed")) Color.Red else Color.Green)
+                    }
+
+                    Spacer(modifier = Modifier.height(32.dp))
+
+                    Text(text = "Delete Account", fontSize = 20.sp, color = Color.White)
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    OutlinedTextField(
+                        value = deleteConfirmText,
+                        onValueChange = {
+                            deleteConfirmText = it
+                            showDeleteButton = it == "DELETE"
+                        },
+                        label = { Text("Type DELETE to confirm") },
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    if (showDeleteButton) {
                         Button(
-                            onClick = { },
-                            modifier = Modifier
-                                .width(150.dp)
-                                .height(52.dp),
-                            shape = RoundedCornerShape(50.dp),
-                            colors = ButtonDefaults.buttonColors(containerColor = Color.Red)
-                        ) {
-                            Text(
-                                text = "Cancel",
-                                fontSize = 20.sp,
-                                color = Color.White,
-                                modifier = Modifier.fillMaxWidth().clickable { navController.popBackStack() },
-                                textAlign = TextAlign.Center
+                            onClick = {
+                                if (!deleteClickedOnce) {
+                                    deleteClickedOnce = true
+
+                                    coroutineScope.launch {
+                                        kotlinx.coroutines.delay(5000)
+                                        deleteClickedOnce = false
+                                    }
+                                } else {
+                                    coroutineScope.launch {
+                                        try {
+                                            DatabaseClient.apiService.deleteUser(userId)
+                                            navController.navigate("/login")
+                                        } catch (e: Exception) {
+                                            Log.e("ProfileScreen", "Delete failed", e)
+                                        }
+                                    }
+                                }
+                            },
+                            modifier = Modifier.fillMaxWidth(),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = if (deleteClickedOnce) Color(0xFFB71C1C) else Color.Red
                             )
-                        }
-                        Button(
-                            onClick = { },
-                            modifier = Modifier
-                                .width(150.dp)
-                                .height(52.dp),
-                            shape = RoundedCornerShape(50.dp),
-                            colors = ButtonDefaults.buttonColors(containerColor = Purple40)
                         ) {
-                            Text(
-                                text = "Save",
-                                fontSize = 20.sp,
-                                color = Color.White,
-                                modifier = Modifier.fillMaxWidth().clickable { navController.navigate("home") },
-                                textAlign = TextAlign.Center
-                            )
+                            if (deleteClickedOnce) {
+                                Icon(
+                                    imageVector = Icons.Default.Warning,
+                                    contentDescription = "Warning",
+                                    tint = Color.White,
+                                    modifier = Modifier.padding(end = 8.dp)
+                                )
+                                Text("WARNING: Confirm Account Deletion", color = Color.White)
+                            } else {
+                                Text("Permanently Delete Account", color = Color.White)
+                            }
                         }
                     }
-                    Spacer(modifier = Modifier.height(30.dp))
+
+                    Spacer(modifier = Modifier.height(32.dp))
                 }
             }
         }
@@ -281,20 +318,3 @@ fun UserInfoCard(
     }
     Spacer(modifier = Modifier.height(12.dp))
 }
-
-//class Profile : ComponentActivity() {
-//    override fun onCreate(savedInstanceState: Bundle?) {
-//        super.onCreate(savedInstanceState)
-//        setContent {
-//            FlickPickTheme {
-//                val navController = rememberNavController()
-//                Surface(
-//                    modifier = Modifier.fillMaxSize(),
-//                    color = MaterialTheme.colorScheme.background
-//                ) {
-//                    Profile(navController)
-//                }
-//            }
-//        }
-//    }
-//}

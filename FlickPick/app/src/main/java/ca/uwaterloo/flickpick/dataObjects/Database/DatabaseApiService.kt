@@ -17,6 +17,7 @@ import ca.uwaterloo.flickpick.dataObjects.Database.Responses.MovieResponse
 import ca.uwaterloo.flickpick.dataObjects.Database.Responses.UserResponse
 import ca.uwaterloo.flickpick.dataObjects.Database.Responses.GroupResponse
 import ca.uwaterloo.flickpick.dataObjects.Database.Models.UserCreate
+import ca.uwaterloo.flickpick.dataObjects.Database.Models.UserUpdate
 import ca.uwaterloo.flickpick.dataObjects.Database.Models.UserWatched
 import ca.uwaterloo.flickpick.dataObjects.Database.Responses.GroupActivityResponse
 import ca.uwaterloo.flickpick.dataObjects.Database.Responses.ReviewResponse
@@ -34,14 +35,20 @@ interface DatabaseApiService {
         @Body userCreate: UserCreate
     ): User
 
-    @GET("users/{user_id}")
-    suspend fun getUser(
-        @Path("user_id") userID: String
-    ): Response<User?>
-
     @GET("users/{id}")
     suspend fun getUserById(
         @Path("id") userId: String
+    ): User
+
+    @DELETE("users/{id}")
+    suspend fun deleteUser(
+        @Path("id") userId: String
+    ): User
+
+    @PUT("users/{id}")
+    suspend fun updateUser(
+        @Path("id") userId: String,
+        @Body userUpdate: UserUpdate
     ): User
 
     // Get All Users
@@ -49,7 +56,7 @@ interface DatabaseApiService {
     suspend fun getAllUsers(
         @Query("limit") limit: Int = 10,
         @Query("offset") offset: Int = 0
-    ):UserResponse
+    ): UserResponse
 
     // Movies
     @GET("movies/")

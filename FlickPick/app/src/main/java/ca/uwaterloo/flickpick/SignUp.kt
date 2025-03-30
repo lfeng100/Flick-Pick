@@ -33,6 +33,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import ca.uwaterloo.flickpick.ui.theme.Purple40
 import android.widget.Toast
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -47,6 +48,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.IconButton
 
 
@@ -61,6 +63,9 @@ fun Signup(navController: NavController) {
     var passwordVisible = remember { mutableStateOf(false) }
     val firebaseAuthentication = FirebaseAuthentication()
     val context = LocalContext.current
+    val fieldSpacing = 12.dp
+    val labelSpacing = 10.dp
+    var isLoading = remember { mutableStateOf(false) }
 
     Box(
         modifier = Modifier.fillMaxSize()
@@ -99,18 +104,18 @@ fun Signup(navController: NavController) {
                 ) {
                     Spacer(modifier = Modifier.height(20.dp))
                     Text(
-                        text = "Signup",
+                        text = "Sign Up",
                         fontSize = 42.sp,
                         //fontWeight = FontWeight.Bold,
                         color = Color.White,
                     )
-                    Spacer(modifier = Modifier.height(12.dp))
+                    Spacer(modifier = Modifier.height(fieldSpacing))
                     Text(
                         text = "First Name",
                         fontSize = 17.sp,
                         color = Color.Gray,
                     )
-                    Spacer(modifier = Modifier.height(10.dp))
+                    Spacer(modifier = Modifier.height(labelSpacing))
                     OutlinedTextField(
                         value = firstName.value,
                         onValueChange = { firstName.value = it },
@@ -130,13 +135,13 @@ fun Signup(navController: NavController) {
                             unfocusedBorderColor = Color.DarkGray,
                         )
                     )
-                    Spacer(modifier = Modifier.height(12.dp))
+                    Spacer(modifier = Modifier.height(fieldSpacing))
                     Text(
                         text = "Last Name",
                         fontSize = 17.sp,
                         color = Color.Gray,
                     )
-                    Spacer(modifier = Modifier.height(10.dp))
+                    Spacer(modifier = Modifier.height(labelSpacing))
                     OutlinedTextField(
                         value = lastName.value,
                         onValueChange = { lastName.value = it },
@@ -144,7 +149,7 @@ fun Signup(navController: NavController) {
                             .height(46.dp)
                             .fillMaxWidth(),
                         textStyle = TextStyle(color = Color.White),
-                        leadingIcon = { Icon(imageVector = Icons.Default.PersonAddAlt1 , contentDescription = "", tint = Color.Gray) },
+                        leadingIcon = { Icon(painter = painterResource(id = R.drawable.baseline_abc_24), contentDescription = "", tint = Color.Gray) },
                         singleLine = true,
                         maxLines = 1,
                         minLines = 1,
@@ -156,13 +161,13 @@ fun Signup(navController: NavController) {
                             unfocusedBorderColor = Color.DarkGray,
                         )
                     )
-                    Spacer(modifier = Modifier.height(12.dp))
+                    Spacer(modifier = Modifier.height(fieldSpacing))
                     Text(
                         text = "Email",
                         fontSize = 17.sp,
                         color = Color.Gray,
                     )
-                    Spacer(modifier = Modifier.height(10.dp))
+                    Spacer(modifier = Modifier.height(labelSpacing))
                     OutlinedTextField(
                         value = email.value,
                         onValueChange = { email.value = it },
@@ -182,13 +187,13 @@ fun Signup(navController: NavController) {
                             unfocusedBorderColor = Color.DarkGray,
                         )
                     )
-                    Spacer(modifier = Modifier.height(12.dp))
+                    Spacer(modifier = Modifier.height(fieldSpacing))
                     Text(
                         text = "Username",
                         fontSize = 17.sp,
                         color = Color.Gray,
                     )
-                    Spacer(modifier = Modifier.height(10.dp))
+                    Spacer(modifier = Modifier.height(labelSpacing))
                     OutlinedTextField(
                         value = username.value,
                         onValueChange = { username.value = it },
@@ -208,13 +213,13 @@ fun Signup(navController: NavController) {
                             unfocusedBorderColor = Color.DarkGray,
                         )
                     )
-                    Spacer(modifier = Modifier.height(12.dp))
+                    Spacer(modifier = Modifier.height(fieldSpacing))
                     Text(
                         text = "Password",
                         fontSize = 17.sp,
                         color = Color.Gray,
                     )
-                    Spacer(modifier = Modifier.height(10.dp))
+                    Spacer(modifier = Modifier.height(labelSpacing))
                     OutlinedTextField(
                         value = password.value,
                         onValueChange = { password.value = it },
@@ -265,6 +270,7 @@ fun Signup(navController: NavController) {
                                 username.value.isNotBlank() &&
                                 password.value.isNotBlank()
                                 ) {
+                                isLoading.value = true
                                 firebaseAuthentication.createAccount(firstName.value, lastName.value, email.value, username.value, password.value, context, navController)
                             } else {
                                 Toast.makeText(context, "Please enter all fields", Toast.LENGTH_SHORT).show()
@@ -274,16 +280,21 @@ fun Signup(navController: NavController) {
                             .fillMaxWidth()
                             .height(46.dp),
                         shape = RoundedCornerShape(50.dp),
-                        colors = ButtonDefaults.buttonColors(containerColor = Purple40)
+                        colors = ButtonDefaults.buttonColors(containerColor = Purple40),
+                        elevation = ButtonDefaults.buttonElevation(8.dp)
                     ) {
-                        Text(
-                            text = "Sign up",
-                            fontSize = 20.sp,
-                            //fontWeight = FontWeight.Bold,
-                            color = Color.White,
-                            modifier = Modifier.fillMaxWidth(),
-                            textAlign = TextAlign.Center
-                        )
+                        if (isLoading.value) {
+                            CircularProgressIndicator(color = Color.White, modifier = Modifier.size(20.dp))
+                        } else {
+                            Text(
+                                text = "Sign up",
+                                fontSize = 20.sp,
+                                //fontWeight = FontWeight.Bold,
+                                color = Color.White,
+                                modifier = Modifier.fillMaxWidth(),
+                                textAlign = TextAlign.Center
+                            )
+                        }
                     }
                     Spacer(modifier = Modifier.height(65.dp))
                     Text(

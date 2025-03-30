@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, Query
+from fastapi import APIRouter, Depends, Query, HTTPException
 from sqlalchemy.orm import Session
 import schemas, database, crud
 
@@ -25,7 +25,7 @@ def delete_user(user_id: str, db: Session = Depends(database.get_db)):
     return crud.delete_user(db, user_id)
 
 @router.put("/users/{user_id}")
-def update_user(user_id: str, user_update: schemas.UserCreate, db: Session = Depends(database.get_db)):
+def update_user(user_id: str, user_update: schemas.UserUpdate, db: Session = Depends(database.get_db)):
     updated_user = crud.update_user(db, user_id, user_update)
     if updated_user is None:
         raise HTTPException(status_code=404, detail="User not found")
