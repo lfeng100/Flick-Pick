@@ -69,6 +69,8 @@ interface DatabaseApiService {
     suspend fun searchMovies(
         @Query("title_query") titleQuery: String? = null,
         @Query("tag_ids") tagIDs: List<String>? = null,
+        @Query("sort_by") sortBy: String? = "title",
+        @Query("sort_order") sortOrder: String? = "asc",
         @Query("limit") limit: Int = 12,
         @Query("offset") offset: Int = 0
     ): MovieResponse
@@ -88,7 +90,7 @@ interface DatabaseApiService {
     suspend fun getGroupsById(
         @Path("groupID") groupId: String
     ): GroupUsers
- 
+
     @GET("groups/")
     suspend fun getAllGroups(
         @Query("limit") limit: Int = 10,
