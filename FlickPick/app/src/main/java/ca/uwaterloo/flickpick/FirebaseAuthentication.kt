@@ -4,9 +4,7 @@ import android.content.Context
 import android.widget.Toast
 import androidx.navigation.NavController
 import ca.uwaterloo.flickpick.dataObjects.Database.DatabaseClient
-import ca.uwaterloo.flickpick.dataObjects.Database.Models.User
 import ca.uwaterloo.flickpick.dataObjects.Database.Models.UserCreate
-import ca.uwaterloo.flickpick.domain.repository.PrimaryUserRepository
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -95,5 +93,25 @@ class FirebaseAuthentication {
                     Toast.makeText(context, "Failed: $errorMessage", Toast.LENGTH_LONG).show()
                 }
             }
+    }
+
+    fun deleteAccount(loginNavController: NavController, context: Context) {
+        val user = auth.currentUser
+
+        if (user != null) {
+            user.delete()
+                .addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        loginNavController.navigate("login") {
+                            popUpTo("login") { inclusive = true }
+                        }
+                    } else {
+                        val errorMessage = task.exception?.message ?: "Account Deletion Failed"
+                        Toast.makeText(context, "Failed: $errorMessage", Toast.LENGTH_LONG).show()
+                    }
+                }
+        } else {
+            Toast.makeText(context, "Failed: No authenticated user to delete", Toast.LENGTH_LONG).show()
+        }
     }
 }
