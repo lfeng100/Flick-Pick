@@ -1,24 +1,15 @@
-import android.text.Layout
 import android.util.Log
-import androidx.compose.animation.core.*
-import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.style.LineHeightStyle
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import ca.uwaterloo.flickpick.dataObjects.Database.DatabaseClient
+import ca.uwaterloo.flickpick.data.database.DatabaseClient
 import ca.uwaterloo.flickpick.domain.repository.PrimaryUserRepository
 import ca.uwaterloo.flickpick.ui.component.JoinGroupCard
-import com.google.firebase.auth.FirebaseAuth
-import kotlin.random.Random
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @Composable

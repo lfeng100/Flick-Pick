@@ -4,9 +4,9 @@ import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.mutableStateListOf
-import ca.uwaterloo.flickpick.dataObjects.Database.DatabaseClient
-import ca.uwaterloo.flickpick.dataObjects.Database.Models.Review
-import ca.uwaterloo.flickpick.dataObjects.Database.Models.User
+import ca.uwaterloo.flickpick.data.database.DatabaseClient
+import ca.uwaterloo.flickpick.data.database.model.Review
+import ca.uwaterloo.flickpick.data.database.model.User
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job

@@ -1,6 +1,5 @@
 package ca.uwaterloo.flickpick.ui.component
 
-import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -22,12 +21,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import ca.uwaterloo.flickpick.dataObjects.Database.Models.Movie
+import ca.uwaterloo.flickpick.data.database.model.Movie
 
 @Composable
 fun InfiniteMovieGrid(movies: List<Movie>,

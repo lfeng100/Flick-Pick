@@ -2,9 +2,9 @@ package ca.uwaterloo.flickpick.domain.repository
 
 import MovieRepository
 import android.util.Log
-import ca.uwaterloo.flickpick.dataObjects.Database.DatabaseClient
-import ca.uwaterloo.flickpick.dataObjects.Database.Models.Movie
-import ca.uwaterloo.flickpick.dataObjects.Database.Models.Review
+import ca.uwaterloo.flickpick.data.database.DatabaseClient
+import ca.uwaterloo.flickpick.data.database.model.Movie
+import ca.uwaterloo.flickpick.data.database.model.Review
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 

@@ -46,10 +46,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.navigation.NavController
-import ca.uwaterloo.flickpick.dataObjects.Database.DatabaseClient
-import ca.uwaterloo.flickpick.dataObjects.Database.Models.ActivityItem
-import ca.uwaterloo.flickpick.dataObjects.Database.Models.Group
-import ca.uwaterloo.flickpick.dataObjects.Database.Models.User
+import ca.uwaterloo.flickpick.data.database.DatabaseClient
+import ca.uwaterloo.flickpick.data.database.model.ActivityItem
+import ca.uwaterloo.flickpick.data.database.model.Group
+import ca.uwaterloo.flickpick.data.database.model.User
 import ca.uwaterloo.flickpick.domain.repository.PrimaryUserRepository
 import ca.uwaterloo.flickpick.ui.component.BackButtonTopBarWithText
 import ca.uwaterloo.flickpick.ui.component.BrowseMovieReminder

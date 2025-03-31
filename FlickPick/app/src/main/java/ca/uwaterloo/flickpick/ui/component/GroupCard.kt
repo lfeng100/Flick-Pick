@@ -30,7 +30,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import ca.uwaterloo.flickpick.dataObjects.Database.Models.Group
+import ca.uwaterloo.flickpick.data.database.model.Group
 
 @Composable
 fun GroupCard(group: Group, onClick: (() -> Unit)) {

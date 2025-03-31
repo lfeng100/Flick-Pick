@@ -1,7 +1,7 @@
 import android.util.Log
-import ca.uwaterloo.flickpick.dataObjects.Database.Models.Movie
-import ca.uwaterloo.flickpick.dataObjects.Database.DatabaseClient
-import ca.uwaterloo.flickpick.dataObjects.Database.Models.Tag
+import ca.uwaterloo.flickpick.data.database.model.Movie
+import ca.uwaterloo.flickpick.data.database.DatabaseClient
+import ca.uwaterloo.flickpick.data.database.model.Tag
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.CoroutineScope

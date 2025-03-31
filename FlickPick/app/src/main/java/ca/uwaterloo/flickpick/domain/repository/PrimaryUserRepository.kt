@@ -6,11 +6,11 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.snapshots.SnapshotStateList
-import ca.uwaterloo.flickpick.dataObjects.Database.DatabaseClient
-import ca.uwaterloo.flickpick.dataObjects.Database.Models.Review
-import ca.uwaterloo.flickpick.dataObjects.Database.Models.ReviewCreate
-import ca.uwaterloo.flickpick.dataObjects.Database.Models.UserWatched
-import ca.uwaterloo.flickpick.dataObjects.recommender.model.Rating
+import ca.uwaterloo.flickpick.data.database.DatabaseClient
+import ca.uwaterloo.flickpick.data.database.model.Review
+import ca.uwaterloo.flickpick.data.database.model.ReviewCreate
+import ca.uwaterloo.flickpick.data.database.model.UserWatched
+import ca.uwaterloo.flickpick.data.recommender.model.Rating
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

@@ -17,8 +17,6 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material.icons.filled.Refresh
-import androidx.compose.material.icons.outlined.RateReview
-import androidx.compose.material.icons.outlined.StarBorder
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
@@ -46,10 +44,9 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import ca.uwaterloo.flickpick.dataObjects.Database.Models.Movie
+import ca.uwaterloo.flickpick.data.database.model.Movie
 import ca.uwaterloo.flickpick.domain.repository.MovieReviewsRepository
 import ca.uwaterloo.flickpick.domain.repository.PrimaryUserRepository
-import ca.uwaterloo.flickpick.domain.repository.ReviewWithUser
 import ca.uwaterloo.flickpick.ui.component.BackButtonTopBar
 import ca.uwaterloo.flickpick.ui.component.MovieCard
 import ca.uwaterloo.flickpick.ui.component.MovieGenres

@@ -19,7 +19,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.state.ToggleableState
 import androidx.compose.ui.unit.dp
-import ca.uwaterloo.flickpick.dataObjects.recommender.model.Filters
+import ca.uwaterloo.flickpick.data.recommender.model.Filters
 import ca.uwaterloo.flickpick.domain.filter.FiltersConstants
 import ca.uwaterloo.flickpick.domain.filter.RecommenderFiltersBuilder
 

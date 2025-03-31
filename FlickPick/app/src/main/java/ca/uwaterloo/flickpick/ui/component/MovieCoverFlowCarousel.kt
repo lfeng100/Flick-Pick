@@ -39,12 +39,11 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import ca.uwaterloo.flickpick.R
-import ca.uwaterloo.flickpick.dataObjects.Database.Models.Movie
+import ca.uwaterloo.flickpick.data.database.model.Movie
 import coil.imageLoader
 import coil.request.ImageRequest
 import kotlin.math.abs
 import kotlin.math.min
-import kotlin.math.round
 import kotlin.math.sign
 
 @Composable

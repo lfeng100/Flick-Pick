@@ -14,7 +14,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.shape.CircleShape
-import ca.uwaterloo.flickpick.dataObjects.Database.Models.Tag
+import ca.uwaterloo.flickpick.data.database.model.Tag
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

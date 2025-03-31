@@ -1,6 +1,5 @@
 package ca.uwaterloo.flickpick.ui.screen
 
-import MovieRepository
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.animation.core.LinearEasing
@@ -55,11 +54,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.window.Dialog
 import ca.uwaterloo.flickpick.FirebaseAuthentication
-import ca.uwaterloo.flickpick.dataObjects.Database.DatabaseClient
-import ca.uwaterloo.flickpick.dataObjects.Database.Models.UserUpdate
-import ca.uwaterloo.flickpick.domain.repository.GroupRecommendationRepository
+import ca.uwaterloo.flickpick.data.database.DatabaseClient
+import ca.uwaterloo.flickpick.data.database.model.UserUpdate
 import ca.uwaterloo.flickpick.domain.repository.PrimaryUserRepository
-import ca.uwaterloo.flickpick.domain.repository.RecommendationRepository
 import ca.uwaterloo.flickpick.ui.theme.Purple40
 import kotlinx.coroutines.launch
 

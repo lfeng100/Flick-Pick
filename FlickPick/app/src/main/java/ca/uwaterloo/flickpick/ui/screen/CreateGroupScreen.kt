@@ -20,10 +20,10 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import ca.uwaterloo.flickpick.dataObjects.Database.DatabaseClient
-import ca.uwaterloo.flickpick.dataObjects.Database.Models.AddUserToGroup
-import ca.uwaterloo.flickpick.dataObjects.Database.Models.GroupCreate
-import ca.uwaterloo.flickpick.dataObjects.Database.Models.User
+import ca.uwaterloo.flickpick.data.database.DatabaseClient
+import ca.uwaterloo.flickpick.data.database.model.AddUserToGroup
+import ca.uwaterloo.flickpick.data.database.model.GroupCreate
+import ca.uwaterloo.flickpick.data.database.model.User
 import ca.uwaterloo.flickpick.ui.component.CreateGroupNameField
 import ca.uwaterloo.flickpick.ui.component.TitleTopBar
 import ca.uwaterloo.flickpick.ui.component.TopBarButtonData

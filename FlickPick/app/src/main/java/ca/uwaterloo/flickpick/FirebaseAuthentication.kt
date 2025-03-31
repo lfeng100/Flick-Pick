@@ -3,8 +3,8 @@ package ca.uwaterloo.flickpick
 import android.content.Context
 import android.widget.Toast
 import androidx.navigation.NavController
-import ca.uwaterloo.flickpick.dataObjects.Database.DatabaseClient
-import ca.uwaterloo.flickpick.dataObjects.Database.Models.UserCreate
+import ca.uwaterloo.flickpick.data.database.DatabaseClient
+import ca.uwaterloo.flickpick.data.database.model.UserCreate
 import ca.uwaterloo.flickpick.domain.repository.GroupRecommendationRepository
 import ca.uwaterloo.flickpick.domain.repository.PrimaryUserRepository
 import ca.uwaterloo.flickpick.domain.repository.RecommendationRepository

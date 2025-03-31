@@ -4,7 +4,7 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.ui.state.ToggleableState
-import ca.uwaterloo.flickpick.dataObjects.recommender.model.Filters
+import ca.uwaterloo.flickpick.data.recommender.model.Filters
 
 object FiltersConstants {
     val genreList = listOf(

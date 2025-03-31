@@ -16,7 +16,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import ca.uwaterloo.flickpick.dataObjects.Database.Models.Tag
+import ca.uwaterloo.flickpick.data.database.model.Tag
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable

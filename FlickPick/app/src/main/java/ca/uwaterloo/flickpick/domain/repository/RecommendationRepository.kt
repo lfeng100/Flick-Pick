@@ -4,11 +4,11 @@ import MovieRepository
 import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
-import ca.uwaterloo.flickpick.dataObjects.Database.Models.Movie
+import ca.uwaterloo.flickpick.data.database.model.Movie
 import kotlinx.coroutines.Dispatchers
-import ca.uwaterloo.flickpick.dataObjects.recommender.RecommenderClient
-import ca.uwaterloo.flickpick.dataObjects.recommender.model.Filters
-import ca.uwaterloo.flickpick.dataObjects.recommender.query.RecommendationQuery
+import ca.uwaterloo.flickpick.data.recommender.RecommenderClient
+import ca.uwaterloo.flickpick.data.recommender.model.Filters
+import ca.uwaterloo.flickpick.data.recommender.query.RecommendationQuery
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
