@@ -39,8 +39,9 @@ fun CreateGroupScreen(navController: NavController) {
     val isLoading = remember { mutableStateOf(true) }
     val coroutineScope = rememberCoroutineScope()
     val selectedUsers = remember { mutableStateOf(mutableSetOf<String>()) }
-    val showAlert = remember {mutableStateOf(false)}
+    val showAlert = remember { mutableStateOf(false) }
 
+    val searchQuery = remember { mutableStateOf(TextFieldValue("")) }
     LaunchedEffect(Unit) {
         try {
             val response = DatabaseClient.apiService.getAllUsers().items
@@ -130,10 +131,27 @@ fun CreateGroupScreen(navController: NavController) {
                     value = groupName,
                     placeHolderText = "Enter group name"
                 )
+
+                TextField(
+                    value = searchQuery.value,
+                    onValueChange = { searchQuery.value = it },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(MaterialTheme.colorScheme.surface, MaterialTheme.shapes.medium)
+                        .padding(vertical = 8.dp),
+                    placeholder = {Text("Search Users...")},
+                    singleLine = true,
+                    shape = RoundedCornerShape(8.dp),
+                )
+
+                val filteredUsers = users.value.filter{
+                    it.username.contains(searchQuery.value.text, ignoreCase = true)
+                }
+
                 LazyColumn(
                     modifier = Modifier.weight(1f)
                 ) {
-                    items(users.value) { user ->
+                    items(filteredUsers) { user ->
                         val isSelected = selectedUsers.value.contains(user.userID)
 
                         UserCard(
