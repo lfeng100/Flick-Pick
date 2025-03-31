@@ -123,6 +123,12 @@ interface DatabaseApiService {
         @Query("offset") offset: Int = 0
     ):UserResponse
 
+    @DELETE("groupusers/{group_id}/{user_id}")
+    suspend fun deleteUserInGroup(
+        @Path("group_id") groupID: String,
+        @Path("user_id") userID: String
+    )
+
     // reviews
     @POST("reviews/")
     suspend fun createReview(
