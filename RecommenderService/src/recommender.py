@@ -2,12 +2,15 @@ from surprise import dump
 import pandas as pd
 import numpy as np
 import ast
+import os
 
 from src.filter import *
 
+model_path = os.getenv("MODEL_PATH")
+
 class Recommender:
     def __init__(self):
-        _, model = dump.load('./model/model')
+        _, model = dump.load(model_path)
         self.model = model
         self.to_inner_id = self.model.trainset.to_inner_iid
         self.to_raw_id = self.model.trainset.to_raw_iid

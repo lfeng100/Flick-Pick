@@ -24,14 +24,14 @@ class MinYearFilter:
         self.minYear = minYear
 
     def allow(self, movie_id: str, movie_info: dict) -> bool:
-        return self.minYear > movie_info['year']
+        return self.minYear < movie_info['year']
 
 class MaxYearFilter:
     def __init__(self, maxYear: int):
         self.maxYear = maxYear
 
     def allow(self, movie_id: str, movie_info: dict) -> bool:
-        return movie_info['year'] > self.maxYear
+        return movie_info['year'] < self.maxYear
 
 class LanguagesFilter:
     def __init__(self, languages: list):
@@ -45,11 +45,11 @@ class RuntimeFilter:
         self.maxRuntime = maxRuntime
 
     def allow(self, movie_id: str, movie_info: dict) -> bool:
-        return self.maxRuntime < movie_info['runtime']
+        return self.maxRuntime > movie_info['runtime']
 
 class ScoreFilter:
     def __init__(self, minScore: int):
         self.minScore = minScore
 
     def allow(self, movie_id: str, movie_info: dict) -> bool:
-        return self.minScore > movie_info['vote_average']
+        return self.minScore < movie_info['vote_average']

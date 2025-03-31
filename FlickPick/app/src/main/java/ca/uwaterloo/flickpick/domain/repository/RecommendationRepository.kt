@@ -20,6 +20,9 @@ object RecommendationRepository {
     private val _recommendations = MutableStateFlow(emptyList<Movie>())
     val recommendations = _recommendations.asStateFlow()
 
+    private val _isLoaded = MutableStateFlow(false)
+    val isLoaded = _isLoaded.asStateFlow()
+
     private val _filters = mutableStateOf<Filters?>(null)
     val filters : State<Filters?> = _filters
 
@@ -37,6 +40,10 @@ object RecommendationRepository {
                 val filters = Filters(
                     includedGenres = _filters.value?.includedGenres,
                     excludedGenres = _filters.value?.excludedGenres,
+                    minYear = _filters.value?.minYear,
+                    maxYear = _filters.value?.maxYear,
+                    maxRuntime = _filters.value?.maxRuntime,
+                    minScore = _filters.value?.minScore,
                     excludedMovieIDs = PrimaryUserRepository.watched.value + previouslyRecommendedMovieIds
                 )
                 Log.i("Recommender", "included genres " + filters.includedGenres)
@@ -54,6 +61,7 @@ object RecommendationRepository {
                         }
                     }
                 }
+                _isLoaded.value = true
             } catch (e: Exception) {
                 Log.e("API_ERROR", "Error getting recommendations: ${e.message}")
             }
@@ -65,11 +73,13 @@ object RecommendationRepository {
         // isn't recommended again in the same session
         previouslyRecommendedMovieIds.addAll(_recommendations.value.map { it.movieID })
         _recommendations.value = emptyList()
+        _isLoaded.value = false
     }
 
     fun clear() {
         previouslyRecommendedMovieIds.clear()
         _recommendations.value = emptyList()
         _filters.value = null
+        _isLoaded.value = false
     }
 }

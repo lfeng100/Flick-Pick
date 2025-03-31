@@ -16,7 +16,7 @@ Or you can download the preprocessed datasets and pretrained model [here](https:
 
 Once the model is extracted:
 
-Start the recommender service: uvicorn src.main:app --host 0.0.0.0 --port 8000 --reload
+Start the recommender service: uvicorn src.main:app --host 0.0.0.0 --port 8000 --reload --env-file .env
 
 Command line interface for manual testing: ./scripts/cli.py
 

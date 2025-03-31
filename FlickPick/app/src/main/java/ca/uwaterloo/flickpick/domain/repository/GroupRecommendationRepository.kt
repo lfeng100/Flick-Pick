@@ -20,6 +20,9 @@ object GroupRecommendationRepository {
     private val _recommendations = MutableStateFlow(emptyList<Movie>())
     val recommendations = _recommendations.asStateFlow()
 
+    private val _isLoaded = MutableStateFlow(false)
+    val isLoaded = _isLoaded.asStateFlow()
+
     private val _filters = mutableStateOf<Filters?>(null)
     val filters : State<Filters?> = _filters
 
@@ -46,6 +49,10 @@ object GroupRecommendationRepository {
                 val filters = Filters(
                     includedGenres = _filters.value?.includedGenres,
                     excludedGenres = _filters.value?.excludedGenres,
+                    minYear = _filters.value?.minYear,
+                    maxYear = _filters.value?.maxYear,
+                    maxRuntime = _filters.value?.maxRuntime,
+                    minScore = _filters.value?.minScore,
                     excludedMovieIDs = PrimaryUserRepository.watched.value + previouslyRecommendedMovieIds
                 )
                 val query = GroupRecommendationQuery(groupRatings, filters)
@@ -61,6 +68,7 @@ object GroupRecommendationRepository {
                         }
                     }
                 }
+                _isLoaded.value = true
             } catch (e: Exception) {
                 Log.e("API_ERROR", "Error getting group recommendations: ${e.message}")
             }
@@ -72,15 +80,18 @@ object GroupRecommendationRepository {
         // isn't recommended again in the same session
         previouslyRecommendedMovieIds.addAll(_recommendations.value.map { it.movieID })
         _recommendations.value = emptyList()
+        _isLoaded.value = false
     }
 
     fun clearPreviousRecommendations() {
         previouslyRecommendedMovieIds.clear()
         _recommendations.value = emptyList()
+        _isLoaded.value = false
     }
 
     fun clear() {
         clearPreviousRecommendations()
         _filters.value = null
+        _isLoaded.value = false
     }
 }

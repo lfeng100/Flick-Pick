@@ -1,5 +1,7 @@
 package ca.uwaterloo.flickpick.ui.screen
 
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -9,7 +11,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -19,21 +23,29 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import ca.uwaterloo.flickpick.R
 import ca.uwaterloo.flickpick.data.database.model.Movie
 import ca.uwaterloo.flickpick.domain.repository.RecommendationRepository
 import ca.uwaterloo.flickpick.ui.component.BackButtonTopBar
 import ca.uwaterloo.flickpick.ui.component.MovieCoverFlowCarousel
 import ca.uwaterloo.flickpick.ui.component.MovieInteractionButtonRow
 import ca.uwaterloo.flickpick.ui.component.MovieTitleText
+import ca.uwaterloo.flickpick.ui.component.NoRecommendationsReminder
 import coil.imageLoader
 import coil.request.ImageRequest
 
 @Composable
 fun RecommendationCarouselScreen(navController: NavController) {
     val recommendations by RecommendationRepository.recommendations.collectAsState()
+    val isLoaded by RecommendationRepository.isLoaded.collectAsState()
+
     var targetMovie by remember { mutableStateOf<Movie?>(null) }
     LaunchedEffect(Unit) {
         RecommendationRepository.fetchPersonalRecommendations()
@@ -77,7 +89,7 @@ fun RecommendationCarouselScreen(navController: NavController) {
                         RecommendationRepository.fetchPersonalRecommendations()
                     }
                 )
-            } else {
+            } else if (!isLoaded) {
                 Box(
                     contentAlignment = Alignment.Center,
                     modifier = Modifier
@@ -87,6 +99,15 @@ fun RecommendationCarouselScreen(navController: NavController) {
                     CircularProgressIndicator(
                         modifier = Modifier.size(36.dp)
                     )
+                }
+            } else {
+                Box(
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier
+                    .fillMaxWidth()
+                    .height(180.dp * 1.5f)
+                ) {
+                    NoRecommendationsReminder()
                 }
             }
             targetMovie?.let { movie ->

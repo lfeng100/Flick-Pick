@@ -31,7 +31,7 @@ date,Leo,Sajeen,Aryan,Ashvin,Alex,Jerry,task
 2025-03-03,0,0,5,0,0,0,Add in Profile Page UI
 2025-03-18,3,0,0,0,0,0,Add movie search and tag filtering endpoints and implement pagination to movies and users endpoint responses
 2025-03-04,0,0,0,2.5,0,0,Integrate CreateUser API endpoint upon sign up
-2025-03-04,0,0,0,0,0,12,Set up recommender UI Navigation bar and rework/refactor some UI elements
+2025-03-04,0,0,0,0,0,12,Add recommender UI, Navigation bar, and rework/refactor some UI elements
 2025-03-05,0,0,0,0,10,0,Add APIManager Poster images
 2025-03-06,0,0,0,0,0,1.5,Add infinite scrolling to browse screen
 2025-03-06,0,0,0,0,0,10,Revamp movie info screen and add flow for creating reviews
@@ -60,8 +60,13 @@ date,Leo,Sajeen,Aryan,Ashvin,Alex,Jerry,task
 2025-03-24,1,1,1,1,1,1,Group discussion for final presentation tasks and demo
 2025-03-25,3,0,0,0,0,0,Add group activity endpoint Update get userwatched and userwatchlist to include timestamp Update get reviews by user to include movie
 2025-03-25,1,0,0,0,0,0,Update seed data script
+2025-03-26,0,0,0,0,0,2,Update primary user repository with firebase user id, fix watched/watchlist bugs
+2025-03-26,0,0,0,0,0,2.5,Update frontend with group activities
+2025-03-27,0,0,0,0,0,8,Add group recommendations to frontend and backend
 2025-03-28,0,0,0,0,4,0,Fixes to bottomsheet
 2025-03-29,2,0,0,0,0,0,Update Profile Page Front End to update user info Add sorting to search movies endpoint
 2025-03-29,0,0,0,0,7,0,added activies to Groups
 2025-03-29,0,0,0,0,5,0,added sorting
 2025-03-30,0,1,0,0,0,0,Added error prompt when users try to create group without adding a group name
+2025-03-30,0,0,0,0,0,12,Added reviews to movie info, added additional recommender filtering, created mock "bad" ml model, fixes to logout
+

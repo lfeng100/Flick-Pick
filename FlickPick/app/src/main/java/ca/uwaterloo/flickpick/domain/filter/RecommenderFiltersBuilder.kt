@@ -18,6 +18,10 @@ object FiltersConstants {
 class RecommenderFiltersBuilder() {
     private val _includedGenres = mutableStateListOf<String>()
     private val _excludedGenres = mutableStateListOf<String>()
+    private var _minYear : Int? = null
+    private var _maxYear : Int? = null
+    private var _minScore : Float? = null
+    private var _maxRuntime : Int? = null
 
     val includedGenres: State<List<String>> = derivedStateOf { _includedGenres }
     val excludedGenres: State<List<String>> = derivedStateOf { _excludedGenres }
@@ -31,6 +35,22 @@ class RecommenderFiltersBuilder() {
                 _excludedGenres.addAll(excl)
             }
         }
+    }
+
+    fun setMinYear(year: Int) {
+        _minYear = year
+    }
+
+    fun setMaxYear(year: Int) {
+        _maxYear = year
+    }
+
+    fun setMinScore(score: Float) {
+        _minScore = score
+    }
+
+    fun setMaxRuntime(runtime: Int) {
+        _maxRuntime = runtime
     }
 
     fun includeGenre(genre: String) {
@@ -50,24 +70,32 @@ class RecommenderFiltersBuilder() {
 
     fun buildFilters(): Filters? {
         if (_includedGenres.isEmpty() &&
-            _excludedGenres.isEmpty()) {
+            _excludedGenres.isEmpty() &&
+            _minScore == null &&
+            _minYear == null &&
+            _maxYear == null &&
+            _maxRuntime == null) {
             return null;
         }
         val included = if(_includedGenres.isEmpty()) null else _includedGenres
         val excluded = if(_excludedGenres.isEmpty()) null else _excludedGenres
         return Filters(
             includedGenres = included,
-            excludedGenres = excluded
+            excludedGenres = excluded,
+            minScore = _minScore,
+            minYear = _minYear,
+            maxYear = _maxYear,
+            maxRuntime = _maxRuntime
         )
     }
 
     fun stateOfGenre(genre: String): ToggleableState {
-        if (_includedGenres.contains(genre)) {
-            return ToggleableState.On
+        return if (_includedGenres.contains(genre)) {
+            ToggleableState.On
         } else if (_excludedGenres.contains(genre)) {
-            return ToggleableState.Indeterminate
+            ToggleableState.Indeterminate
         } else {
-            return ToggleableState.Off
+            ToggleableState.Off
         }
     }
 }

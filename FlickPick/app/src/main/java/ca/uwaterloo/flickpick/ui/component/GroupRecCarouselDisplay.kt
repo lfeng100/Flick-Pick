@@ -1,5 +1,6 @@
 package ca.uwaterloo.flickpick.ui.component
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -16,6 +17,7 @@ import androidx.compose.material.icons.filled.Psychology
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -26,9 +28,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import ca.uwaterloo.flickpick.R
 import ca.uwaterloo.flickpick.data.database.model.Movie
 import ca.uwaterloo.flickpick.domain.repository.GroupRecommendationRepository
 import ca.uwaterloo.flickpick.ui.screen.HeroImage
@@ -40,6 +47,7 @@ fun GroupRecCarouselDisplay(groupID: String, navController: NavController) {
     var showFilterCustomizer by remember { mutableStateOf(false) }
     val filters by GroupRecommendationRepository.filters
     val recommendations by GroupRecommendationRepository.recommendations.collectAsState()
+    val isLoaded by GroupRecommendationRepository.isLoaded.collectAsState()
     var targetMovie by remember { mutableStateOf<Movie?>(null) }
     LaunchedEffect(Unit) {
         GroupRecommendationRepository.clearPreviousRecommendations()
@@ -101,7 +109,7 @@ fun GroupRecCarouselDisplay(groupID: String, navController: NavController) {
                             MovieInteractionButtonRow(navController, movie, false)
                         }
                     }
-                } else {
+                } else if (!isLoaded) {
                     Box(
                         contentAlignment = Alignment.Center,
                         modifier = Modifier
@@ -112,6 +120,9 @@ fun GroupRecCarouselDisplay(groupID: String, navController: NavController) {
                             modifier = Modifier.size(36.dp)
                         )
                     }
+                } else {
+                    Spacer(Modifier.height(90.dp))
+                    NoRecommendationsReminder()
                 }
             }
             Column(
@@ -148,5 +159,30 @@ fun GroupRecCarouselDisplay(groupID: String, navController: NavController) {
             GroupRecommendationRepository.clearGroupRecommendations()
             GroupRecommendationRepository.fetchGroupRecommendations(groupID)
         }
+    }
+}
+
+@Composable
+fun NoRecommendationsReminder() {
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.Top,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Image(
+            modifier = Modifier.size(180.dp),
+            // TODO: attribution to ARISO from Noun Project
+            painter = painterResource(id = R.drawable.no_movies),
+            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary),
+            contentDescription = "Watch Movie Icon",
+            contentScale = ContentScale.Fit
+        )
+        Spacer(Modifier.height(24.dp))
+        Text(
+            text = "Could not recommend anything\n based on your preferences",
+            textAlign = TextAlign.Center,
+            style = MaterialTheme.typography.bodyLarge,
+            color = MaterialTheme.colorScheme.onBackground.copy(0.75f)
+        )
     }
 }
