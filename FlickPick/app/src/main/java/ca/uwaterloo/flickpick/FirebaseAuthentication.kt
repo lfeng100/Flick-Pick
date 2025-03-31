@@ -5,6 +5,9 @@ import android.widget.Toast
 import androidx.navigation.NavController
 import ca.uwaterloo.flickpick.dataObjects.Database.DatabaseClient
 import ca.uwaterloo.flickpick.dataObjects.Database.Models.UserCreate
+import ca.uwaterloo.flickpick.domain.repository.GroupRecommendationRepository
+import ca.uwaterloo.flickpick.domain.repository.PrimaryUserRepository
+import ca.uwaterloo.flickpick.domain.repository.RecommendationRepository
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -60,6 +63,10 @@ class FirebaseAuthentication {
     }
 
     fun signOut(navController: NavController, loginNavController: NavController) {
+        PrimaryUserRepository.clear()
+        RecommendationRepository.clear()
+        GroupRecommendationRepository.clear()
+        MovieRepository.clearSearchAndFilters()
         auth.signOut()
         navController.popBackStack(navController.graph.startDestinationId, inclusive = false)
         loginNavController.navigate("login") {

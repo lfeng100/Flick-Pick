@@ -133,7 +133,12 @@ object MovieRepository {
 
     fun addMovies(movies: List<Movie>) {
         for (movie in movies) {
-            movieCache.put(movie.movieID, movie)
+            movieCache[movie.movieID] = movie
         }
+    }
+
+    fun clearSearchAndFilters() {
+        _titleQuery.value = ""
+        _selectedFilters.value = emptyMap()
     }
 }

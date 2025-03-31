@@ -78,4 +78,9 @@ object GroupRecommendationRepository {
         previouslyRecommendedMovieIds.clear()
         _recommendations.value = emptyList()
     }
+
+    fun clear() {
+        clearPreviousRecommendations()
+        _filters.value = null
+    }
 }

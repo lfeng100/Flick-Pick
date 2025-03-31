@@ -1,5 +1,6 @@
 package ca.uwaterloo.flickpick.ui.screen
 
+import MovieRepository
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.animation.core.LinearEasing
@@ -56,7 +57,9 @@ import androidx.compose.ui.window.Dialog
 import ca.uwaterloo.flickpick.FirebaseAuthentication
 import ca.uwaterloo.flickpick.dataObjects.Database.DatabaseClient
 import ca.uwaterloo.flickpick.dataObjects.Database.Models.UserUpdate
+import ca.uwaterloo.flickpick.domain.repository.GroupRecommendationRepository
 import ca.uwaterloo.flickpick.domain.repository.PrimaryUserRepository
+import ca.uwaterloo.flickpick.domain.repository.RecommendationRepository
 import ca.uwaterloo.flickpick.ui.theme.Purple40
 import kotlinx.coroutines.launch
 
@@ -149,9 +152,10 @@ fun ProfileScreen(mainNavController: NavController, loginNavController: NavContr
                                 .weight(1f)
                         )
                         IconButton(
-                            onClick = {
+                            onClick =
+                            {
                                 firebaseAuthentication.signOut(mainNavController, loginNavController)
-                                      },
+                            },
                             modifier = Modifier
                                 .size(40.dp)
                         ) {

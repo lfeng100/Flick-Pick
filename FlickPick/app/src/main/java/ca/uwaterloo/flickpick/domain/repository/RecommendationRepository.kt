@@ -66,4 +66,10 @@ object RecommendationRepository {
         previouslyRecommendedMovieIds.addAll(_recommendations.value.map { it.movieID })
         _recommendations.value = emptyList()
     }
+
+    fun clear() {
+        previouslyRecommendedMovieIds.clear()
+        _recommendations.value = emptyList()
+        _filters.value = null
+    }
 }

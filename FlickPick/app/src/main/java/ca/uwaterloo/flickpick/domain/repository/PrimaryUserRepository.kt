@@ -176,4 +176,12 @@ object PrimaryUserRepository {
             }
         }
     }
+
+    fun clear() {
+        _reviews.clear()
+        _watchlist.clear()
+        _watched.clear()
+        reviewMap.clear()
+        _isLoaded.value = false
+    }
 }
