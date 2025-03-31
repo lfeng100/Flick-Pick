@@ -25,9 +25,7 @@ fun JoinGroupScreen(navController: NavController, groupId: String) {
         coroutineScope.launch {
             try {
                 val user = DatabaseClient.apiService.getUserById(userId)
-                if (user != null) {
-                    userNameByID = user.username
-                }
+                userNameByID = user.username
                 val groupResponse = DatabaseClient.apiService.getGroupsById(groupId)
                 groupCount = groupResponse.groupSize
                 groupName = groupResponse.groupName

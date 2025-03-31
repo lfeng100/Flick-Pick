@@ -192,7 +192,7 @@ fun YourReview(navController: NavController, movieID: String) {
 @Composable
 fun ReviewColumn(movieID: String) {
     val reviewData = remember { MovieReviewsRepository.getReviewData(movieID) }
-    val reviews by reviewData.reviewsList
+    val reviews by reviewData.reviewsList.collectAsState()
     val isFetching by reviewData.isFetching.collectAsState()
     Spacer(Modifier.height(24.dp))
     Divider()
@@ -214,7 +214,7 @@ fun ReviewColumn(movieID: String) {
             )
             IconButton(
                 modifier = Modifier.size(24.dp),
-                onClick = { }
+                onClick = { reviewData.refreshAndFetch() }
             ) {
                 Icon(
                     imageVector = Icons.Filled.Refresh,
@@ -229,9 +229,10 @@ fun ReviewColumn(movieID: String) {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text(user.username)
+                    Text(user.username, style = MaterialTheme.typography.titleMedium)
                     ReadOnlyStarRatingBar(review.rating.toFloat())
                 }
                 Text(

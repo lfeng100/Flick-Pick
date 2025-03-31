@@ -23,7 +23,7 @@ class FirebaseAuthentication {
                 if (task.isSuccessful) {
                     val firebaseUser = task.result?.user
                     val userID = firebaseUser?.uid ?: ""
-                    createUserBackend(firstName, lastName, email, username, userID, context, navController)
+                    createUserBackend(firstName, lastName, email, username, userID, navController)
                     Toast.makeText(context, "Registration Successful!", Toast.LENGTH_SHORT).show()
                 } else {
                     val errorMessage = task.exception?.message ?: "Registration Failed"
@@ -32,7 +32,7 @@ class FirebaseAuthentication {
             }
     }
 
-    fun createUserBackend(firstName: String, lastName: String, email: String, username: String, userID: String, context: Context, navController: NavController) {
+    private fun createUserBackend(firstName: String, lastName: String, email: String, username: String, userID: String, navController: NavController) {
         CoroutineScope(Dispatchers.IO).launch {
             DatabaseClient.apiService.createUser(
                 UserCreate(

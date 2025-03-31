@@ -1,15 +1,13 @@
 package ca.uwaterloo.flickpick.domain.repository
 
 import android.util.Log
-import androidx.compose.runtime.State
-import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.mutableStateListOf
 import ca.uwaterloo.flickpick.data.database.DatabaseClient
 import ca.uwaterloo.flickpick.data.database.model.Review
 import ca.uwaterloo.flickpick.data.database.model.User
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -34,8 +32,8 @@ object MovieReviewsRepository {
     }
 
     class ReviewData(private val movieID: String) {
-        private val _reviewsList = mutableStateListOf<ReviewWithUser>()
-        val reviewsList : State<List<ReviewWithUser>> = derivedStateOf { _reviewsList }
+        private val _reviewsList = MutableStateFlow(emptyList<ReviewWithUser>())
+        val reviewsList = _reviewsList.asStateFlow()
 
         private val _isFetching = MutableStateFlow(false)
         val isFetching = _isFetching.asStateFlow()
@@ -57,6 +55,17 @@ object MovieReviewsRepository {
                 return
             }
             job = CoroutineScope(Dispatchers.IO).launch {
+                fetchReviewsHelper()
+            }
+        }
+
+        fun refreshAndFetch() {
+            val oldJob = job
+            job = CoroutineScope(Dispatchers.IO).launch {
+                oldJob?.cancelAndJoin()
+                page = 0
+                _isFetching.value = false
+                _reviewsList.value = emptyList()
                 fetchReviewsHelper()
             }
         }
@@ -83,7 +92,7 @@ object MovieReviewsRepository {
                     }
                     val user = UserRepository.getUserForId(item.userID)
                     if (user != null) {
-                        _reviewsList.add(ReviewWithUser(item, user))
+                        _reviewsList.value += ReviewWithUser(item, user)
                     }
                 }
                 page += 1

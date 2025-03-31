@@ -98,17 +98,14 @@ fun ProfileScreen(mainNavController: NavController, loginNavController: NavContr
             try {
                 Log.d("ProfileScreen", "user id: $userId")
                 val user = DatabaseClient.apiService.getUserById(userId)
-                if (user != null) {
-
-                    originalFirstName = user.firstName
-                    originalLastName = user.lastName
-                    originalUsername = user.username
-                    firstName = user.firstName
-                    lastName = user.lastName
-                    username = user.username
-                    email = user.email
-                    Log.d("ProfileScreen", "User name: $username")
-                }
+                originalFirstName = user.firstName
+                originalLastName = user.lastName
+                originalUsername = user.username
+                firstName = user.firstName
+                lastName = user.lastName
+                username = user.username
+                email = user.email
+                Log.d("ProfileScreen", "User name: $username")
             } catch (e: Exception) {
                 Log.e("JoinGroupScreen", "Error fetching user", e)
             }
