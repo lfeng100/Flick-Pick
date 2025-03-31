@@ -47,6 +47,10 @@ date,Leo,Sajeen,Aryan,Ashvin,Alex,Jerry,task
 2025-03-18,1,0,0,0,0,0,Fix movie filter endpoint to match all tags
 2025-03-17,1,1,1,1,1,1,Group discussion for presentation demo
 2025-03-17,0,0,5,0,0,0,Integrate API to display details into join group page
+2025-03-17,0,10,0,0,0,0,Created page for users to create groups
+2025-03-18,0,4,0,0,0,0,Integrated API to pull all users in for group creation
+2025-03-18,0,3,0,0,0,0,Integrated API to create group in database when button is pressed
+2025-03-18,0,4,0,0,0,0,Integrated API to add selected users to group upon creation
 2025-03-18,4,0,0,0,0,0,Update more endpoints with pagination and returning more page specific data
 2025-03-18,0,0,2,0,0,0,Fix navigation between groups page and join groups page
 2025-03-18,0,0,5,0,0,0,API connections for adding user to group when joined Displaying members list Fix for adding user group creation
@@ -60,3 +64,4 @@ date,Leo,Sajeen,Aryan,Ashvin,Alex,Jerry,task
 2025-03-29,2,0,0,0,0,0,Update Profile Page Front End to update user info Add sorting to search movies endpoint
 2025-03-29,0,0,0,0,7,0,added activies to Groups
 2025-03-29,0,0,0,0,5,0,added sorting
+2025-03-30,0,1,0,0,0,0,Added error prompt when users try to create group without adding a group name
