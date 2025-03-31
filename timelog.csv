@@ -1,46 +1,62 @@
-date,Leo,Sajeen,Aryan,Ashvin,Alex,Jerry,task,,
-2025-01-20,1,0,0,0,1,1,setup GitHub repo,,
-2025-01-20,0.5,0.5,0.5,0.5,0.5,0.5,group discussion on discord,,
-2025-01-27,0.5,0.5,0.5,0.5,0.5,0.5,class meeting,,
-2025-01-31,1,1,1,1,1,1,proposal discussion and writing,,
-2025-02-04,0,0,0,0,1.5,0,Setup Environment,,
-2025-02-06,0,0,0,0,0,4.5,Research and prototype recommendations,,
-2025-02-07,0,0,0,9.5,0,0,Development of Sign Up page UI,,
-2025-02-08,0,2,2,0,0,0,Android Studio Setup,,
-2025-02-10,0,0,0,0,0,4.5,Improve recommender model,,
-2025-02-10,0,6,0,0,0,0,Install MySQL and created initial database schematic,,
-2025-02-10,0,0,0,10,0,0,Development of Login page UI, add initial navigation between developed pages,
-2025-02-10,0,0,11.5,0,0,0,Add in Home page UI, Vertical and Horizontal Carousel and Movie card components,
-2025-02-11,0,1.5,0,0,0,0,Restructed database diagram to include proper tables and columns,,
-2025-02-20,0,0,0,0,0,4.5,Combine movie datasets to further improve recommender model,,
-2025-02-24,0,0,2,0,0,0,Update navigation between pages,,
-2025-02-25,0,0,3,0,0,0,Home screen styling refactor, add additional rows for recently watched, etc
-2025-02-25,0,0,0,0,0,6,Scrape information for movie database from tmdb, create http api for recommender,
-2025-02-27,0,0,0,6.5,0,0,Firebase Authentication setup with Firebase Console and FlickPick app,,
-2025-02-28,0,5,0,0,0,0,Created local database and SQL queries for rest of group to host locally,,
-2025-03-01,0,0,0,2.5,0,0,Implement create account(using email and password) with Firebase Authentication into Sign Up page,,
-2025-03-01,0,0,0,2,0,0,Implement sign in(using email and password) with Firebase Authentication into Login page,,
-2025-03-01,0,0,9.5,0,0,0,Development of Library page UI, movie card components for library screen,
+date,Leo,Sajeen,Aryan,Ashvin,Alex,Jerry,task
+2025-01-20,1,0,0,0,1,1,Setup GitHub repo
+2025-01-20,0.5,0.5,0.5,0.5,0.5,0.5,Group ideation discussion on discord
+2025-01-27,0.5,0.5,0.5,0.5,0.5,0.5,Group in-class meeting
+2025-01-31,1,1,1,1,1,1,Group proposal discussion and writing
+2025-02-03,1,1,1,1,1,1,Group discussion for ideation
+2025-02-04,0,0,0,0,1.5,0,Setup Environment
+2025-02-06,0,0,0,0,0,4.5,Research and prototype recommendations
+2025-02-07,0,0,0,9.5,0,0,Development of Sign Up page UI
+2025-02-08,0,2,2,0,0,0,Android Studio Setup
+2025-02-10,1,1,1,1,1,1,Group discussion for task planning and next steps
+2025-02-10,0,0,0,0,0,4.5,Improve recommender model
+2025-02-10,0,6,0,0,0,0,Install MySQL and created initial database schematic
+2025-02-10,0,0,0,10,0,0,Development of Login page UI Add initial navigation between developed pages
+2025-02-10,0,0,11.5,0,0,0,Add in Home page UI Vertical and Horizontal Carousel and Movie card components
+2025-02-11,0,1.5,0,0,0,0,Restructed database diagram to include proper tables and columns
+2025-02-20,0,0,0,0,0,4.5,Combine movie datasets to further improve recommender model
+2025-02-24,1,1,1,1,1,1,Group discussion for presentation planning
+2025-02-24,0,0,2,0,0,0,Update navigation between pages
+2025-02-25,0,0,3,0,0,0,Home screen styling refactor Add additional rows for recently watched etc
+2025-02-25,0,0,0,0,0,6,Scrape information for movie database from tmdb Create http api for recommender
+2025-02-27,0,0,0,6.5,0,0,Firebase Authentication setup with Firebase Console and FlickPick app
+2025-02-28,0,5,0,0,0,0,Created local database and SQL queries for rest of group to host locally
+2025-03-01,0,0,0,2.5,0,0,Implement create account(using email and password) with Firebase Authentication into Sign Up page
+2025-03-01,0,0,0,2,0,0,Implement sign in(using email and password) with Firebase Authentication into Login page
+2025-03-01,0,0,9.5,0,0,0,Development of Library page UI Movie card components for library screen
+2025-03-03,1,1,1,1,1,1,Group discussion for connecting front end and backend
 2025-03-03,0,0,0,4.5,0,0,Implement recognizing user for entire session globally & upon launch of app, user signout, forgot password with Firebase
-2025-03-03,0,0,0,2.5,0,0,Create initial navigation bar,,
-2025-03-03,0,0,8,0,0,0,Add in Movie Pop-up view page with details,,
-2025-03-03,0,0,5,0,0,0,Add in Profile Page UI,,
-2025-03-04,0,0,0,2.5,0,0,Integrate CreateUser API endpoint upon sign up,,
-2025-03-04,0,0,0,0,0,12,Set up recommender UI, navigation bar, and rework/refactor some UI elements
-2025-03-05,0,0,0,0,10,0,Add APIManager,Poster images,
-2025-03-06,0,0,0,0,0,1.5,Add infinite scrolling to browse screen,,
-2025-03-06,0,0,0,0,0,10,Revamp movie info screen and add flow for creating reviews,,
-2025-03-11,0,0,0,0,0,2.5,Hook up home screen to user reviews, watched, and watchlist
-2025-03-13,0,0,0,0,0,8,Revamp recommendation screen,,
-2025-03-16,0,0,0,0,0,6,Add initial recommender filters,,
-2025-03-16,0,0,0,0,0,2,Add reminder in library/recommender screen for when you have no reviews,,
-2025-03-16,0,0,0,0,8,0,Add search and filtering to catalog,,
-2025-03-16,0,0,0,0,0,3,Fix infinite scrolling with search,,
-2025-03-16,0,0,12,0,0,0,Add in join group page UI, create reusabale join group card component, bubble animation background implemented
-2025-03-17,0,0,5,0,0,0,Integrate API to display details into join group page,,
-2025-03-18,0,0,2,0,0,0,Fix navigation between groups page and join groups page,,
-2025-03-18,0,0,5,0,0,0,API connections for adding user to group when joined, displaying members list, fix for adding user group creation
-2025-03-18,0,0,7,0,0,0,Create groups main page and display list of members within group,,
-2025-03-28,0,0,0,0,4,0,Fixes to bottomsheet,,
-2025-03-29,0,0,0,0,7,0,added activies to Groups,,
-2025-03-29,0,0,0,0,5,0,added sorting,,
+2025-03-03,0,0,0,2.5,0,0,Create initial navigation bar
+2025-03-03,0,0,8,0,0,0,Add in Movie Pop-up view page with details
+2025-03-03,0,0,5,0,0,0,Add in Profile Page UI
+2025-03-18,3,0,0,0,0,0,Add movie search and tag filtering endpoints and implement pagination to movies and users endpoint responses
+2025-03-04,0,0,0,2.5,0,0,Integrate CreateUser API endpoint upon sign up
+2025-03-04,0,0,0,0,0,12,Set up recommender UI Navigation bar and rework/refactor some UI elements
+2025-03-05,0,0,0,0,10,0,Add APIManager Poster images
+2025-03-06,0,0,0,0,0,1.5,Add infinite scrolling to browse screen
+2025-03-06,0,0,0,0,0,10,Revamp movie info screen and add flow for creating reviews
+2025-03-10,1,1,1,1,1,1,Group discussion for improving recommender model and meeting functional requirements
+2025-03-11,0,0,0,0,0,2.5,Hook up home screen to User Reviews Watched and Watchlist
+2025-03-13,0,0,0,0,0,8,Revamp recommendation screen
+2025-03-16,1,0,0,0,0,0,Add seed script to populate db with fake data for demo
+2025-03-16,0,0,0,0,0,6,Add initial recommender filters
+2025-03-16,0,0,0,0,0,2,Add reminder in library/recommender screen for when you have no reviews
+2025-03-16,0,0,0,0,8,0,Add search and filtering to catalog
+2025-03-16,0,0,0,0,0,3,Fix infinite scrolling with search
+2025-03-16,0,0,12,0,0,0,Add in join group page UI Create reusabale join group card component Bubble animation background implemented
+2025-03-18,1,0,0,0,0,0,Fix movie filter endpoint to match all tags
+2025-03-17,1,1,1,1,1,1,Group discussion for presentation demo
+2025-03-17,0,0,5,0,0,0,Integrate API to display details into join group page
+2025-03-18,4,0,0,0,0,0,Update more endpoints with pagination and returning more page specific data
+2025-03-18,0,0,2,0,0,0,Fix navigation between groups page and join groups page
+2025-03-18,0,0,5,0,0,0,API connections for adding user to group when joined Displaying members list Fix for adding user group creation
+2025-03-18,0,0,7,0,0,0,Create groups main page and display list of members within group
+2025-03-19,1,0,0,0,0,0,Clean up front end code and fix typos
+2025-03-24,1,0,0,0,0,0,Fix Users endpoint to use uid from firebase
+2025-03-24,1,1,1,1,1,1,Group discussion for final presentation tasks and demo
+2025-03-25,3,0,0,0,0,0,Add group activity endpoint Update get userwatched and userwatchlist to include timestamp Update get reviews by user to include movie
+2025-03-25,1,0,0,0,0,0,Update seed data script
+2025-03-28,0,0,0,0,4,0,Fixes to bottomsheet
+2025-03-29,2,0,0,0,0,0,Update Profile Page Front End to update user info, add sorting to search movies endpoint
+2025-03-29,0,0,0,0,7,0,added activies to Groups
+2025-03-29,0,0,0,0,5,0,added sorting
