@@ -50,6 +50,7 @@ import ca.uwaterloo.flickpick.dataObjects.Database.DatabaseClient
 import ca.uwaterloo.flickpick.dataObjects.Database.Models.ActivityItem
 import ca.uwaterloo.flickpick.dataObjects.Database.Models.Group
 import ca.uwaterloo.flickpick.dataObjects.Database.Models.User
+import ca.uwaterloo.flickpick.domain.repository.PrimaryUserRepository
 import ca.uwaterloo.flickpick.ui.component.BackButtonTopBarWithText
 import ca.uwaterloo.flickpick.ui.component.BrowseMovieReminder
 import ca.uwaterloo.flickpick.ui.component.GroupActivityList
@@ -58,7 +59,9 @@ import ca.uwaterloo.flickpick.ui.component.TopBarButtonData
 import ca.uwaterloo.flickpick.ui.component.UserCard
 import ca.uwaterloo.flickpick.ui.theme.Pink40
 import ca.uwaterloo.flickpick.ui.theme.Purple40
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -69,6 +72,8 @@ fun GroupMainScreen(navController: NavController, groupId: String) {
     val activities = remember { mutableStateOf<List<ActivityItem>>(emptyList()) }
     val isLoading = remember { mutableStateOf(true) }
     val userMap = remember(members.value) { members.value.associate { it.userID to it.username }}
+    val coroutineScope = rememberCoroutineScope()
+    val userId = PrimaryUserRepository.getPrimaryUserID()
     var showDialog by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
@@ -98,7 +103,6 @@ fun GroupMainScreen(navController: NavController, groupId: String) {
                         icon = Icons.Rounded.RemoveCircleOutline,
                         onClick = {showDialog = true}
                     ),
-
                 )
             )
         }
@@ -109,13 +113,30 @@ fun GroupMainScreen(navController: NavController, groupId: String) {
                 onDismissRequest = { showDialog = false },
                 leaveClick = {
                     showDialog = false
+
+                    coroutineScope.launch {
+                        try {
+                            if (userId != null) {
+                                navController.navigate("group") {
+                                    popUpTo("library") { inclusive = false }
+                                    launchSingleTop = true
+                                }
+                                group.value?.let {
+                                    withContext(Dispatchers.IO) {
+                                        DatabaseClient.apiService.deleteUserInGroup(it.groupID, userId)
+                                    }
+                                }
+                            }
+                        } catch (e: Exception) {
+                            Log.e("GroupMainScreen", "Error: ${e.message}")
+                        }
+                    }
                 }
             )
         }
 
         val tabTitles = listOf("Members", "Picks", "Activity")
         val pagerState = rememberPagerState(pageCount = { tabTitles.size })
-        val coroutineScope = rememberCoroutineScope()
 
         Column(Modifier.padding(padding)) {
             TabRow(
@@ -248,7 +269,7 @@ fun LeaveGroupDialog(showDialog: Boolean, onDismissRequest: () -> Unit, leaveCli
                         ) {
                             OutlinedButton(
                                 onClick = {
-                                    onDismissRequest()
+                                    leaveClick()
                                 },
                                 modifier = Modifier
                                     .weight(1f)
