@@ -188,10 +188,10 @@ flickpick/
 ## 🛠 Future Work
 
 - ✅ Firebase Authentication integration
+- ✅ ML Recommendation engine
 - ⬜ Docker support for backend + MySQL
 - ⬜ Full test suite with Pytest
 - ⬜ Movie popularity/trending pipeline
-- ⬜ Recommendation engine
 - ⬜ Group messaging & shared viewing experience
 
 ---
